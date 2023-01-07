@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from Location import Location
-from Vehicle import Vehicle
+from object.Location import Location
 
 
 class Task:
@@ -10,4 +9,3 @@ class Task:
         self.loc: Location = loc
         self.create_time: datetime = create_time
         self.elapsed_time: int = elapsed_time
-        self.vehicle_alloced: Vehicle = None
