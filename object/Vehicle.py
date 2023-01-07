@@ -3,9 +3,10 @@ from object.Location import Location
 
 class Vehicle:
     WAIT: int = 0
-    MOVING: int = 1
-    ARRIVE: int = 2
-    WORK: int = 3
+    ALLOC: int = 1
+    MOVING: int = 2
+    ARRIVE: int = 3
+    WORK: int = 4
 
     def __init__(self, name):
         self.name: str = name
