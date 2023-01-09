@@ -1,6 +1,5 @@
 import logging
 
-from queue import PriorityQueue
 from datetime import datetime
 
 from object.Location import Location

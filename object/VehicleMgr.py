@@ -15,11 +15,11 @@ class VehicleMgr:
         if v_name in self.vehicles:
             return self.vehicles[v_name]
         else:
-            logger.error(f"[get_vehicle] v_name is not exist -> v_name:{v_name}")
+            logger.error(f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
 
     def add_vehicle(self, v_name: str):
         if v_name in self.vehicles:
-            logger.error(f"[add_vehicle] v_name exist -> v_name:{v_name}")
+            logger.error(f"[add_vehicle] v_name already exist -> v_name:{v_name}")
         else:
             self.vehicles[v_name] = Vehicle(v_name)
             self.tasks_alloced[v_name] = None
@@ -28,4 +28,4 @@ class VehicleMgr:
         if v_name in self.vehicles:
             self.tasks_alloced[v_name] = task
         else:
-            logger.error(f"[get_vehicle] v_name is not exist -> v_name:{v_name}")
+            logger.error(f"[get_vehicle] v_name does not exist -> v_name:{v_name}")

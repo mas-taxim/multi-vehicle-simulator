@@ -1,8 +1,5 @@
 import pytest
-from datetime import datetime
-
-from object.Location import Location
-from object.VehicleMgr import Vehicle
+from object.Vehicle import Vehicle
 from object.VehicleMgr import VehicleMgr
 
 
