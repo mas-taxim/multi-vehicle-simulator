@@ -3,6 +3,8 @@ from object.Task import Task
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
 
+from route.route import find_route
+
 
 def allocate(vehicle_mgr: VehicleMgr, task_mgr: TaskMgr, v_name: str, t_idx: int):
     vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
@@ -13,3 +15,4 @@ def allocate(vehicle_mgr: VehicleMgr, task_mgr: TaskMgr, v_name: str, t_idx: int
 
     vehicle.status = Vehicle.ALLOC
     vehicle.dest = task.loc
+    vehicle.route = find_route(vehicle.loc, task.loc)
