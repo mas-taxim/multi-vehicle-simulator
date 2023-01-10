@@ -13,5 +13,12 @@ class Vehicle:
         self.loc: Location = Location()
         self.battery: float = 1
         self.status = Vehicle.WAIT
-        self.dest: Location = None
         self.route: list[Location] = []
+
+    def get_route_tuple(self):
+        route_list = []
+
+        for r in self.route:
+            route_list.append((r.x, r.y))
+
+        return route_list

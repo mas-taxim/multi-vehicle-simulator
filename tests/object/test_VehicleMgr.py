@@ -12,8 +12,6 @@ def test_script1():
     assert vehicle_mgr.get_vehicle("V1").loc.y == 0
     assert vehicle_mgr.get_vehicle("V1").battery == 1
     assert vehicle_mgr.get_vehicle("V1").status == Vehicle.WAIT
-    assert vehicle_mgr.get_vehicle("V1").dest is None
     assert vehicle_mgr.get_vehicle("V1").route == []
 
     assert len(vehicle_mgr.vehicles) == 1
-
