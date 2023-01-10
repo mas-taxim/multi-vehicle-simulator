@@ -28,8 +28,13 @@ def task_mgr():
     return task_mgr
 
 
-def test_allocate(vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
-    allocate(vehicle_mgr, task_mgr, "V1", 0)
+@pytest.fixture
+def n_time():
+    return datetime.strptime("2023-02-02", '%Y-%m-%d')
+
+
+def test_allocate(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
+    allocate(n_time, vehicle_mgr, task_mgr, "V1", 0)
 
     assert vehicle_mgr.tasks_alloced.get("V1").idx == 0
     assert task_mgr.vehicles_alloced.get(0).name == "V1"

@@ -6,7 +6,8 @@ class Vehicle:
     ALLOC: int = 1
     MOVING: int = 2
     ARRIVE: int = 3
-    WORK: int = 4
+    WORKING: int = 4
+    DONE: int = 5
 
     def __init__(self, name):
         self.name: str = name

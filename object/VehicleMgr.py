@@ -24,6 +24,16 @@ class VehicleMgr:
             self.vehicles[v_name] = Vehicle(v_name)
             self.tasks_alloced[v_name] = None
 
+    def get_alloced_task(self, v_name):
+        if v_name in self.vehicles:
+            return self.tasks_alloced.get(v_name)
+        else:
+            logger.error(f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
+        return None
+
+    def reset_alloced_task(self, v_name):
+        self.tasks_alloced[v_name] = None
+
     def alloc_task(self, v_name: str, task: Task):
         if v_name in self.vehicles:
             self.tasks_alloced[v_name] = task
