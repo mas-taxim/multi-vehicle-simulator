@@ -48,7 +48,17 @@ class TaskMgr:
         else:
             logger.error(f"[alloc_vehicle] t_idx does not exist -> t_idx:{t_idx}")
 
-    def get_first_wait_task(self) -> Task:
+    def peek_wait_task(self) -> Task:
+        if self.wait_queue:
+            return self.tasks.get(self.wait_queue[0])
+        return None
+
+    def poll_wait_task(self) -> Task:
         if self.wait_queue:
             return self.tasks.get(self.wait_queue.pop(0))
         return None
+
+    def is_remain_wait_task(self):
+        if self.wait_queue:
+            return True
+        return False
