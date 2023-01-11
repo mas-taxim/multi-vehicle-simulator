@@ -39,3 +39,28 @@ class VehicleMgr:
             self.tasks_alloced[v_name] = task
         else:
             logger.error(f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
+
+    def get_idx_task_alloced(self):
+        idx_list = []
+
+        for v_name in self.tasks_alloced:
+            if self.tasks_alloced[v_name] is None:
+                idx_list.append((v_name, '-'))
+            else:
+                idx_list.append((v_name, self.tasks_alloced[v_name].idx))
+
+        return idx_list
+
+    def get_log(self):
+        log = dict()
+
+        vehicle_log = []
+
+        for v_name in self.vehicles:
+            vehicle: Vehicle = self.get_vehicle(v_name)
+            vehicle_log.append(vehicle.get_log())
+
+        log['vehicle_log'] = vehicle_log
+        log['tasks_alloced'] = self.get_idx_task_alloced()
+
+        return log

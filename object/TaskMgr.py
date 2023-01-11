@@ -62,3 +62,27 @@ class TaskMgr:
         if self.wait_queue:
             return True
         return False
+
+    def get_names_vehicle_alloced(self):
+        name_list = []
+        for t_idx in self.vehicles_alloced:
+            if self.vehicles_alloced[t_idx] is None:
+                name_list.append((t_idx, '-'))
+            else:
+                name_list.append((t_idx, self.vehicles_alloced[t_idx].name))
+        return name_list
+
+    def get_log(self):
+        log = dict()
+
+        task_log = []
+
+        for t_idx in self.tasks:
+            task: Task = self.get_task(t_idx)
+            task_log.append(task.get_log())
+
+        log['task_log'] = task_log
+        log['wait_queue'] = self.wait_queue
+        log['vehicles_alloced'] = self.get_names_vehicle_alloced()
+
+        return log

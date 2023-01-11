@@ -15,7 +15,6 @@ class Task:
         self.idx: int = idx
         self.loc: Location = loc
         self.elapsed_time: int = elapsed_time
-
         self.create_time: datetime = create_time
         self.alloc_time: datetime = None
         self.move_time: datetime = None
@@ -23,3 +22,19 @@ class Task:
         self.work_time: datetime = None
         self.done_time: datetime = None
         self.status: int = Task.WAIT
+
+    def get_log(self):
+        log = dict()
+
+        log["idx"] = self.idx
+        log["loc"] = str(self.loc)
+        log["elapsed_time"] = self.elapsed_time
+        log["create_time"] = self.create_time
+        log["alloc_time"] = self.alloc_time
+        log["move_time"] = self.move_time
+        log["arrive_time"] = self.arrive_time
+        log["work_time"] = self.work_time
+        log["done_time"] = self.done_time
+        log["status"] = self.status
+
+        return log

@@ -23,3 +23,14 @@ class Vehicle:
             route_list.append((r.x, r.y))
 
         return route_list
+
+    def get_log(self):
+        log = dict()
+
+        log["name"] = self.name
+        log["loc"] = str(self.loc)
+        log["battery"] = self.battery
+        log["status"] = self.status
+        log["route"] = self.get_route_tuple()
+
+        return log
