@@ -1,5 +1,6 @@
 import datetime
 import logging
+import json
 
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
@@ -24,6 +25,6 @@ def main_process(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     log['vehicle'] = vehicle_mgr.get_log()
     log['task'] = task_mgr.get_log()
 
-    data_logger.info(log)
+    data_logger.info(json.dumps(log))
 
 

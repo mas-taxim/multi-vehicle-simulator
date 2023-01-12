@@ -27,7 +27,8 @@ class Task:
         log = dict()
 
         log["idx"] = self.idx
-        log["loc"] = str(self.loc)
+        log["loc.x"] = self.loc.x
+        log["loc.y"] = self.loc.y
         log["elapsed_time"] = self.elapsed_time
         log["create_time"] = self.create_time.strftime("%Y-%m-%d %H:%M:%S") if self.create_time is not None else None
         log["alloc_time"] = self.alloc_time.strftime("%Y-%m-%d %H:%M:%S") if self.alloc_time is not None else None
