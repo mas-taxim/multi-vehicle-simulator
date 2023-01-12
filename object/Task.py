@@ -29,12 +29,12 @@ class Task:
         log["idx"] = self.idx
         log["loc"] = str(self.loc)
         log["elapsed_time"] = self.elapsed_time
-        log["create_time"] = self.create_time
-        log["alloc_time"] = self.alloc_time
-        log["move_time"] = self.move_time
-        log["arrive_time"] = self.arrive_time
-        log["work_time"] = self.work_time
-        log["done_time"] = self.done_time
+        log["create_time"] = self.create_time.strftime("%Y-%m-%d %H:%M:%S") if self.create_time is not None else None
+        log["alloc_time"] = self.alloc_time.strftime("%Y-%m-%d %H:%M:%S") if self.alloc_time is not None else None
+        log["move_time"] = self.move_time.strftime("%Y-%m-%d %H:%M:%S") if self.move_time is not None else None
+        log["arrive_time"] = self.arrive_time.strftime("%Y-%m-%d %H:%M:%S") if self.arrive_time is not None else None
+        log["work_time"] = self.work_time.strftime("%Y-%m-%d %H:%M:%S") if self.work_time is not None else None
+        log["done_time"] = self.done_time.strftime("%Y-%m-%d %H:%M:%S") if self.done_time is not None else None
         log["status"] = self.status
 
         return log

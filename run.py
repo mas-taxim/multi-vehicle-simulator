@@ -5,12 +5,30 @@ from object.Location import Location
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
 
-logger = logging.getLogger("main")
-logger.setLevel(logging.DEBUG)
-
 from process.main_process import main_process
 
+
+def init_log():
+    log_time = datetime.now().strftime("%Y%m%d_%H%M%S") + ".log"
+
+    sys_logger = logging.getLogger("main")
+    sys_logger.setLevel(logging.WARNING)
+
+    data_logger = logging.getLogger("data")
+    data_logger.setLevel(logging.INFO)
+
+    # log 출력
+    sys_log_handler = logging.FileHandler(f'sys_log/{log_time}')
+    sys_log_handler.setFormatter(logging.Formatter('%(levelname)s - %(message)s'))
+    sys_logger.addHandler(sys_log_handler)
+
+    data_log_handler = logging.FileHandler(f'log/{log_time}')
+    data_log_handler.setFormatter(logging.Formatter('%(message)s'))
+    data_logger.addHandler(data_log_handler)
+
+
 def run():
+    init_log()
     n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
 
     vehicle_mgr: VehicleMgr = VehicleMgr()
