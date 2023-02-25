@@ -17,9 +17,9 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleMgr):
             pass
         elif vehicle.status == Vehicle.ALLOC or vehicle.status == Vehicle.MOVING:
             move(n_time, vehicle_mgr, vehicle)
-        elif vehicle.status == Vehicle.ARRIVE or vehicle.status == Vehicle.WORKING:
+        elif vehicle.status == Vehicle.LOAD_START or vehicle.status == Vehicle.LOADING:
             execute_task(n_time, vehicle_mgr, vehicle)
-        elif vehicle.status == Vehicle.DONE:
+        elif vehicle.status == Vehicle.LOAD_END:
             re_prepare(n_time, vehicle_mgr, vehicle)
         else:
             logger.error(
@@ -49,7 +49,7 @@ def move(n_time: datetime, vehicle_mgr: VehicleMgr, vehicle: Vehicle, point: Loc
             if len(vehicle.route) > 1:
                 vehicle.route.pop(0)
             else:
-                vehicle.status = Vehicle.ARRIVE
+                vehicle.status = Vehicle.LOAD_START
                 task.status = Task.LOAD_START
                 task.load_start_time = n_time
 
@@ -58,12 +58,12 @@ def execute_task(n_time: datetime, vehicle_mgr: VehicleMgr, vehicle: Vehicle, ta
     if task is None:
         task = vehicle_mgr.get_alloced_task(vehicle.name)
 
-    if vehicle.status == Vehicle.ARRIVE:
-        vehicle.status = Vehicle.WORKING
+    if vehicle.status == Vehicle.LOAD_START:
+        vehicle.status = Vehicle.LOADING
         task.status = Task.LOADING
 
     if n_time == task.load_start_time + timedelta(minutes=task.elapsed_time + 1):
-        vehicle.status = Vehicle.DONE
+        vehicle.status = Vehicle.LOAD_END
         task.status = Task.LOAD_END
         task.load_end_time = n_time
 

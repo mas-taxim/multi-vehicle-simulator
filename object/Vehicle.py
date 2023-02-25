@@ -5,9 +5,12 @@ class Vehicle:
     WAIT: int = 0
     ALLOC: int = 1
     MOVING: int = 2
-    ARRIVE: int = 3
-    WORKING: int = 4
-    DONE: int = 5
+    LOAD_START: int = 3
+    LOADING: int = 4
+    LOAD_END: int = 5
+    UNLOAD_START: int = 6
+    UNLOADING: int = 7
+    UNLOAD_END: int = 8
 
     def __init__(self, name):
         self.name: str = name
