@@ -44,15 +44,14 @@ def move(n_time: datetime, vehicle_mgr: VehicleMgr, vehicle: Vehicle, point: Loc
         if vehicle.status == Vehicle.ALLOC:
             vehicle.status = Vehicle.MOVING
             task.status = Task.MOVING
-            task.move_time = n_time
 
         if is_same_location(vehicle.loc, point):
             if len(vehicle.route) > 1:
                 vehicle.route.pop(0)
             else:
                 vehicle.status = Vehicle.ARRIVE
-                task.status = Task.ARRIVE
-                task.arrive_time = n_time
+                task.status = Task.LOAD_START
+                task.load_start_time = n_time
 
 
 def execute_task(n_time: datetime, vehicle_mgr: VehicleMgr, vehicle: Vehicle, task: Task = None):
@@ -61,13 +60,12 @@ def execute_task(n_time: datetime, vehicle_mgr: VehicleMgr, vehicle: Vehicle, ta
 
     if vehicle.status == Vehicle.ARRIVE:
         vehicle.status = Vehicle.WORKING
-        task.status = Task.WORKING
-        task.work_time = n_time
+        task.status = Task.LOADING
 
-    if n_time == task.work_time + timedelta(minutes=task.elapsed_time):
+    if n_time == task.load_start_time + timedelta(minutes=task.elapsed_time + 1):
         vehicle.status = Vehicle.DONE
-        task.status = task.DONE
-        task.done_time = n_time
+        task.status = Task.LOAD_END
+        task.load_end_time = n_time
 
         vehicle.route = []
         vehicle_mgr.reset_alloced_task(vehicle.name)

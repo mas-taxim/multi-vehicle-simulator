@@ -112,12 +112,10 @@ def test_script2(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     assert vehicle_mgr.get_vehicle("V1").loc.x == 1
     assert vehicle_mgr.get_vehicle("V1").loc.y == 0
     assert vehicle_mgr.get_vehicle("V1").status == Vehicle.MOVING
-    assert task_mgr.get_task(0).move_time == n_time
 
     assert vehicle_mgr.get_vehicle("V2").loc.x == 1
     assert vehicle_mgr.get_vehicle("V2").loc.y == 0
     assert vehicle_mgr.get_vehicle("V2").status == Vehicle.MOVING
-    assert task_mgr.get_task(1).move_time == n_time
 
     n_time += timedelta(minutes=1)
     vehicle_process(n_time, vehicle_mgr)
@@ -144,7 +142,7 @@ def test_script2(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     assert vehicle_mgr.get_vehicle("V1").loc.x == 2
     assert vehicle_mgr.get_vehicle("V1").loc.y == 2
     assert vehicle_mgr.get_vehicle("V1").status == Vehicle.ARRIVE
-    assert task_mgr.get_task(0).arrive_time == n_time
+    assert task_mgr.get_task(0).load_start_time == n_time
 
     assert vehicle_mgr.get_vehicle("V2").loc.x == 4
     assert vehicle_mgr.get_vehicle("V2").loc.y == 0
@@ -155,12 +153,11 @@ def test_script2(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     assert vehicle_mgr.get_vehicle("V1").loc.x == 2
     assert vehicle_mgr.get_vehicle("V1").loc.y == 2
     assert vehicle_mgr.get_vehicle("V1").status == Vehicle.WORKING
-    assert task_mgr.get_task(0).work_time == n_time
 
     assert vehicle_mgr.get_vehicle("V2").loc.x == 4
     assert vehicle_mgr.get_vehicle("V2").loc.y == 1
     assert vehicle_mgr.get_vehicle("V2").status == Vehicle.ARRIVE
-    assert task_mgr.get_task(1).arrive_time == n_time
+    assert task_mgr.get_task(1).load_start_time == n_time
 
     n_time += timedelta(minutes=1)
     vehicle_process(n_time, vehicle_mgr)
@@ -171,26 +168,25 @@ def test_script2(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     assert vehicle_mgr.get_vehicle("V2").loc.x == 4
     assert vehicle_mgr.get_vehicle("V2").loc.y == 1
     assert vehicle_mgr.get_vehicle("V2").status == Vehicle.WORKING
-    assert task_mgr.get_task(1).work_time == n_time
 
     n_time += timedelta(minutes=1)
     vehicle_process(n_time, vehicle_mgr)
     assert vehicle_mgr.get_vehicle("V1").loc.x == 2
     assert vehicle_mgr.get_vehicle("V1").loc.y == 2
     assert vehicle_mgr.get_vehicle("V1").status == Vehicle.WORKING
-    assert task_mgr.get_task(0).done_time is None
+    assert task_mgr.get_task(0).load_end_time is None
 
     assert vehicle_mgr.get_vehicle("V2").loc.x == 4
     assert vehicle_mgr.get_vehicle("V2").loc.y == 1
     assert vehicle_mgr.get_vehicle("V2").status == Vehicle.DONE
-    assert task_mgr.get_task(1).done_time == n_time
+    assert task_mgr.get_task(1).load_end_time == n_time
 
     n_time += timedelta(minutes=1)
     vehicle_process(n_time, vehicle_mgr)
     assert vehicle_mgr.get_vehicle("V1").loc.x == 2
     assert vehicle_mgr.get_vehicle("V1").loc.y == 2
     assert vehicle_mgr.get_vehicle("V1").status == Vehicle.DONE
-    assert task_mgr.get_task(0).done_time == n_time
+    assert task_mgr.get_task(0).load_end_time == n_time
 
     assert vehicle_mgr.get_vehicle("V2").loc.x == 4
     assert vehicle_mgr.get_vehicle("V2").loc.y == 1
