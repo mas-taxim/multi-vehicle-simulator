@@ -12,7 +12,7 @@ data_logger = logging.getLogger("data")
 
 
 def main_process(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
-    for i in range(10):
+    for i in range(len(vehicle_mgr.vehicles)):
         v_name, t_idx = alloc_process(n_time, vehicle_mgr, task_mgr)
         if v_name is None:
             break
@@ -26,5 +26,3 @@ def main_process(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     log['task'] = task_mgr.get_log()
 
     data_logger.info(json.dumps(log))
-
-

@@ -22,8 +22,8 @@ def vehicle_mgr():
 @pytest.fixture
 def task_mgr():
     task_mgr: TaskMgr = TaskMgr()
-    task_mgr.add_task(0, Location(0, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
-    task_mgr.add_task(1, Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
+    task_mgr.add_task(0, Location(2, 2), Location(3, 3), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
+    task_mgr.add_task(1, Location(10, 10), Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
 
     return task_mgr
 
@@ -39,4 +39,4 @@ def test_allocate(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     assert vehicle_mgr.tasks_alloced.get("V1").idx == 0
     assert task_mgr.vehicles_alloced.get(0).name == "V1"
 
-    assert vehicle_mgr.get_vehicle("V1").get_route_tuple() == [(0, 10)]
+    assert vehicle_mgr.get_vehicle("V1").get_route_tuple() == [(2, 0), (2, 2), (3, 2), (3, 3)]

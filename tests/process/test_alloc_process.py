@@ -22,8 +22,8 @@ def vehicle_mgr():
 @pytest.fixture
 def task_mgr():
     task_mgr: TaskMgr = TaskMgr()
-    task_mgr.add_task(0, Location(0, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
-    task_mgr.add_task(1, Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
+    task_mgr.add_task(0, Location(0, 10), Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
+    task_mgr.add_task(1, Location(10, 10), Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
 
     return task_mgr
 
@@ -56,7 +56,7 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     assert alloc_v is None
     assert alloc_t is None
 
-    task_mgr.add_task(2, Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
+    task_mgr.add_task(2, Location(10, 10), Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
 
     alloc_v, alloc_t = alloc_process(n_time, vehicle_mgr, task_mgr)
     assert alloc_v is None

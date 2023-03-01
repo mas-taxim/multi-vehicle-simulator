@@ -18,7 +18,8 @@ def allocate(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr, v_nam
     vehicle.status = Vehicle.ALLOC
     task.status = Task.ALLOC
 
-    vehicle.dest = task.loc
-    vehicle.route = find_route(vehicle.loc, task.loc)
+    vehicle.dest = task.loc_unload
+    vehicle.route.extend(find_route(vehicle.loc, task.loc_load))
+    vehicle.route.extend(find_route(task.loc_load, task.loc_unload))
 
     task.alloc_time = n_time

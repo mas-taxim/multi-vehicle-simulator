@@ -21,17 +21,17 @@ class TaskMgr:
         else:
             logger.error(f"[get_task] t_idx does not exist -> t_idx:{t_idx}")
 
-    def add_task(self, t_idx: int, loc: Location, create_time: datetime, elapsed_time: int):
+    def add_task(self, t_idx: int, loc_load: Location, loc_unload: Location, create_time: datetime, elapsed_time: int):
         if t_idx in self.tasks:
             logger.error(f"[add_task] t_idx already exist -> t_idx:{t_idx}")
         else:
-            self.tasks[t_idx] = Task(t_idx, loc, create_time, elapsed_time)
+            self.tasks[t_idx] = Task(t_idx, loc_load, loc_unload, create_time, elapsed_time)
             self.wait_queue.append(t_idx)
             self.vehicles_alloced[t_idx] = None
 
     def remove_task(self, t_idx):
         if t_idx in self.tasks:
-            if self.tasks.get(t_idx).status == Task.WAIT or self.tasks.get(t_idx).status == Task.DONE:
+            if self.tasks.get(t_idx).status == Task.WAIT or self.tasks.get(t_idx).status == Task.LOAD_END:
                 self.tasks.pop(t_idx)
                 self.vehicles_alloced.pop(t_idx)
 
