@@ -2,11 +2,10 @@ from datetime import datetime, timedelta
 import logging
 import random
 
-from object.Location import Location
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
 
-from process.main_process import main_process
+from process.main_process import main_process, set_epsilon
 
 
 def init_log():
@@ -39,11 +38,9 @@ def run():
     vehicle_mgr.add_vehicle("V2")
 
     task_mgr: TaskMgr = TaskMgr()
+    set_epsilon(0.03)
 
-    for i in range(10):
-        task_mgr.add_task(i, Location(random.randint(0, 20), random.randint(0, 20)), n_time, random.randint(3, 10))
-
-    for i in range(120):
+    for i in range(300):
         n_time += timedelta(minutes=1)
         main_process(n_time, vehicle_mgr, task_mgr)
 

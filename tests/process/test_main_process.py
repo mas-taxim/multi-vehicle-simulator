@@ -7,7 +7,7 @@ from object.VehicleMgr import VehicleMgr
 from object.Task import Task
 from object.TaskMgr import TaskMgr
 
-from process.main_process import main_process
+from process.main_process import main_process, set_epsilon
 
 
 @pytest.fixture
@@ -35,6 +35,7 @@ def n_time():
 
 
 def test_main_process1(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
+    set_epsilon(0)
     n_time += timedelta(minutes=1)
     main_process(n_time, vehicle_mgr, task_mgr)
     assert vehicle_mgr.get_vehicle("V1").status == Vehicle.MOVE_TO_LOAD
