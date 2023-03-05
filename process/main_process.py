@@ -19,11 +19,11 @@ def set_epsilon(e: float):
     epsilon = e
 
 
-def main_process(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
-    generate_process(n_time, task_mgr, epsilon)
+def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
+    generate_process(n_time, graph_name, task_mgr, epsilon)
 
     for i in range(len(vehicle_mgr.vehicles)):
-        v_name, t_idx = alloc_process(n_time, vehicle_mgr, task_mgr)
+        v_name, t_idx = alloc_process(n_time, graph_name, vehicle_mgr, task_mgr)
         if v_name is None:
             break
 

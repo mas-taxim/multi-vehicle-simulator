@@ -1,4 +1,47 @@
+import networkx as nx
+
 from object.Location import Location
+
+from route.map import get_rectangle_graph, get_grid_graph
+
+
+def get_graph(graph_name):
+    if graph_name == 'grid':
+        return get_grid_graph()
+    elif graph_name == 'rectangle':
+        return get_rectangle_graph()
+
+    return None
+
+
+def get_nearest_idx(node_idx:dict, loc: Location):
+    min_value = 99999999
+    min_idx = -1
+    for n_loc in node_idx.keys():
+        if min_value > abs(loc.x - n_loc[0]) + abs(loc.y - n_loc[1]):
+            min_value = abs(loc.x - n_loc[0]) + abs(loc.y - n_loc[1])
+            min_idx = node_idx[n_loc]
+
+    return min_idx
+
+
+def find_graph_route(graph_name: str, start: Location, dest: Location):
+    node, node_idx, graph = get_graph(graph_name)
+
+    route = []
+
+    if node_idx.__contains__((start.x, start.y)):
+        start_idx = node_idx[(start.x, start.y)]
+    else:
+        start_idx = get_nearest_idx(node_idx, start)
+        route.append(Location(start.x, start.y))
+
+    dest_idx = node_idx[(dest.x, dest.y)]
+
+    for n_idx in nx.shortest_path(graph, start_idx, dest_idx, weight='weight')[1:]:
+        route.append(Location(node[n_idx][0], node[n_idx][1]))
+
+    return route
 
 
 def find_route(start: Location, dest: Location):

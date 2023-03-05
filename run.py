@@ -4,8 +4,12 @@ import random
 
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
+from object.Location import Location
+
+from route.route import get_graph
 
 from process.main_process import main_process, set_epsilon
+from process.generate_process import generate_task
 
 
 def init_log():
@@ -33,16 +37,22 @@ def run():
 
     n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
 
+    graph_name = 'grid'
+    node, node_idx, graph = get_graph(graph_name)
+
     vehicle_mgr: VehicleMgr = VehicleMgr()
     vehicle_mgr.add_vehicle("V1")
     vehicle_mgr.add_vehicle("V2")
+    vehicle_mgr.add_vehicle("V3")
 
     task_mgr: TaskMgr = TaskMgr()
-    set_epsilon(0.03)
 
-    for i in range(300):
+    generate_task(n_time, node, task_mgr)
+    set_epsilon(0.04)
+
+    for i in range(200):
         n_time += timedelta(minutes=1)
-        main_process(n_time, vehicle_mgr, task_mgr)
+        main_process(n_time, graph_name, vehicle_mgr, task_mgr)
 
 
 if __name__ == "__main__":

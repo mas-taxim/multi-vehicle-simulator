@@ -5,10 +5,10 @@ from object.Task import Task
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
 
-from route.route import find_route
+from route.route import find_graph_route
 
 
-def allocate(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr, v_name: str, t_idx: int):
+def allocate(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr, v_name: str, t_idx: int):
     vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
     task: Task = task_mgr.get_task(t_idx)
 
@@ -19,7 +19,7 @@ def allocate(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr, v_nam
     task.status = Task.ALLOC
 
     vehicle.dest = task.loc_unload
-    vehicle.route.extend(find_route(vehicle.loc, task.loc_load))
-    vehicle.route.extend(find_route(task.loc_load, task.loc_unload))
+    vehicle.route.extend(find_graph_route(graph_name, vehicle.loc, task.loc_load))
+    vehicle.route.extend(find_graph_route(graph_name, task.loc_load, task.loc_unload))
 
     task.alloc_time = n_time

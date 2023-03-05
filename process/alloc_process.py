@@ -11,7 +11,7 @@ from allocator.vehicle_allocator import allocate
 logger = logging.getLogger("main")
 
 
-def alloc_process(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
+def alloc_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     if not task_mgr.is_remain_wait_task():
         logger.info(f"[alloc_process] : Task to assign does not exist")
         return [None, None]
@@ -21,7 +21,7 @@ def alloc_process(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         if vehicle.status == Vehicle.WAIT:
-            allocate(n_time, vehicle_mgr, task_mgr, v_name, task.idx)
+            allocate(n_time, graph_name, vehicle_mgr, task_mgr, v_name, task.idx)
             task_mgr.poll_wait_task()
             logger.info(f"[alloc_process] : {task.idx} is allocated to {v_name}")
             return [v_name, task.idx]

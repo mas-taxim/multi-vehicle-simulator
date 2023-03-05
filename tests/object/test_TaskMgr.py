@@ -7,11 +7,11 @@ from object.TaskMgr import TaskMgr
 
 def test_script1():
     task_mgr = TaskMgr()
-    task_mgr.add_task(0, Location(0, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
+    task_mgr.add_task(0, Location(0, 10), Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
 
     assert task_mgr.get_task(0).idx == 0
-    assert task_mgr.get_task(0).loc.x == 0
-    assert task_mgr.get_task(0).loc.y == 10
+    assert task_mgr.get_task(0).loc_load.x == 0
+    assert task_mgr.get_task(0).loc_load.y == 10
     assert task_mgr.get_task(0).create_time == datetime.strptime("2023-02-02", '%Y-%m-%d')
     assert task_mgr.get_task(0).elapsed_time == 3
     assert task_mgr.is_remain_wait_task() is True
@@ -19,8 +19,8 @@ def test_script1():
     assert task_mgr.peek_wait_task().idx == 0
     assert task_mgr.poll_wait_task().idx == 0
 
-    task_mgr.add_task(1, Location(0, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
-    task_mgr.add_task(2, Location(0, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
+    task_mgr.add_task(1, Location(0, 10), Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
+    task_mgr.add_task(2, Location(0, 10), Location(10, 10), datetime.strptime("2023-02-02", '%Y-%m-%d'), 3)
 
     assert task_mgr.poll_wait_task().idx == 1
     assert task_mgr.poll_wait_task().idx == 2
