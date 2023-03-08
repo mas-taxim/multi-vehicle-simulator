@@ -2,14 +2,16 @@ import networkx as nx
 
 from object.Location import Location
 
-from route.map import get_rectangle_graph, get_grid_graph
+from route.map import get_rectangle_graph, get_grid_graph, get_yeouido_graph
 
 
-def get_graph(graph_name):
+def get_graph(graph_name) -> nx.Graph:
     if graph_name == 'grid':
         return get_grid_graph()
     elif graph_name == 'rectangle':
         return get_rectangle_graph()
+    elif graph_name == 'yeouido':
+        return get_yeouido_graph()
 
     return None
 
@@ -30,12 +32,7 @@ def find_graph_route(graph_name: str, start: Location, dest: Location):
 
     route = []
 
-    if node_idx.__contains__((start.x, start.y)):
-        start_idx = node_idx[(start.x, start.y)]
-    else:
-        start_idx = get_nearest_idx(node_idx, start)
-        route.append(Location(start.x, start.y))
-
+    start_idx = node_idx[(start.x, start.y)]
     dest_idx = node_idx[(dest.x, dest.y)]
 
     for n_idx in nx.shortest_path(graph, start_idx, dest_idx, weight='weight')[1:]:

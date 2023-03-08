@@ -9,7 +9,6 @@ from process.generate_process import generate_process
 from process.alloc_process import alloc_process
 from process.vehicle_process import vehicle_process
 
-data_logger = logging.getLogger("data")
 
 epsilon = 0.05
 
@@ -31,8 +30,9 @@ def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, tas
 
     log = dict()
 
-    log['n_time'] = n_time.strftime("%Y-%m-%d %H:%M:%S")
-    log['vehicle'] = vehicle_mgr.get_log()
+    # log['n_time'] = n_time.strftime("%Y-%m-%d %H:%M:%S")
+    log['time'] = int(n_time.timestamp() * 1000)
+    log['vehicles'] = vehicle_mgr.get_log()
     log['task'] = task_mgr.get_log()
 
-    data_logger.info(json.dumps(log))
+    return log

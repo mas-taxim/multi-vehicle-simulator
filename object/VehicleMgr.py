@@ -45,22 +45,21 @@ class VehicleMgr:
 
         for v_name in self.tasks_alloced:
             if self.tasks_alloced[v_name] is None:
-                idx_list.append((v_name, '-'))
+                idx_list.append((v_name, None))
             else:
                 idx_list.append((v_name, self.tasks_alloced[v_name].idx))
 
         return idx_list
 
     def get_log(self):
-        log = dict()
-
-        vehicle_log = []
+        vehicle_logs = []
 
         for v_name in self.vehicles:
             vehicle: Vehicle = self.get_vehicle(v_name)
-            vehicle_log.append(vehicle.get_log())
+            vehicle_log = vehicle.get_log()
+            vehicle_log['allocated_id'] = (
+                self.tasks_alloced[v_name].idx if self.tasks_alloced[v_name] is not None else None)
 
-        log['vehicle_log'] = vehicle_log
-        log['tasks_alloced'] = self.get_idx_task_alloced()
+            vehicle_logs.append(vehicle_log)
 
-        return log
+        return vehicle_logs

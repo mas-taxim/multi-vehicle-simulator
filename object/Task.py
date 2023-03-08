@@ -31,22 +31,22 @@ class Task:
     def get_log(self):
         log = dict()
 
-        log["idx"] = self.idx
-        log["loc_load.x"] = self.loc_load.x
-        log["loc_load.y"] = self.loc_load.y
-        log["loc_unload.x"] = self.loc_unload.x
-        log["loc_unload.y"] = self.loc_unload.y
-        log["elapsed_time"] = self.elapsed_time
-        log["create_time"] = self.create_time.strftime("%Y-%m-%d %H:%M:%S") if self.create_time is not None else None
-        log["alloc_time"] = self.alloc_time.strftime("%Y-%m-%d %H:%M:%S") if self.alloc_time is not None else None
-        log["load_start_time"] = self.load_start_time.strftime(
-            "%Y-%m-%d %H:%M:%S") if self.load_start_time is not None else None
-        log["load_end_time"] = self.load_end_time.strftime(
-            "%Y-%m-%d %H:%M:%S") if self.load_end_time is not None else None
-        log["unload_start_time"] = self.unload_start_time.strftime(
-            "%Y-%m-%d %H:%M:%S") if self.unload_start_time is not None else None
-        log["unload_end_time"] = self.unload_end_time.strftime(
-            "%Y-%m-%d %H:%M:%S") if self.unload_end_time is not None else None
+        log["id"] = self.idx
+        log["pick_lat"] = self.loc_load.x
+        log["pick_lng"] = self.loc_load.y
+        log["drop_lat"] = self.loc_unload.x
+        log["drop_lng"] = self.loc_unload.y
+        log["time"] = self.elapsed_time
+        # log["create_time"] = self.create_time.strftime("%Y-%m-%d %H:%M:%S") if self.create_time is not None else None
+        # log["alloc_time"] = self.alloc_time.strftime("%Y-%m-%d %H:%M:%S") if self.alloc_time is not None else None
+        # log["load_start_time"] = self.load_start_time.strftime(
+        #     "%Y-%m-%d %H:%M:%S") if self.load_start_time is not None else None
+        # log["load_end_time"] = self.load_end_time.strftime(
+        #     "%Y-%m-%d %H:%M:%S") if self.load_end_time is not None else None
+        # log["unload_start_time"] = self.unload_start_time.strftime(
+        #     "%Y-%m-%d %H:%M:%S") if self.unload_start_time is not None else None
+        # log["unload_end_time"] = self.unload_end_time.strftime(
+        #     "%Y-%m-%d %H:%M:%S") if self.unload_end_time is not None else None
         log["status"] = self.status
 
         return log

@@ -19,7 +19,11 @@ def allocate(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mg
     task.status = Task.ALLOC
 
     vehicle.dest = task.loc_unload
-    vehicle.route.extend(find_graph_route(graph_name, vehicle.loc, task.loc_load))
-    vehicle.route.extend(find_graph_route(graph_name, task.loc_load, task.loc_unload))
+
+    route = find_graph_route(graph_name, vehicle.loc, task.loc_load)
+    vehicle.route.extend(route)
+
+    route = find_graph_route(graph_name, task.loc_load, task.loc_unload)
+    vehicle.route.extend(route)
 
     task.alloc_time = n_time

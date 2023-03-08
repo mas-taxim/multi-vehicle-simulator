@@ -32,10 +32,10 @@ class Vehicle:
         log = dict()
 
         log["name"] = self.name
-        log["loc.x"] = self.loc.x
-        log["loc.y"] = self.loc.y
-        log["battery"] = self.battery
+        log["lat"] = self.loc.x
+        log["lng"] = self.loc.y
+        # log["battery"] = self.battery
         log["status"] = self.status
-        log["route"] = self.get_route_tuple()
+        # log["route"] = self.get_route_tuple()
 
         return log
