@@ -5,7 +5,7 @@ import json
 
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
-from object.Location import Location
+# from object.Location import Location
 
 from route.route import get_graph
 

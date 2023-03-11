@@ -16,7 +16,7 @@ def get_graph(graph_name) -> nx.Graph:
     return None
 
 
-def get_nearest_idx(node_idx:dict, loc: Location):
+def get_nearest_idx(node_idx: dict, loc: Location):
     min_value = 99999999
     min_idx = -1
     for n_loc in node_idx.keys():
