@@ -17,14 +17,17 @@ class VehicleMgr:
         else:
             logger.error(f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
 
-    def add_vehicle(self, v_name: str):
+    def add_vehicle(self, v_name: str, init_x: float = 37.52897, init_y: float = 126.917101):
         if v_name in self.vehicles:
             logger.error(f"[add_vehicle] v_name already exist -> v_name:{v_name}")
         else:
             self.vehicles[v_name] = Vehicle(v_name)
             self.tasks_alloced[v_name] = None
+            self.vehicles[v_name].loc.x = init_x
+            self.vehicles[v_name].loc.y = init_y
 
     def get_alloced_task(self, v_name):
+        ''' v_name에 할당되어있는 task를 반환, 존재하지 않을경우 None '''
         if v_name in self.vehicles:
             return self.tasks_alloced.get(v_name)
         else:

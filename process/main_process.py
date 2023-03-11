@@ -1,6 +1,6 @@
 import datetime
-import logging
-import json
+# import logging
+# import json
 
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
@@ -18,7 +18,8 @@ def set_epsilon(e: float):
     epsilon = e
 
 
-def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
+def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr) -> str:
+    ''' processing each time, return value is result log '''
     generate_process(n_time, graph_name, task_mgr, epsilon)
 
     for i in range(len(vehicle_mgr.vehicles)):

@@ -41,6 +41,10 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleMgr):
 
 
 def move(vehicle: Vehicle, point: Location = None):
+    '''
+    걸리는 시간이 dest 와 arrive의 Euclidean distance로 계산되고 있음.
+    move time 정의 -> dest 와 arrive Euclidean distance * weight 값으로 표현
+    '''
     if point is None:
         if vehicle.route:
             point = vehicle.route[0]
