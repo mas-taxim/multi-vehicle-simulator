@@ -2,7 +2,8 @@ import logging
 import math
 from datetime import datetime, timedelta
 
-from object.Location import Location, is_same_location
+from object.Path import Path
+from object.Location import is_same_location
 from object.Vehicle import Vehicle
 from object.VehicleMgr import VehicleMgr
 from object.Task import Task
@@ -40,18 +41,20 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleMgr):
                 f"[vehicle_process] Exception occurred in the status of vehicle -> name:{vehicle.name}, status:{vehicle.status}")
 
 
-def move(vehicle: Vehicle, point: Location = None):
+def move(vehicle: Vehicle, path: Path = None):
     '''
     걸리는 시간이 dest 와 arrive의 Euclidean distance로 계산되고 있음.
     move time 정의 -> dest 와 arrive Euclidean distance * weight 값으로 표현
     '''
-    if point is None:
+    if path is None:
         if vehicle.route:
-            point = vehicle.route[0]
+            path = vehicle.route[0]
         else:
             logger.error(f"[move] vehicle's route is empty -> name:{vehicle.name}")
 
-    length = math.sqrt((point.x - vehicle.loc.x) ** 2 + (point.y - vehicle.loc.y) ** 2)
+    point = path.arrive_loc
+
+    length = math.sqrt((point.x - vehicle.loc.x) ** 2 + (point.y - vehicle.loc.y) ** 2) * path.weight
 
     if length < 1:
         vehicle.loc.x = point.x
