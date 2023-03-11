@@ -40,14 +40,14 @@ def get_yeouido_graph():
         18: (37.529486, 126.923453),
     }
 
-    graph.add_edge(0, 1, weight=1)
-    graph.add_edge(1, 2, weight=1)
-    graph.add_edge(2, 3, weight=1)
-    graph.add_edge(3, 4, weight=1)
+    graph.add_edge(0, 1, weight=3)
+    graph.add_edge(1, 2, weight=4)
+    graph.add_edge(2, 3, weight=5)
+    graph.add_edge(3, 4, weight=6)
     graph.add_edge(4, 5, weight=1)
-    graph.add_edge(5, 6, weight=1)
-    graph.add_edge(7, 8, weight=1)
-    graph.add_edge(8, 9, weight=1)
+    graph.add_edge(5, 6, weight=2)
+    graph.add_edge(7, 8, weight=3)
+    graph.add_edge(8, 9, weight=4)
     graph.add_edge(9, 10, weight=1)
     graph.add_edge(10, 11, weight=1)
     graph.add_edge(12, 13, weight=1)

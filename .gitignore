@@ -1,6 +1,6 @@
 .idea
 multi-vehicle-simulator.iml
-log
+log/*
 sys_log
 map
 
