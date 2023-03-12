@@ -5,7 +5,7 @@ import json
 
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
-from object.Location import Location
+# from object.Location import Location
 
 from route.route import get_graph
 
@@ -36,13 +36,8 @@ def run():
     node, node_idx, graph = get_graph(graph_name)
 
     vehicle_mgr: VehicleMgr = VehicleMgr()
-    vehicle_mgr.add_vehicle("V1")
-    vehicle_mgr.get_vehicle("V1").loc.x = 37.52897
-    vehicle_mgr.get_vehicle("V1").loc.y = 126.917101
-
-    vehicle_mgr.add_vehicle("V2")
-    vehicle_mgr.get_vehicle("V2").loc.x = 37.52897
-    vehicle_mgr.get_vehicle("V2").loc.y = 126.917101
+    vehicle_mgr.add_vehicle("V1", 37.52897, 126.917101)
+    vehicle_mgr.add_vehicle("V2", 37.52897, 126.917101)
 
     task_mgr: TaskMgr = TaskMgr()
 

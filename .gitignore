@@ -1,5 +1,11 @@
 .idea
 multi-vehicle-simulator.iml
-log
+log/*
 sys_log
 map
+
+
+
+# hrien.jin vs Code env git ignore option
+*/__pycache__
+.vscode

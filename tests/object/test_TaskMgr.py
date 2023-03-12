@@ -33,5 +33,3 @@ def test_script1():
 
     assert len(task_mgr.tasks) == 2
     assert len(task_mgr.vehicles_alloced) == 2
-
-
