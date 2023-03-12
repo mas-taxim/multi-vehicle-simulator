@@ -9,7 +9,6 @@ from process.generate_process import generate_process
 from process.alloc_process import alloc_process
 from process.vehicle_process import vehicle_process
 
-
 epsilon = 0.05
 
 
@@ -18,7 +17,7 @@ def set_epsilon(e: float):
     epsilon = e
 
 
-def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr) -> str:
+def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr) -> dict:
     ''' processing each time, return value is result log '''
     generate_process(n_time, graph_name, task_mgr, epsilon)
 
@@ -31,9 +30,8 @@ def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, tas
 
     log = dict()
 
-    # log['n_time'] = n_time.strftime("%Y-%m-%d %H:%M:%S")
     log['time'] = int(n_time.timestamp() * 1000)
     log['vehicles'] = vehicle_mgr.get_log()
-    log['task'] = task_mgr.get_log()
+    log['tasks'] = task_mgr.get_log()
 
     return log

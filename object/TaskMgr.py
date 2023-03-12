@@ -78,9 +78,7 @@ class TaskMgr:
 
         for t_idx in self.tasks:
             task: Task = self.get_task(t_idx)
-            task_logs.append(task.get_log())
-
-        # log['wait_queue'] = self.wait_queue
-        # log['vehicles_alloced'] = self.get_names_vehicle_alloced()
+            if task.status < Task.UNLOAD_END:
+                task_logs.append(task.get_log())
 
         return task_logs
