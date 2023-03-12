@@ -54,19 +54,15 @@ def move(vehicle: Vehicle, path: Path = None):
 
     point = path.arrive_loc
 
+    unit_length = 0.01
     length = math.sqrt((point.x - vehicle.loc.x) ** 2 + (point.y - vehicle.loc.y) ** 2) * path.weight
 
-    if length < 1:
+    if length < unit_length:
         vehicle.loc.x = point.x
         vehicle.loc.y = point.y
     else:
-        vehicle.loc.x += (point.x - vehicle.loc.x) / length
-        vehicle.loc.y += (point.y - vehicle.loc.y) / length
-
-    # if point.x - vehicle.loc.x != 0:
-    #     vehicle.loc.x += int((point.x - vehicle.loc.x) / abs(point.x - vehicle.loc.x))
-    # if point.y - vehicle.loc.y != 0:
-    #     vehicle.loc.y += int((point.y - vehicle.loc.y) / abs(point.y - vehicle.loc.y))
+        vehicle.loc.x += (point.x - vehicle.loc.x) / length * unit_length
+        vehicle.loc.y += (point.y - vehicle.loc.y) / length * unit_length
 
     if is_same_location(vehicle.loc, point) and len(vehicle.route) > 1:
         vehicle.route.pop(0)
