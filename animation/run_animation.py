@@ -4,8 +4,8 @@ import random
 
 from route.route import get_graph
 
-BLOCK_SIZE = 15
-TASK_SIZE = 20
+BLOCK_SIZE = 1700
+TASK_SIZE = 10
 
 VEHICLE_COLOR = {
     0: (255, 0, 0),  # WAIT
@@ -27,60 +27,59 @@ ROAD_COLOR = {
     4: (210, 24, 24),
 }
 
+
 TASK_COLOR = {}
 
 tax_img = pygame.image.load('taxi.jpg')
-tax_img = pygame.transform.scale(tax_img, (BLOCK_SIZE, BLOCK_SIZE))
+tax_img = pygame.transform.scale(tax_img, (10, 10))
 
 
 def draw_road(surface, node, graph):
     for edge in graph.edges():
-        weight = graph.get_edge_data(edge[1], edge[0])['weight']
-        pygame.draw.line(surface, ROAD_COLOR[weight], tuple((a + 0.5) * BLOCK_SIZE for a in node[edge[0]]),
-                         tuple((a + 0.5) * BLOCK_SIZE for a in node[edge[1]]))
+        weight = graph.get_edge_data(edge[0], edge[1])['weight']
+
+        pygame.draw.line(surface, ROAD_COLOR[weight],
+                         ((node[edge[0]][1] - MIN[1]) * BLOCK_SIZE, 500 - (node[edge[0]][0] - MIN[0]) * BLOCK_SIZE),
+                         ((node[edge[1]][1] - MIN[1]) * BLOCK_SIZE, 500 - (node[edge[1]][0] - MIN[0]) * BLOCK_SIZE))
 
 
 def read_log(log_path):
-    logs = []
+    with open(log_path, 'r') as file:
+        logs = json.load(file)
 
-    for line in open(log_path, 'r'):
-        logs.append(json.loads(line))
-
-    return logs
+    return logs['logs']
 
 
-def draw_vehicle(surface, status, loc):
-    # pygame.draw.rect(surface, VEHICLE_COLOR[status], (loc[0] * BLOCK_SIZE, loc[1] * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
-    surface.blit(tax_img, (loc[0] * BLOCK_SIZE, loc[1] * BLOCK_SIZE))
+def draw_vehicle(surface, loc):
+    surface.blit(tax_img, ((loc[1] - MIN[1]) * BLOCK_SIZE, 500 - (loc[0] - MIN[0]) * BLOCK_SIZE))
 
 
 def draw_vehicles(surface, vehicles):
     for vehicle in vehicles:
-        status = vehicle['status']
-        loc = (vehicle['loc.x'], vehicle['loc.y'])
+        loc = (vehicle['lat'], vehicle['lng'])
 
-        draw_vehicle(surface, status, loc)
+        draw_vehicle(surface, loc)
 
 
 def draw_load_task(surface, t_idx, loc):
-    loc = (loc[0] * BLOCK_SIZE + BLOCK_SIZE / 2, loc[1] * BLOCK_SIZE + BLOCK_SIZE / 2)
+    loc = ((loc[1] - MIN[1]) * BLOCK_SIZE, 500 - (loc[0] - MIN[0]) * BLOCK_SIZE)
     pygame.draw.circle(surface, TASK_COLOR[t_idx % 100], loc, TASK_SIZE / 2)
 
 
 def draw_unload_task(surface, t_idx, loc):
-    loc = (loc[0] * BLOCK_SIZE + BLOCK_SIZE / 2, loc[1] * BLOCK_SIZE + BLOCK_SIZE / 2)
+    loc = ((loc[1] - MIN[1]) * BLOCK_SIZE, 500 - (loc[0] - MIN[0]) * BLOCK_SIZE)
     pygame.draw.circle(surface, TASK_COLOR[t_idx % 100], loc, TASK_SIZE / 2, 3)
 
 
 def draw_tasks(surface, tasks):
     for task in tasks:
-        t_idx = task['idx']
+        t_idx = task['id']
         status = task['status']
         if 0 <= status <= 4:
-            draw_load_task(surface, t_idx, (task['loc_load.x'], task['loc_load.y']))
-            draw_unload_task(surface, t_idx, (task['loc_unload.x'], task['loc_unload.y']))
+            draw_load_task(surface, t_idx, (task['pick_lat'], task['pick_lng']))
+            draw_unload_task(surface, t_idx, (task['drop_lat'], task['drop_lng']))
         elif 5 <= status <= 8:
-            draw_unload_task(surface, t_idx, (task['loc_unload.x'], task['loc_unload.y']))
+            draw_unload_task(surface, t_idx, (task['drop_lat'], task['drop_lng']))
         elif status == 9:
             continue
         else:
@@ -93,21 +92,26 @@ def set_task_color():
         TASK_COLOR[i] = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
 
 
-logs = read_log("../log/20230305_230416.log")
-node, node_idx, graph = get_graph('grid')
+logs = read_log("../log/20230312_214850.json")
+node, node_idx, graph = get_graph('seoul_gu')
+
+MIN = [9999, 9999]
+for n in node:
+    MIN[0] = min(MIN[0], node[n][0])
+    MIN[1] = min(MIN[1], node[n][1])
 
 set_task_color()
 
 pygame.init()
-screen = pygame.display.set_mode((25 * BLOCK_SIZE, 25 * BLOCK_SIZE))
+screen = pygame.display.set_mode((500, 500))
 
 log_idx = 0
 
 while True:
     log = logs[log_idx]
-    n_time = log['n_time']
-    vehicles = log['vehicle']['vehicle_log']
-    tasks = log['task']['task_log']
+    n_time = log['time']
+    vehicles = log['vehicles']
+    tasks = log['tasks']
 
     screen.fill((0, 0, 0))
 
