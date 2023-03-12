@@ -3,7 +3,7 @@ import networkx as nx
 from object.Location import Location
 from object.Path import Path
 
-from route.map import get_rectangle_graph, get_grid_graph, get_yeouido_graph
+from route.map import get_rectangle_graph, get_grid_graph, get_yeouido_graph, get_seoul_gu_graph
 
 
 def get_graph(graph_name) -> nx.Graph:
@@ -13,6 +13,8 @@ def get_graph(graph_name) -> nx.Graph:
         return get_rectangle_graph()
     elif graph_name == 'yeouido':
         return get_yeouido_graph()
+    elif graph_name == 'seoul_gu':
+        return get_seoul_gu_graph()
 
     return None
 
