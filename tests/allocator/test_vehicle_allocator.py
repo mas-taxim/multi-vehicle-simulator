@@ -2,15 +2,13 @@ import pytest
 from datetime import datetime
 
 from object.Location import Location
-from object.Vehicle import Vehicle
-from object.Task import Task
 from object.VehicleMgr import VehicleMgr
 from object.TaskMgr import TaskMgr
 
-from process.generate_process import generate_task
 from allocator.vehicle_allocator import allocate
 
 from route.route import get_graph
+
 
 @pytest.fixture
 def vehicle_mgr():
@@ -35,6 +33,12 @@ def n_time():
 def test_allocate(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
+
+    vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
+    vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
+
+    vehicle_mgr.get_vehicle("V2").loc.x = node[0][0]
+    vehicle_mgr.get_vehicle("V2").loc.y = node[0][1]
 
     task_mgr.add_task(0, Location(node[0][0], node[0][1]), Location(node[1][0], node[1][1]), n_time, 3)
     task_mgr.add_task(1, Location(node[2][0], node[2][1]), Location(node[3][0], node[3][1]), n_time, 3)

@@ -1,7 +1,6 @@
 from object.Location import Location
+from object.Path import Path
 from route.route import find_route, convert_route_tuple, find_graph_route, get_graph
-
-from route.map import get_rectangle_graph
 
 
 def test_find_route():
@@ -16,5 +15,13 @@ def test_find_route_graph():
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
 
-    assert convert_route_tuple(find_graph_route(graph_name, Location(node[0][0], node[0][1])
-                                                , Location(node[2][0], node[2][1]))) == [(2, 0), (2, 2)]
+    route = find_graph_route(graph_name, Location(node[0][0], node[0][1]), Location(node[2][0], node[2][1]))
+
+    assert (route[0].depart_loc.x, route[0].depart_loc.y) == (0, 0)
+    assert (route[0].arrive_loc.x, route[0].arrive_loc.y) == (0, 2)
+    assert route[0].weight == 1
+
+
+    assert (route[1].depart_loc.x, route[1].depart_loc.y) == (0, 2)
+    assert (route[1].arrive_loc.x, route[1].arrive_loc.y) == (2, 2)
+    assert route[1].weight == 1

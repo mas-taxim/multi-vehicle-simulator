@@ -2,9 +2,9 @@ import pytest
 from datetime import datetime, timedelta
 
 from object.Location import Location
+from object.Path import Path
 from object.Vehicle import Vehicle
 from object.VehicleMgr import VehicleMgr
-from object.Task import Task
 from object.TaskMgr import TaskMgr
 
 from process.vehicle_process import vehicle_process, move
@@ -34,25 +34,38 @@ def n_time():
 
 
 def test_move1(n_time: datetime, vehicle_mgr: VehicleMgr):
+    graph_name = 'rectangle'
+    node, node_idx, graph = get_graph(graph_name)
+
+    vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
+    vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
+
+    vehicle_mgr.get_vehicle("V2").loc.x = node[0][0]
+    vehicle_mgr.get_vehicle("V2").loc.y = node[0][1]
+
     vehicle: Vehicle = vehicle_mgr.get_vehicle("V1")
-    point: Location = Location(0, 2)
 
-    move(vehicle, point)
-    assert vehicle.loc.x == 0
-    assert vehicle.loc.y == 1
+    vehicle.route.extend([Path(Location(node[0][0], node[0][1]), Location(node[1][0], node[1][1])),
+                          Path(Location(node[1][0], node[1][1]), Location(node[2][0], node[2][1]))])
 
-    move(vehicle, point)
+    move(vehicle)
     assert vehicle.loc.x == 0
     assert vehicle.loc.y == 2
 
-    move(vehicle, point)
-    assert vehicle.loc.x == 0
+    move(vehicle)
+    assert vehicle.loc.x == 2
     assert vehicle.loc.y == 2
 
 
 def test_script1(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
+
+    vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
+    vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
+
+    vehicle_mgr.get_vehicle("V2").loc.x = node[0][0]
+    vehicle_mgr.get_vehicle("V2").loc.y = node[0][1]
 
     task_mgr.add_task(len(task_mgr.tasks), Location(node[0][0], node[0][1]),
                       Location(node[1][0], node[1][1]), n_time, 2)
@@ -62,7 +75,6 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     allocate(n_time, graph_name, vehicle_mgr, task_mgr, "V1", 0)
     vehicle = vehicle_mgr.get_vehicle("V1")
 
-    print(vehicle.route)
     task = task_mgr.get_task(0)
     assert vehicle.status == Vehicle.ALLOC
 
@@ -101,12 +113,6 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     assert vehicle.status == Vehicle.MOVE_TO_UNLOAD
     assert vehicle.loc.x == 0
     assert vehicle.loc.y == 0
-
-    n_time += timedelta(minutes=1)
-    vehicle_process(n_time, vehicle_mgr)
-    assert vehicle.status == Vehicle.MOVE_TO_UNLOAD
-    assert vehicle.loc.x == 0
-    assert vehicle.loc.y == 1
 
     n_time += timedelta(minutes=1)
     vehicle_process(n_time, vehicle_mgr)

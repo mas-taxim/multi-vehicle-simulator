@@ -33,6 +33,12 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
 
+    vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
+    vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
+
+    vehicle_mgr.get_vehicle("V2").loc.x = node[0][0]
+    vehicle_mgr.get_vehicle("V2").loc.y = node[0][1]
+
     task_mgr.add_task(len(task_mgr.tasks), Location(node[0][0], node[0][1]),
                       Location(node[1][0], node[1][1]), n_time, 3)
     task_mgr.add_task(len(task_mgr.tasks), Location(node[2][0], node[2][1]),
