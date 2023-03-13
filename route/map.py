@@ -18,7 +18,7 @@ def get_seoul_gu_graph():
     if graph_dict.__contains__('seoul_gu'):
         return graph_dict['seoul_gu']
 
-    graph = nx.Graph()
+    graph = nx.DiGraph()
 
     node = {
         0: (37.5173319, 127.0473774),  # 강남구청
@@ -52,7 +52,7 @@ def get_seoul_gu_graph():
         for j in node.keys():
             distance = math.sqrt((node[i][0] - node[j][0]) ** 2 + (node[i][1] - node[j][1]) ** 2)
             if i != j and distance < 0.1:
-                w = random.randint(1, 4)
+                w = random.randint(2, 4)
                 graph.add_edge(i, j, weight=w)
                 graph.add_edge(j, i, weight=w)
 
@@ -65,7 +65,7 @@ def get_yeouido_graph():
     if graph_dict.__contains__('yeouido'):
         return graph_dict['yeouido']
 
-    graph = nx.Graph()
+    graph = nx.DiGraph()
 
     node = {
         0: (37.52897, 126.917101),
@@ -105,20 +105,48 @@ def get_yeouido_graph():
     graph.add_edge(15, 16, weight=14)
     graph.add_edge(16, 17, weight=11)
     graph.add_edge(17, 18, weight=10)
+    graph.add_edge(1, 0, weight=3)
+    graph.add_edge(2, 1, weight=4)
+    graph.add_edge(3, 2, weight=5)
+    graph.add_edge(4, 3, weight=6)
+    graph.add_edge(5, 4, weight=11)
+    graph.add_edge(6, 5, weight=2)
+    graph.add_edge(8, 7, weight=3)
+    graph.add_edge(9, 8, weight=4)
+    graph.add_edge(10, 9, weight=13)
+    graph.add_edge(11, 10, weight=6)
+    graph.add_edge(13, 12, weight=7)
+    graph.add_edge(14, 13, weight=9)
+    graph.add_edge(15, 14, weight=10)
+    graph.add_edge(16, 15, weight=14)
+    graph.add_edge(17, 16, weight=11)
+    graph.add_edge(18, 17, weight=10)
 
     graph.add_edge(1, 7, weight=13)
     graph.add_edge(2, 8, weight=5)
     graph.add_edge(3, 9, weight=7)
     graph.add_edge(4, 10, weight=8)
     graph.add_edge(5, 11, weight=3)
+    graph.add_edge(7, 1, weight=13)
+    graph.add_edge(8, 2, weight=5)
+    graph.add_edge(9, 3, weight=7)
+    graph.add_edge(10, 4, weight=8)
+    graph.add_edge(11, 5, weight=3)
+
 
     graph.add_edge(7, 13, weight=5)
     graph.add_edge(8, 14, weight=7)
     graph.add_edge(9, 15, weight=2)
     graph.add_edge(10, 16, weight=9)
     graph.add_edge(11, 17, weight=3)
+    graph.add_edge(13, 7, weight=5)
+    graph.add_edge(14, 8, weight=7)
+    graph.add_edge(15, 9, weight=2)
+    graph.add_edge(16, 10, weight=9)
+    graph.add_edge(17, 11, weight=3)
 
     graph.add_edge(6, 18, weight=8)
+    graph.add_edge(18, 6, weight=8)
 
     node_idx = make_node_idx(node)
     graph_dict['yeouido'] = (node, node_idx, graph)
@@ -129,7 +157,7 @@ def get_rectangle_graph():
     if graph_dict.__contains__('rectangle'):
         return graph_dict['rectangle']
 
-    graph = nx.Graph()
+    graph = nx.DiGraph()
 
     node = {
         0: (0, 0),
@@ -138,14 +166,14 @@ def get_rectangle_graph():
         3: (2, 0),
     }
 
-    graph.add_edge(0, 1, weight=2)
-    graph.add_edge(1, 2, weight=2)
-    graph.add_edge(2, 3, weight=3)
-    graph.add_edge(3, 0, weight=4)
+    graph.add_edge(0, 1, weight=1)
+    graph.add_edge(1, 2, weight=1)
+    graph.add_edge(2, 3, weight=1)
+    graph.add_edge(3, 0, weight=1)
 
-    graph.add_edge(1, 0, weight=4)
-    graph.add_edge(2, 1, weight=3)
-    graph.add_edge(3, 2, weight=2)
+    graph.add_edge(1, 0, weight=1)
+    graph.add_edge(2, 1, weight=1)
+    graph.add_edge(3, 2, weight=1)
     graph.add_edge(0, 3, weight=1)
 
     node_idx = make_node_idx(node)
@@ -158,7 +186,7 @@ def get_grid_graph():
         return graph_dict['grid']
 
     random.seed(0)
-    graph = nx.Graph()
+    graph = nx.DiGraph()
 
     node = {}
 
@@ -172,11 +200,13 @@ def get_grid_graph():
         for j in range(4):
             # print(5 * i + j, 5 * i + j + 1)
             graph.add_edge(5 * i + j, 5 * i + j + 1, weight=random.randint(1, 4))
+            graph.add_edge(5 * i + j + 1, 5 * i + j, weight=random.randint(1, 4))
 
     for i in range(5):
         for j in range(4):
             # print(5 * j + i, 5 * (j + 1) + i)
             graph.add_edge(5 * j + i, 5 * (j + 1) + i, weight=random.randint(1, 4))
+            graph.add_edge(5 * (j + 1) + i, 5 * j + i, weight=random.randint(1, 4))
 
     nx.draw(graph)
 
