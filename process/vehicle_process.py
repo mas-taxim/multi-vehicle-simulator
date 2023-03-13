@@ -52,19 +52,21 @@ def move(vehicle: Vehicle, path: Path = None):
         else:
             logger.error(f"[move] vehicle's route is empty -> name:{vehicle.name}")
 
-    point = path.arrive_loc
+    depart = path.depart_loc
+    arrive = path.arrive_loc
 
-    unit_length = 0.01
-    length = math.sqrt((point.x - vehicle.loc.x) ** 2 + (point.y - vehicle.loc.y) ** 2) * path.weight
+    unit_distance = (math.sqrt((arrive.x - depart.x) ** 2 + (arrive.y - depart.y) ** 2)) / path.weight
+    length = math.sqrt((arrive.x - vehicle.loc.x) ** 2 + (arrive.y - vehicle.loc.y) ** 2)
 
-    if length < unit_length:
-        vehicle.loc.x = point.x
-        vehicle.loc.y = point.y
+    # 소수점으로 인해 1번 더 움직이는 것을 막기 위해 마지막에 0.0001 빼고 비교
+    if length < unit_distance - 0.0001:
+        vehicle.loc.x = arrive.x
+        vehicle.loc.y = arrive.y
     else:
-        vehicle.loc.x += (point.x - vehicle.loc.x) / length * unit_length
-        vehicle.loc.y += (point.y - vehicle.loc.y) / length * unit_length
+        vehicle.loc.x += (arrive.x - vehicle.loc.x) / length * unit_distance
+        vehicle.loc.y += (arrive.y - vehicle.loc.y) / length * unit_distance
 
-    if is_same_location(vehicle.loc, point) and len(vehicle.route) > 1:
+    if is_same_location(vehicle.loc, arrive) and len(vehicle.route) > 1:
         vehicle.route.pop(0)
 
 
