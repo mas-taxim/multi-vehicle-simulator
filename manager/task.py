@@ -2,14 +2,12 @@ import logging
 
 from datetime import datetime
 
-from object.Location import Location
-from object.Task import Task
-from object.Vehicle import Vehicle
+from entity import Location, Task, Vehicle
 
 logger = logging.getLogger("main")
 
 
-class TaskMgr:
+class TaskManager:
     def __init__(self):
         self.tasks: dict[int, Task] = dict()
         self.wait_queue: list[int] = []
@@ -21,32 +19,43 @@ class TaskMgr:
         else:
             logger.error(f"[get_task] t_idx does not exist -> t_idx:{t_idx}")
 
-    def add_task(self, t_idx: int, loc_load: Location, loc_unload: Location, create_time: datetime, elapsed_time: int):
+    def add_task(
+            self,
+            t_idx: int,
+            loc_load: Location,
+            loc_unload: Location,
+            create_time: datetime,
+            elapsed_time: int):
         if t_idx in self.tasks:
             logger.error(f"[add_task] t_idx already exist -> t_idx:{t_idx}")
         else:
-            self.tasks[t_idx] = Task(t_idx, loc_load, loc_unload, create_time, elapsed_time)
+            self.tasks[t_idx] = Task(
+                t_idx, loc_load, loc_unload, create_time, elapsed_time)
             self.wait_queue.append(t_idx)
             self.vehicles_alloced[t_idx] = None
 
     def remove_task(self, t_idx):
         if t_idx in self.tasks:
-            if self.tasks.get(t_idx).status == Task.WAIT or self.tasks.get(t_idx).status == Task.LOAD_END:
+            if self.tasks.get(t_idx).status == Task.WAIT or self.tasks.get(
+                    t_idx).status == Task.LOAD_END:
                 self.tasks.pop(t_idx)
                 self.vehicles_alloced.pop(t_idx)
 
                 if t_idx in self.wait_queue:
                     self.wait_queue.remove(t_idx)
             else:
-                logger.error(f"[remove_task] The task's status is not WAIT or DONE. -> t_idx:{t_idx}")
+                logger.error(
+                    f"[remove_task] The task's status is not WAIT or DONE. -> t_idx:{t_idx}")
         else:
-            logger.error(f"[remove_task] t_idx does not exist  -> t_idx:{t_idx}")
+            logger.error(
+                f"[remove_task] t_idx does not exist  -> t_idx:{t_idx}")
 
     def alloc_vehicle(self, t_idx: int, vehicle: Vehicle):
         if t_idx in self.tasks:
             self.vehicles_alloced[t_idx] = vehicle
         else:
-            logger.error(f"[alloc_vehicle] t_idx does not exist -> t_idx:{t_idx}")
+            logger.error(
+                f"[alloc_vehicle] t_idx does not exist -> t_idx:{t_idx}")
 
     def peek_wait_task(self) -> Task:
         if self.wait_queue:

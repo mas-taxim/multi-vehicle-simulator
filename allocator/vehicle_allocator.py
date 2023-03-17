@@ -1,14 +1,17 @@
 import datetime
 
-from object.Vehicle import Vehicle
-from object.Task import Task
-from object.VehicleMgr import VehicleMgr
-from object.TaskMgr import TaskMgr
-
-from route.route import find_graph_route
+from entity import Task, Vehicle
+from manager import TaskManager, VehicleManager
+from graph.route import find_graph_route
 
 
-def allocate(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr, v_name: str, t_idx: int):
+def allocate(
+        n_time: datetime,
+        graph_name: str,
+        vehicle_mgr: VehicleManager,
+        task_mgr: TaskManager,
+        v_name: str,
+        t_idx: int):
     vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
     task: Task = task_mgr.get_task(t_idx)
 

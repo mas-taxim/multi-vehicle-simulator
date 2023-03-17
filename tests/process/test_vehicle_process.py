@@ -1,21 +1,18 @@
 import pytest
 from datetime import datetime, timedelta
 
-from object.Location import Location
-from object.Path import Path
-from object.Vehicle import Vehicle
-from object.VehicleMgr import VehicleMgr
-from object.TaskMgr import TaskMgr
+from entity import Location, Path, Vehicle
+from manager import TaskManager, VehicleManager
 
 from process.vehicle_process import vehicle_process, move
 from allocator.vehicle_allocator import allocate
 
-from route.route import get_graph
+from graph.route import get_graph
 
 
 @pytest.fixture
 def vehicle_mgr():
-    vehicle_mgr: VehicleMgr = VehicleMgr()
+    vehicle_mgr: VehicleManager = VehicleManager()
     vehicle_mgr.add_vehicle("V1")
     vehicle_mgr.add_vehicle("V2")
 
@@ -24,7 +21,7 @@ def vehicle_mgr():
 
 @pytest.fixture
 def task_mgr():
-    task_mgr: TaskMgr = TaskMgr()
+    task_mgr: TaskManager = TaskManager()
     return task_mgr
 
 
@@ -33,7 +30,7 @@ def n_time():
     return datetime.strptime("2023-02-02", '%Y-%m-%d')
 
 
-def test_move1(n_time: datetime, vehicle_mgr: VehicleMgr):
+def test_move1(n_time: datetime, vehicle_mgr: VehicleManager):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
 
@@ -45,8 +42,15 @@ def test_move1(n_time: datetime, vehicle_mgr: VehicleMgr):
 
     vehicle: Vehicle = vehicle_mgr.get_vehicle("V1")
 
-    vehicle.route.extend([Path(Location(node[0][0], node[0][1]), Location(node[1][0], node[1][1])),
-                          Path(Location(node[1][0], node[1][1]), Location(node[2][0], node[2][1]))])
+    vehicle.route.extend(
+        [
+            Path(
+                Location(
+                    node[0][0], node[0][1]), Location(
+                    node[1][0], node[1][1])), Path(
+                        Location(
+                            node[1][0], node[1][1]), Location(
+                                node[2][0], node[2][1]))])
 
     move(vehicle)
     assert vehicle.loc.x == 0
@@ -57,7 +61,10 @@ def test_move1(n_time: datetime, vehicle_mgr: VehicleMgr):
     assert vehicle.loc.y == 2
 
 
-def test_script1(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
+def test_script1(
+        n_time: datetime,
+        vehicle_mgr: VehicleManager,
+        task_mgr: TaskManager):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
 

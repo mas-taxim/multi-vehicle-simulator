@@ -2,7 +2,7 @@ import pygame
 import json
 import random
 
-from route.route import get_graph
+from graph.route import get_graph
 
 BLOCK_SIZE = 1700
 TASK_SIZE = 10
@@ -38,9 +38,12 @@ def draw_road(surface, node, graph):
     for edge in graph.edges():
         weight = graph.get_edge_data(edge[0], edge[1])['weight']
 
-        pygame.draw.line(surface, ROAD_COLOR[weight],
-                         ((node[edge[0]][1] - MIN[1]) * BLOCK_SIZE, 500 - (node[edge[0]][0] - MIN[0]) * BLOCK_SIZE),
-                         ((node[edge[1]][1] - MIN[1]) * BLOCK_SIZE, 500 - (node[edge[1]][0] - MIN[0]) * BLOCK_SIZE))
+        pygame.draw.line(surface,
+                         ROAD_COLOR[weight],
+                         ((node[edge[0]][1] - MIN[1]) * BLOCK_SIZE,
+                          500 - (node[edge[0]][0] - MIN[0]) * BLOCK_SIZE),
+                         ((node[edge[1]][1] - MIN[1]) * BLOCK_SIZE,
+                             500 - (node[edge[1]][0] - MIN[0]) * BLOCK_SIZE))
 
 
 def read_log(log_path):
@@ -51,7 +54,8 @@ def read_log(log_path):
 
 
 def draw_vehicle(surface, loc):
-    surface.blit(tax_img, ((loc[1] - MIN[1]) * BLOCK_SIZE, 500 - (loc[0] - MIN[0]) * BLOCK_SIZE))
+    surface.blit(tax_img, ((loc[1] - MIN[1]) * BLOCK_SIZE,
+                 500 - (loc[0] - MIN[0]) * BLOCK_SIZE))
 
 
 def draw_vehicles(surface, vehicles):
@@ -62,12 +66,14 @@ def draw_vehicles(surface, vehicles):
 
 
 def draw_load_task(surface, t_idx, loc):
-    loc = ((loc[1] - MIN[1]) * BLOCK_SIZE, 500 - (loc[0] - MIN[0]) * BLOCK_SIZE)
+    loc = ((loc[1] - MIN[1]) * BLOCK_SIZE,
+           500 - (loc[0] - MIN[0]) * BLOCK_SIZE)
     pygame.draw.circle(surface, TASK_COLOR[t_idx % 100], loc, TASK_SIZE / 2)
 
 
 def draw_unload_task(surface, t_idx, loc):
-    loc = ((loc[1] - MIN[1]) * BLOCK_SIZE, 500 - (loc[0] - MIN[0]) * BLOCK_SIZE)
+    loc = ((loc[1] - MIN[1]) * BLOCK_SIZE,
+           500 - (loc[0] - MIN[0]) * BLOCK_SIZE)
     pygame.draw.circle(surface, TASK_COLOR[t_idx % 100], loc, TASK_SIZE / 2, 3)
 
 
@@ -76,10 +82,13 @@ def draw_tasks(surface, tasks):
         t_idx = task['id']
         status = task['status']
         if 0 <= status <= 4:
-            draw_load_task(surface, t_idx, (task['pick_lat'], task['pick_lng']))
-            draw_unload_task(surface, t_idx, (task['drop_lat'], task['drop_lng']))
+            draw_load_task(
+                surface, t_idx, (task['pick_lat'], task['pick_lng']))
+            draw_unload_task(
+                surface, t_idx, (task['drop_lat'], task['drop_lng']))
         elif 5 <= status <= 8:
-            draw_unload_task(surface, t_idx, (task['drop_lat'], task['drop_lng']))
+            draw_unload_task(
+                surface, t_idx, (task['drop_lat'], task['drop_lng']))
         elif status == 9:
             continue
         else:
@@ -89,7 +98,8 @@ def draw_tasks(surface, tasks):
 def set_task_color():
     random.seed(0)
     for i in range(100):
-        TASK_COLOR[i] = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
+        TASK_COLOR[i] = (random.randint(50, 255), random.randint(
+            50, 255), random.randint(50, 255))
 
 
 logs = read_log("../log/20230312_214850.json")

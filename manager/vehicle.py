@@ -1,12 +1,11 @@
 import logging
 
-from object.Vehicle import Vehicle
-from object.Task import Task
+from entity import Task, Vehicle
 
 logger = logging.getLogger("main")
 
 
-class VehicleMgr:
+class VehicleManager:
     def __init__(self):
         self.vehicles: dict[str, Vehicle] = dict()
         self.tasks_alloced: dict[str, Task] = dict()
@@ -15,11 +14,17 @@ class VehicleMgr:
         if v_name in self.vehicles:
             return self.vehicles[v_name]
         else:
-            logger.error(f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
+            logger.error(
+                f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
 
-    def add_vehicle(self, v_name: str, init_x: float = 37.52897, init_y: float = 126.917101):
+    def add_vehicle(
+            self,
+            v_name: str,
+            init_x: float = 37.52897,
+            init_y: float = 126.917101):
         if v_name in self.vehicles:
-            logger.error(f"[add_vehicle] v_name already exist -> v_name:{v_name}")
+            logger.error(
+                f"[add_vehicle] v_name already exist -> v_name:{v_name}")
         else:
             self.vehicles[v_name] = Vehicle(v_name)
             self.tasks_alloced[v_name] = None
@@ -31,7 +36,8 @@ class VehicleMgr:
         if v_name in self.vehicles:
             return self.tasks_alloced.get(v_name)
         else:
-            logger.error(f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
+            logger.error(
+                f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
         return None
 
     def reset_alloced_task(self, v_name):
@@ -41,7 +47,8 @@ class VehicleMgr:
         if v_name in self.vehicles:
             self.tasks_alloced[v_name] = task
         else:
-            logger.error(f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
+            logger.error(
+                f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
 
     def get_idx_task_alloced(self):
         idx_list = []
