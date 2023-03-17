@@ -5,7 +5,13 @@ from manager import TaskManager, VehicleManager
 from graph.route import find_graph_route
 
 
-def allocate(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager, v_name: str, t_idx: int):
+def allocate(
+        n_time: datetime,
+        graph_name: str,
+        vehicle_mgr: VehicleManager,
+        task_mgr: TaskManager,
+        v_name: str,
+        t_idx: int):
     vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
     task: Task = task_mgr.get_task(t_idx)
 

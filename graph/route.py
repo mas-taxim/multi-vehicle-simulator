@@ -37,7 +37,12 @@ def find_graph_route(graph_name: str, start: Location, dest: Location):
     dest_idx = node_idx[(dest.x, dest.y)]
 
     cur_idx: int = start_idx
-    for n_idx in nx.shortest_path(graph, start_idx, dest_idx, weight='weight')[1:]:
+    for n_idx in nx.shortest_path(
+            graph,
+            start_idx,
+            dest_idx,
+            weight='weight')[
+            1:]:
         route.append(Path(Location(node[cur_idx][0], node[cur_idx][1]),
                           Location(node[n_idx][0], node[n_idx][1]),
                           graph[cur_idx][n_idx]['weight']))

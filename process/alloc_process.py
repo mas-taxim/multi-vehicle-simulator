@@ -9,7 +9,11 @@ from allocator.vehicle_allocator import allocate
 logger = logging.getLogger("main")
 
 
-def alloc_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager):
+def alloc_process(
+        n_time: datetime,
+        graph_name: str,
+        vehicle_mgr: VehicleManager,
+        task_mgr: TaskManager):
     # TODO : task는 큐에서 앞에서 1개만 가져오고, vihicle은 대기중인거 아무거나 가져옴, logic 개선시 변경 필요
     if not task_mgr.is_remain_wait_task():
         logger.info("[alloc_process] : Task to assign does not exist")

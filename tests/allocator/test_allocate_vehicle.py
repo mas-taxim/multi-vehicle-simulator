@@ -28,7 +28,10 @@ def n_time():
     return datetime.strptime("2023-02-02", '%Y-%m-%d')
 
 
-def test_allocate(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskManager):
+def test_allocate(
+        n_time: datetime,
+        vehicle_mgr: VehicleManager,
+        task_mgr: TaskManager):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
 

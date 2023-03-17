@@ -38,10 +38,12 @@ def draw_road(surface, node, graph):
     for edge in graph.edges():
         weight = graph.get_edge_data(edge[0], edge[1])['weight']
 
-        pygame.draw.line(surface, ROAD_COLOR[weight],
+        pygame.draw.line(surface,
+                         ROAD_COLOR[weight],
                          ((node[edge[0]][1] - MIN[1]) * BLOCK_SIZE,
                           500 - (node[edge[0]][0] - MIN[0]) * BLOCK_SIZE),
-                         ((node[edge[1]][1] - MIN[1]) * BLOCK_SIZE, 500 - (node[edge[1]][0] - MIN[0]) * BLOCK_SIZE))
+                         ((node[edge[1]][1] - MIN[1]) * BLOCK_SIZE,
+                             500 - (node[edge[1]][0] - MIN[0]) * BLOCK_SIZE))
 
 
 def read_log(log_path):
