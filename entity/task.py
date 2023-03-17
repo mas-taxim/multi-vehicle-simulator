@@ -59,7 +59,8 @@ class Task:
         log["status"] = self.status
 
         return log
-
+        
+        
     def get_index_log(self):
         log = dict()
 
