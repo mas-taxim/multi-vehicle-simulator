@@ -2,11 +2,11 @@ import logging
 import math
 from datetime import datetime, timedelta
 
-from object.Path import Path
-from object.Location import is_same_location
-from object.Vehicle import Vehicle
-from object.VehicleManager import VehicleManager
-from object.Task import Task
+from entity.Path import Path
+from entity.Location import is_same_location
+from entity.Vehicle import Vehicle
+from entity.VehicleManager import VehicleManager
+from entity.Task import Task
 
 logger = logging.getLogger("main")
 
@@ -50,13 +50,16 @@ def move(vehicle: Vehicle, path: Path = None):
         if vehicle.route:
             path = vehicle.route[0]
         else:
-            logger.error(f"[move] vehicle's route is empty -> name:{vehicle.name}")
+            logger.error(
+                f"[move] vehicle's route is empty -> name:{vehicle.name}")
 
     depart = path.depart_loc
     arrive = path.arrive_loc
 
-    unit_distance = (math.sqrt((arrive.x - depart.x) ** 2 + (arrive.y - depart.y) ** 2)) / path.weight
-    length = math.sqrt((arrive.x - vehicle.loc.x) ** 2 + (arrive.y - vehicle.loc.y) ** 2)
+    unit_distance = (math.sqrt((arrive.x - depart.x) ** 2 +
+                     (arrive.y - depart.y) ** 2)) / path.weight
+    length = math.sqrt((arrive.x - vehicle.loc.x) ** 2 +
+                       (arrive.y - vehicle.loc.y) ** 2)
 
     # 소수점으로 인해 1번 더 움직이는 것을 막기 위해 마지막에 0.0001 빼고 비교
     if length < unit_distance - 0.0001:

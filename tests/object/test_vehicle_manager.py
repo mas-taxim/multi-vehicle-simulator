@@ -1,5 +1,5 @@
-from object.Vehicle import Vehicle
-from object.VehicleManager import VehicleManager
+from entity.Vehicle import Vehicle
+from entity.VehicleManager import VehicleManager
 
 
 def test_add_one_vehicle():

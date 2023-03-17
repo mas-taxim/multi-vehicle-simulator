@@ -2,9 +2,9 @@ import logging
 
 from datetime import datetime
 
-from object.Location import Location
-from object.Task import Task
-from object.Vehicle import Vehicle
+from .Location import Location
+from .Task import Task
+from .Vehicle import Vehicle
 
 logger = logging.getLogger("main")
 
@@ -26,7 +26,8 @@ class TaskManager:
         if t_idx in self.tasks:
             logger.error(f"[add_task] t_idx already exist -> t_idx:{t_idx}")
         else:
-            self.tasks[t_idx] = Task(t_idx, loc_load, loc_unload, create_time, elapsed_time)
+            self.tasks[t_idx] = Task(
+                t_idx, loc_load, loc_unload, create_time, elapsed_time)
             self.wait_queue.append(t_idx)
             self.vehicles_alloced[t_idx] = None
 
@@ -39,15 +40,18 @@ class TaskManager:
                 if t_idx in self.wait_queue:
                     self.wait_queue.remove(t_idx)
             else:
-                logger.error(f"[remove_task] The task's status is not WAIT or DONE. -> t_idx:{t_idx}")
+                logger.error(
+                    f"[remove_task] The task's status is not WAIT or DONE. -> t_idx:{t_idx}")
         else:
-            logger.error(f"[remove_task] t_idx does not exist  -> t_idx:{t_idx}")
+            logger.error(
+                f"[remove_task] t_idx does not exist  -> t_idx:{t_idx}")
 
     def alloc_vehicle(self, t_idx: int, vehicle: Vehicle):
         if t_idx in self.tasks:
             self.vehicles_alloced[t_idx] = vehicle
         else:
-            logger.error(f"[alloc_vehicle] t_idx does not exist -> t_idx:{t_idx}")
+            logger.error(
+                f"[alloc_vehicle] t_idx does not exist -> t_idx:{t_idx}")
 
     def peek_wait_task(self) -> Task:
         if self.wait_queue:

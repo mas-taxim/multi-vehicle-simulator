@@ -2,8 +2,8 @@ import datetime
 # import logging
 # import json
 
-from object.VehicleManager import VehicleManager
-from object.TaskManager import TaskManager
+from entity.VehicleManager import VehicleManager
+from entity.TaskManager import TaskManager
 
 from process.generate_process import generate_process
 from process.alloc_process import alloc_process
@@ -22,7 +22,8 @@ def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager,
     generate_process(n_time, graph_name, task_mgr, epsilon)
 
     for i in range(len(vehicle_mgr.vehicles)):
-        v_name, t_idx = alloc_process(n_time, graph_name, vehicle_mgr, task_mgr)
+        v_name, t_idx = alloc_process(
+            n_time, graph_name, vehicle_mgr, task_mgr)
         if v_name is None:
             break
 
