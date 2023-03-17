@@ -29,6 +29,8 @@ disable=
     using-constant-test,
     wrong-import-order,
 
+extension-pkg-allow-list=pygame
+
 
 [REPORTS]
 
