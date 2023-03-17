@@ -59,15 +59,16 @@ class Task:
         log["status"] = self.status
 
         return log
-        
-        
+
     def get_index_log(self):
         log = dict()
 
         if self.status == Task.UNLOAD_END:
             log["tid"] = self.idx
-            log["waittime_from_create_to_alloc"] = (self.alloc_time - self.create_time).seconds
-            log["waittime_from_alloc_to_load"] = (self.load_start_time - self.alloc_time).seconds
+            log["waittime_from_create_to_alloc"] = (
+                self.alloc_time - self.create_time).seconds
+            log["waittime_from_alloc_to_load"] = (
+                self.load_start_time - self.alloc_time).seconds
         else:
             logger.error(f"[get_index_log] Waited task exist, tid:{self.idx}")
 

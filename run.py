@@ -42,7 +42,6 @@ def run():
 
     generate_task(n_time, node, task_mgr)
 
-
     logs = []
     for i in range(24 * 60):
         n_time += timedelta(minutes=1)
