@@ -2,11 +2,10 @@ import logging
 import math
 from datetime import datetime, timedelta
 
-from entity.Path import Path
-from entity.Location import is_same_location
-from entity.Vehicle import Vehicle
-from entity.VehicleManager import VehicleManager
-from entity.Task import Task
+
+from entity import Path, Task, Vehicle
+from entity.location import is_same_location
+from manager import VehicleManager
 
 logger = logging.getLogger("main")
 

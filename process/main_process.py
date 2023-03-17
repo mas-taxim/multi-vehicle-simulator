@@ -2,8 +2,7 @@ import datetime
 # import logging
 # import json
 
-from entity.VehicleManager import VehicleManager
-from entity.TaskManager import TaskManager
+from manager import TaskManager, VehicleManager
 
 from process.generate_process import generate_process
 from process.alloc_process import alloc_process

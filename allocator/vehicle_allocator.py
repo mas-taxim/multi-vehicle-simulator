@@ -1,10 +1,7 @@
 import datetime
 
-from entity.Vehicle import Vehicle
-from entity.Task import Task
-from entity.VehicleManager import VehicleManager
-from entity.TaskManager import TaskManager
-
+from entity import Task, Vehicle
+from manager import TaskManager, VehicleManager
 from route.route import find_graph_route
 
 

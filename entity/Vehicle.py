@@ -1,4 +1,4 @@
-from .Location import Location
+from .location import Location
 
 
 class Vehicle:

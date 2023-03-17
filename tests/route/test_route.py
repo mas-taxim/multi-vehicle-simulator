@@ -1,5 +1,4 @@
-from entity.Location import Location
-from entity.Path import Path
+from entity import Location
 from route.route import find_route, convert_route_tuple, find_graph_route, get_graph
 
 

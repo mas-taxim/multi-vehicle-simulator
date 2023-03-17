@@ -1,10 +1,9 @@
 import pytest
+
 from datetime import datetime, timedelta
 
-from entity.Location import Location
-from entity.VehicleManager import VehicleManager
-from entity.TaskManager import TaskManager
-
+from entity import Location
+from manager import TaskManager, VehicleManager
 from process.alloc_process import alloc_process
 from route.route import get_graph
 

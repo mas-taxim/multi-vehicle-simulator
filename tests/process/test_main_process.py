@@ -1,11 +1,8 @@
 import pytest
 from datetime import datetime, timedelta
 
-from entity.Location import Location
-from entity.Vehicle import Vehicle
-from entity.VehicleManager import VehicleManager
-from entity.Task import Task
-from entity.TaskManager import TaskManager
+from manager import TaskManager, VehicleManager
+from entity import Location, Task, Vehicle
 
 from process.main_process import main_process, set_epsilon
 

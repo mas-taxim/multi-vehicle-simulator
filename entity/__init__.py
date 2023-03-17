@@ -1,15 +1,11 @@
-from .Location import Location
-from .Path import Path
-from .Task import Task
-from .TaskManager import TaskManager
-from .Vehicle import Vehicle
-from .VehicleManager import VehicleManager
+from .location import Location
+from .path import Path
+from .task import Task
+from .vehicle import Vehicle
 
 __all__ = [
-    'Location',
-    'Path',
-    'Task',
-    'TaskManager',
-    'Vehicle',
-    'VehicleManager',
+    'location',
+    'path',
+    'task',
+    'vehicle',
 ]
