@@ -1,11 +1,11 @@
 import pytest
 from datetime import datetime, timedelta
 
-from object.Location import Location
-from object.Path import Path
-from object.Vehicle import Vehicle
-from object.VehicleManager import VehicleManager
-from object.TaskManager import TaskManager
+from entity.Location import Location
+from entity.Path import Path
+from entity.Vehicle import Vehicle
+from entity.VehicleManager import VehicleManager
+from entity.TaskManager import TaskManager
 
 from process.vehicle_process import vehicle_process, move
 from allocator.vehicle_allocator import allocate

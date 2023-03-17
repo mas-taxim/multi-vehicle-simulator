@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from object.Location import Location
+from .Location import Location
 
 
 class Task:

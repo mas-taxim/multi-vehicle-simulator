@@ -1,10 +1,10 @@
 import logging
 import datetime
 
-from object.Vehicle import Vehicle
-from object.VehicleManager import VehicleManager
-from object.Task import Task
-from object.TaskManager import TaskManager
+from entity.Vehicle import Vehicle
+from entity.VehicleManager import VehicleManager
+from entity.Task import Task
+from entity.TaskManager import TaskManager
 
 from allocator.vehicle_allocator import allocate
 
@@ -24,9 +24,11 @@ def alloc_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager
         # TODO : get vegicle 가까운순서가 아닌 wait vehicle pick, logic 개선시 변경 필요
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         if vehicle.status == Vehicle.WAIT:
-            allocate(n_time, graph_name, vehicle_mgr, task_mgr, v_name, task.idx)
+            allocate(n_time, graph_name, vehicle_mgr,
+                     task_mgr, v_name, task.idx)
             task_mgr.poll_wait_task()
-            logger.info(f"[alloc_process] : {task.idx} is allocated to {v_name}")
+            logger.info(
+                f"[alloc_process] : {task.idx} is allocated to {v_name}")
             return [v_name, task.idx]
 
     logger.info("[alloc_process] : Vehicle to be allocated does not exist")

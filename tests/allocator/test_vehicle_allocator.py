@@ -3,9 +3,9 @@
 import pytest
 from datetime import datetime
 
-from object.Location import Location
-from object.VehicleManager import VehicleManager
-from object.TaskManager import TaskManager
+from entity.Location import Location
+from entity.VehicleManager import VehicleManager
+from entity.TaskManager import TaskManager
 
 from allocator.vehicle_allocator import allocate
 
@@ -42,8 +42,10 @@ def test_allocate(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskM
     vehicle_mgr.get_vehicle("V2").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V2").loc.y = node[0][1]
 
-    task_mgr.add_task(0, Location(node[0][0], node[0][1]), Location(node[1][0], node[1][1]), n_time, 3)
-    task_mgr.add_task(1, Location(node[2][0], node[2][1]), Location(node[3][0], node[3][1]), n_time, 3)
+    task_mgr.add_task(0, Location(node[0][0], node[0][1]), Location(
+        node[1][0], node[1][1]), n_time, 3)
+    task_mgr.add_task(1, Location(node[2][0], node[2][1]), Location(
+        node[3][0], node[3][1]), n_time, 3)
 
     allocate(n_time, graph_name, vehicle_mgr, task_mgr, "V1", 0)
 

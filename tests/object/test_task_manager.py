@@ -1,8 +1,8 @@
 import pytest
 from datetime import datetime
 
-from object.Location import Location
-from object.TaskManager import TaskManager
+from entity.Location import Location
+from entity.TaskManager import TaskManager
 
 
 def test_add_and_remove():

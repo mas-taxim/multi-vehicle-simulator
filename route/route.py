@@ -1,7 +1,7 @@
 import networkx as nx
 
-from object.Location import Location
-from object.Path import Path
+from entity.Location import Location
+from entity.Path import Path
 
 from route.map import get_rectangle_graph, get_grid_graph, get_yeouido_graph, get_seoul_gu_graph
 

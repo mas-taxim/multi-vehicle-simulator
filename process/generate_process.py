@@ -2,8 +2,8 @@ import logging
 import datetime
 import random
 
-from object.Location import Location
-from object.TaskManager import TaskManager
+from entity.Location import Location
+from entity.TaskManager import TaskManager
 
 from route.route import get_graph
 

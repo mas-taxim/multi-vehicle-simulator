@@ -3,8 +3,8 @@ import logging
 import random
 import json
 
-from object.VehicleManager import VehicleManager
-from object.TaskManager import TaskManager
+from entity.VehicleManager import VehicleManager
+from entity.TaskManager import TaskManager
 
 from route.route import get_graph
 
@@ -20,7 +20,8 @@ def init_log():
 
     # log 출력
     sys_log_handler = logging.FileHandler(f'sys_log/{log_time}')
-    sys_log_handler.setFormatter(logging.Formatter('%(levelname)s - %(message)s'))
+    sys_log_handler.setFormatter(
+        logging.Formatter('%(levelname)s - %(message)s'))
     sys_logger.addHandler(sys_log_handler)
 
 
