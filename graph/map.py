@@ -50,7 +50,8 @@ def get_seoul_gu_graph():
 
     for i in node.keys():
         for j in node.keys():
-            distance = math.sqrt((node[i][0] - node[j][0]) ** 2 + (node[i][1] - node[j][1]) ** 2)
+            distance = math.sqrt(
+                (node[i][0] - node[j][0]) ** 2 + (node[i][1] - node[j][1]) ** 2)
             if i != j and distance < 0.1:
                 w = random.randint(2, 4)
                 graph.add_edge(i, j, weight=w)
@@ -133,7 +134,6 @@ def get_yeouido_graph():
     graph.add_edge(10, 4, weight=8)
     graph.add_edge(11, 5, weight=3)
 
-
     graph.add_edge(7, 13, weight=5)
     graph.add_edge(8, 14, weight=7)
     graph.add_edge(9, 15, weight=2)
@@ -199,14 +199,26 @@ def get_grid_graph():
     for i in range(5):
         for j in range(4):
             # print(5 * i + j, 5 * i + j + 1)
-            graph.add_edge(5 * i + j, 5 * i + j + 1, weight=random.randint(1, 4))
-            graph.add_edge(5 * i + j + 1, 5 * i + j, weight=random.randint(1, 4))
+            graph.add_edge(
+                5 * i + j,
+                5 * i + j + 1,
+                weight=random.randint(
+                    1,
+                    4))
+            graph.add_edge(
+                5 * i + j + 1,
+                5 * i + j,
+                weight=random.randint(
+                    1,
+                    4))
 
     for i in range(5):
         for j in range(4):
             # print(5 * j + i, 5 * (j + 1) + i)
-            graph.add_edge(5 * j + i, 5 * (j + 1) + i, weight=random.randint(1, 4))
-            graph.add_edge(5 * (j + 1) + i, 5 * j + i, weight=random.randint(1, 4))
+            graph.add_edge(5 * j + i, 5 * (j + 1) + i,
+                           weight=random.randint(1, 4))
+            graph.add_edge(5 * (j + 1) + i, 5 * j + i,
+                           weight=random.randint(1, 4))
 
     nx.draw(graph)
 
