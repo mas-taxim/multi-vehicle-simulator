@@ -1,5 +1,5 @@
 from entity import Location
-from route.route import find_route, convert_route_tuple, find_graph_route, get_graph
+from graph.route import find_route, convert_route_tuple, find_graph_route, get_graph
 
 
 def test_find_route():

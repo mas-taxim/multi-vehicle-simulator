@@ -5,7 +5,7 @@ import random
 from entity import Location
 from manager import TaskManager
 
-from route.route import get_graph
+from graph.route import get_graph
 
 logger = logging.getLogger("main")
 

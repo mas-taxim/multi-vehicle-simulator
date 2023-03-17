@@ -7,7 +7,7 @@ from manager import TaskManager, VehicleManager
 from process.vehicle_process import vehicle_process, move
 from allocator.vehicle_allocator import allocate
 
-from route.route import get_graph
+from graph.route import get_graph
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@ import datetime
 
 from entity import Task, Vehicle
 from manager import TaskManager, VehicleManager
-from route.route import find_graph_route
+from graph.route import find_graph_route
 
 
 def allocate(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager, v_name: str, t_idx: int):

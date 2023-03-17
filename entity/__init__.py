@@ -4,7 +4,7 @@ from .task import Task
 from .vehicle import Vehicle
 
 __all__ = [
-    'location',
+    'Location',
     'path',
     'task',
     'vehicle',

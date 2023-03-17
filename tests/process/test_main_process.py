@@ -6,7 +6,7 @@ from entity import Location, Task, Vehicle
 
 from process.main_process import main_process, set_epsilon
 
-from route.route import get_graph
+from graph.route import get_graph
 
 
 @pytest.fixture
