@@ -17,7 +17,11 @@ class VehicleManager:
             logger.error(
                 f"[get_vehicle] v_name does not exist -> v_name:{v_name}")
 
-    def add_vehicle(self, v_name: str, init_x: float = 37.52897, init_y: float = 126.917101):
+    def add_vehicle(
+            self,
+            v_name: str,
+            init_x: float = 37.52897,
+            init_y: float = 126.917101):
         if v_name in self.vehicles:
             logger.error(
                 f"[add_vehicle] v_name already exist -> v_name:{v_name}")

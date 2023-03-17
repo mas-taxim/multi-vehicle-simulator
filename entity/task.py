@@ -15,7 +15,13 @@ class Task:
     UNLOADING: int = 8
     UNLOAD_END: int = 9
 
-    def __init__(self, idx: int, loc_load: Location, loc_unload: Location, create_time: datetime, elapsed_time: int):
+    def __init__(
+            self,
+            idx: int,
+            loc_load: Location,
+            loc_unload: Location,
+            create_time: datetime,
+            elapsed_time: int):
         self.idx: int = idx
         self.loc_load: Location = loc_load
         self.loc_unload: Location = loc_unload

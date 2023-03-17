@@ -42,8 +42,15 @@ def test_move1(n_time: datetime, vehicle_mgr: VehicleManager):
 
     vehicle: Vehicle = vehicle_mgr.get_vehicle("V1")
 
-    vehicle.route.extend([Path(Location(node[0][0], node[0][1]), Location(node[1][0], node[1][1])),
-                          Path(Location(node[1][0], node[1][1]), Location(node[2][0], node[2][1]))])
+    vehicle.route.extend(
+        [
+            Path(
+                Location(
+                    node[0][0], node[0][1]), Location(
+                    node[1][0], node[1][1])), Path(
+                        Location(
+                            node[1][0], node[1][1]), Location(
+                                node[2][0], node[2][1]))])
 
     move(vehicle)
     assert vehicle.loc.x == 0
@@ -54,7 +61,10 @@ def test_move1(n_time: datetime, vehicle_mgr: VehicleManager):
     assert vehicle.loc.y == 2
 
 
-def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskManager):
+def test_script1(
+        n_time: datetime,
+        vehicle_mgr: VehicleManager,
+        task_mgr: TaskManager):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
 

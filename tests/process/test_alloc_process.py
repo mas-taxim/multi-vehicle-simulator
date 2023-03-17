@@ -28,7 +28,10 @@ def n_time():
     return datetime.strptime("2023-02-02", '%Y-%m-%d')
 
 
-def test_script1(n_time: datetime, vehicle_manager: VehicleManager, task_manager: TaskManager):
+def test_script1(
+        n_time: datetime,
+        vehicle_manager: VehicleManager,
+        task_manager: TaskManager):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
 
@@ -38,10 +41,10 @@ def test_script1(n_time: datetime, vehicle_manager: VehicleManager, task_manager
     vehicle_manager.get_vehicle("V2").loc.x = node[0][0]
     vehicle_manager.get_vehicle("V2").loc.y = node[0][1]
 
-    task_manager.add_task(len(task_manager.tasks), Location(node[0][0], node[0][1]),
-                          Location(node[1][0], node[1][1]), n_time, 3)
-    task_manager.add_task(len(task_manager.tasks), Location(node[2][0], node[2][1]),
-                          Location(node[3][0], node[3][1]), n_time, 3)
+    task_manager.add_task(len(task_manager.tasks), Location(
+        node[0][0], node[0][1]), Location(node[1][0], node[1][1]), n_time, 3)
+    task_manager.add_task(len(task_manager.tasks), Location(
+        node[2][0], node[2][1]), Location(node[3][0], node[3][1]), n_time, 3)
 
     assert len(task_manager.wait_queue) == 2
 
@@ -69,8 +72,8 @@ def test_script1(n_time: datetime, vehicle_manager: VehicleManager, task_manager
     assert alloc_v is None
     assert alloc_t is None
 
-    task_manager.add_task(len(task_manager.tasks), Location(node[2][0], node[2][1]),
-                          Location(node[3][0], node[3][1]), n_time, 3)
+    task_manager.add_task(len(task_manager.tasks), Location(
+        node[2][0], node[2][1]), Location(node[3][0], node[3][1]), n_time, 3)
 
     alloc_v, alloc_t = alloc_process(
         n_time, graph_name, vehicle_manager, task_manager)
