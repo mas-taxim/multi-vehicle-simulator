@@ -5,13 +5,13 @@ from datetime import datetime, timedelta
 from object.Path import Path
 from object.Location import is_same_location
 from object.Vehicle import Vehicle
-from object.VehicleMgr import VehicleMgr
+from object.VehicleManager import VehicleManager
 from object.Task import Task
 
 logger = logging.getLogger("main")
 
 
-def vehicle_process(n_time: datetime, vehicle_mgr: VehicleMgr):
+def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager):
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         task: Task = vehicle_mgr.get_alloced_task(v_name)

@@ -6,7 +6,7 @@ from object.Task import Task
 logger = logging.getLogger("main")
 
 
-class VehicleMgr:
+class VehicleManager:
     def __init__(self):
         self.vehicles: dict[str, Vehicle] = dict()
         self.tasks_alloced: dict[str, Task] = dict()

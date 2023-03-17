@@ -3,8 +3,8 @@ import logging
 import random
 import json
 
-from object.VehicleMgr import VehicleMgr
-from object.TaskMgr import TaskMgr
+from object.VehicleManager import VehicleManager
+from object.TaskManager import TaskManager
 
 from route.route import get_graph
 
@@ -34,11 +34,11 @@ def run():
     graph_name = 'seoul_gu'
     node, node_idx, graph = get_graph(graph_name)
 
-    vehicle_mgr: VehicleMgr = VehicleMgr()
+    vehicle_mgr: VehicleManager = VehicleManager()
     vehicle_mgr.add_vehicle("V1", node[0][0], node[0][1])
     vehicle_mgr.add_vehicle("V2", node[0][0], node[0][1])
 
-    task_mgr: TaskMgr = TaskMgr()
+    task_mgr: TaskManager = TaskManager()
 
     generate_task(n_time, node, task_mgr)
     set_epsilon(0.04)

@@ -2,8 +2,8 @@ import datetime
 # import logging
 # import json
 
-from object.VehicleMgr import VehicleMgr
-from object.TaskMgr import TaskMgr
+from object.VehicleManager import VehicleManager
+from object.TaskManager import TaskManager
 
 from process.generate_process import generate_process
 from process.alloc_process import alloc_process
@@ -17,7 +17,7 @@ def set_epsilon(e: float):
     epsilon = e
 
 
-def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr) -> dict:
+def main_process(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager) -> dict:
     ''' processing each time, return value is result log '''
     generate_process(n_time, graph_name, task_mgr, epsilon)
 

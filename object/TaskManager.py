@@ -9,7 +9,7 @@ from object.Vehicle import Vehicle
 logger = logging.getLogger("main")
 
 
-class TaskMgr:
+class TaskManager:
     def __init__(self):
         self.tasks: dict[int, Task] = dict()
         self.wait_queue: list[int] = []
