@@ -1,6 +1,9 @@
 from datetime import datetime
+import logging
 
 from .location import Location
+
+logger = logging.getLogger("main")
 
 
 class Task:
@@ -54,5 +57,18 @@ class Task:
         # log["unload_end_time"] = self.unload_end_time.strftime(
         #     "%Y-%m-%d %H:%M:%S") if self.unload_end_time is not None else None
         log["status"] = self.status
+
+        return log
+        
+        
+    def get_index_log(self):
+        log = dict()
+
+        if self.status == Task.UNLOAD_END:
+            log["tid"] = self.idx
+            log["waittime_from_create_to_alloc"] = (self.alloc_time - self.create_time).seconds
+            log["waittime_from_alloc_to_load"] = (self.load_start_time - self.alloc_time).seconds
+        else:
+            logger.error(f"[get_index_log] Waited task exist, tid:{self.idx}")
 
         return log
