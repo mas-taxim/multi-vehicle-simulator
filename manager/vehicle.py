@@ -1,7 +1,6 @@
 import logging
 
-from .Vehicle import Vehicle
-from .Task import Task
+from entity import Task, Vehicle
 
 logger = logging.getLogger("main")
 

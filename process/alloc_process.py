@@ -1,10 +1,8 @@
 import logging
 import datetime
 
-from entity.Vehicle import Vehicle
-from entity.VehicleManager import VehicleManager
-from entity.Task import Task
-from entity.TaskManager import TaskManager
+from entity import Task, Vehicle
+from manager import TaskManager, VehicleManager
 
 from allocator.vehicle_allocator import allocate
 

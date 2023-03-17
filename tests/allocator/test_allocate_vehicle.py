@@ -1,14 +1,10 @@
-# pylint: disable=W,C,R
-
 import pytest
 from datetime import datetime
 
-from entity.Location import Location
-from entity.VehicleManager import VehicleManager
-from entity.TaskManager import TaskManager
+from entity import Location
+from manager import TaskManager, VehicleManager
 
 from allocator.vehicle_allocator import allocate
-
 from route.route import get_graph
 
 

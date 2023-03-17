@@ -1,7 +1,7 @@
 from datetime import datetime
 import logging
 
-from .Location import Location
+from .location import Location
 
 logger = logging.getLogger("main")
 
