@@ -1,9 +1,11 @@
+# pylint: disable=W,C,R
+
 import pytest
 from datetime import datetime
 
 from object.Location import Location
-from object.VehicleMgr import VehicleMgr
-from object.TaskMgr import TaskMgr
+from object.VehicleManager import VehicleManager
+from object.TaskManager import TaskManager
 
 from allocator.vehicle_allocator import allocate
 
@@ -12,7 +14,7 @@ from route.route import get_graph
 
 @pytest.fixture
 def vehicle_mgr():
-    vehicle_mgr: VehicleMgr = VehicleMgr()
+    vehicle_mgr: VehicleManager = VehicleManager()
     vehicle_mgr.add_vehicle("V1")
     vehicle_mgr.add_vehicle("V2")
 
@@ -21,7 +23,7 @@ def vehicle_mgr():
 
 @pytest.fixture
 def task_mgr():
-    task_mgr: TaskMgr = TaskMgr()
+    task_mgr: TaskManager = TaskManager()
     return task_mgr
 
 
@@ -30,7 +32,7 @@ def n_time():
     return datetime.strptime("2023-02-02", '%Y-%m-%d')
 
 
-def test_allocate(n_time: datetime, vehicle_mgr: VehicleMgr, task_mgr: TaskMgr):
+def test_allocate(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskManager):
     graph_name = 'rectangle'
     node, node_idx, graph = get_graph(graph_name)
 
