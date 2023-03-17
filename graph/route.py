@@ -1,8 +1,7 @@
 import networkx as nx
 
 from entity import Location, Path
-
-from route.map import get_rectangle_graph, get_grid_graph, get_yeouido_graph, get_seoul_gu_graph
+from .map import get_rectangle_graph, get_grid_graph, get_yeouido_graph, get_seoul_gu_graph
 
 
 def get_graph(graph_name) -> nx.Graph:

@@ -5,7 +5,7 @@ from entity import Location
 from manager import TaskManager, VehicleManager
 
 from allocator.vehicle_allocator import allocate
-from route.route import get_graph
+from graph.route import get_graph
 
 
 @pytest.fixture

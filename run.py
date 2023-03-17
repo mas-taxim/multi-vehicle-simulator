@@ -3,11 +3,9 @@ import logging
 import random
 import json
 
-from entity.VehicleManager import VehicleManager
-from entity.TaskManager import TaskManager
+from manager import TaskManager, VehicleManager
 
-from route.route import get_graph
-
+from graph.route import get_graph
 from process.main_process import main_process, set_epsilon
 from process.generate_process import generate_task
 

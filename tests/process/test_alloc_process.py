@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from entity import Location
 from manager import TaskManager, VehicleManager
 from process.alloc_process import alloc_process
-from route.route import get_graph
+from graph.route import get_graph
 
 
 @pytest.fixture
