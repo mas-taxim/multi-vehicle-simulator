@@ -60,8 +60,8 @@ def move(vehicle: Vehicle, path: Path = None):
     length = math.sqrt((arrive.x - vehicle.loc.x) ** 2 +
                        (arrive.y - vehicle.loc.y) ** 2)
 
-    # 소수점으로 인해 1번 더 움직이는 것을 막기 위해 마지막에 0.0001 빼고 비교
-    if length < unit_distance - 0.0001:
+    # 소수점으로 인해 1번 더 움직이는 것을 막기 위해 마지막에 0.0001 더하고 비교
+    if length < unit_distance + 0.0001:
         vehicle.loc.x = arrive.x
         vehicle.loc.y = arrive.y
     else:
