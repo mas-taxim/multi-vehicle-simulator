@@ -172,4 +172,5 @@ cython_debug/
 *.err
 *.exe
 
-.DS_store
+# MacOS
+.DS_Store
