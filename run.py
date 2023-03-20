@@ -37,6 +37,8 @@ def run():
     vehicle_mgr.add_vehicle("V1", node[0][0], node[0][1])
     vehicle_mgr.add_vehicle("V2", node[0][0], node[0][1])
     vehicle_mgr.add_vehicle("V3", node[0][0], node[0][1])
+    vehicle_mgr.add_vehicle("V4", node[0][0], node[0][1])
+    vehicle_mgr.add_vehicle("V5", node[0][0], node[0][1])
 
     task_mgr: TaskManager = TaskManager()
 
@@ -47,7 +49,12 @@ def run():
     for i in range(24 * 60):
         n_time += timedelta(minutes=1)
         logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr))
-        set_epsilon(random.random() * 0.04)
+        #set_epsilon(random.random() * 0.04)
+        if i < 6 * 60:
+            set_epsilon(random.random() * 0.44)
+        else:
+            set_epsilon(random.random() * 0.04)
+        
         
     json_obj = {'logs': logs}
 
