@@ -48,11 +48,8 @@ def run():
         n_time += timedelta(minutes=1)
         logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr))
         set_epsilon(random.random() * 0.04)
-
-    index_logs = []
-    index_logs.append(task_mgr.get_index_log())
-
-    json_obj = {'logs': logs, 'task_idx': index_logs}
+        
+    json_obj = {'logs': logs}
 
     log_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     with open(f'log/{log_time}.json', 'w') as outfile:
