@@ -92,14 +92,3 @@ class TaskManager:
                 task_logs.append(task.get_log())
 
         return task_logs
-
-    def get_index_log(self):
-
-        index_logs = []
-
-        for t_idx in self.tasks:
-            task: Task = self.get_task(t_idx)
-            if task.status == Task.UNLOAD_END:
-                index_logs.append(task.get_index_log())
-
-        return index_logs
