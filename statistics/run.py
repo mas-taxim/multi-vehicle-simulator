@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from entity import Task as t, Vehicle as v
 
 
-"""_summary_
+"""
 log struct that this file using
 {
     time : timestamp
@@ -26,14 +26,17 @@ log struct that this file using
     ]
 }
 """
+
+
 sys_logger = logging.getLogger("statistics")
 
 vehicle_list = dict()
-"""_summary_
+"""
 key : vehicle name
 status : vehicle status
 wait_alloc_time : status 9 - status 1
 moving_to_load_time : status 1 - status 3
+empty_event : [[event_end_time, wait_alloc_time]]
 """
 task_list = dict()
 
@@ -44,7 +47,7 @@ def init_sys_log(logLevel: int):
     sys_logger.setLevel(logLevel)
 
     # log 출력
-    sys_log_handler = logging.FileHandler(f'sys_log/{logFileName}')
+    sys_log_handler = logging.FileHandler(f'statistics/sys_log/{logFileName}')
     sys_log_handler.setFormatter(
         logging.Formatter('%(levelname)s - %(message)s'))
     sys_logger.addHandler(sys_log_handler)
@@ -58,7 +61,7 @@ def read_log(log_path):
 
 
 def get_latest_log(files_path: str) -> str:
-    """_summary_
+    """
     get latest log file with log dir path
     Args:
         files_path (str): log file Path
@@ -82,7 +85,7 @@ def get_latest_log(files_path: str) -> str:
 
 
 def init_vehicle_list(logs: dict) -> None:
-    """_summary_
+    """
     read log file and then make vehicle list
     Args:
         logs (dict): log(type : dict)
@@ -90,16 +93,13 @@ def init_vehicle_list(logs: dict) -> None:
     start_time = logs[0]['time']
     sys_logger.info("INIT vehicle information")
     for vehicle in logs[0]['vehicles']:
-        
-        
-        #print(vehicle['name'])
         vehicle_list[vehicle['name']] = {
-            'status': vehicle['status'], 'wait_alloc_time': 0, 'moving_to_load_time': 0, 'last_update_time': start_time}
+            'status': vehicle['status'], 'wait_alloc_time': 0, 'moving_to_load_time': 0, 'last_update_time': start_time, 'empty_event': []}
         sys_logger.info(f"vehicle name : {vehicle['name']}, value : {str(vehicle_list[vehicle['name']])}")
 
 
 def add_task(tid: int, init_status: int, add_time: int) -> None:
-    """_summary_
+    """
     add to tasklist
     Args:
         tid (int): task id
@@ -107,11 +107,11 @@ def add_task(tid: int, init_status: int, add_time: int) -> None:
         add_time (int): task added time
     """
     task_list[tid] = {'status': init_status, 'wait_alloc_time': 0,
-                      'wait_vehicle_time': 0, 'last_update_time': add_time}
+                      'wait_vehicle_time': 0, 'last_update_time': add_time, 'create_time': add_time}
 
 
 def task_processing(tid: int, status: int, cur_time: int):
-    """_summary_
+    """
     each logging time, task log processing
     Args:
         tid (int): task id
@@ -138,7 +138,7 @@ def task_processing(tid: int, status: int, cur_time: int):
 
 
 def vehicle_processing(vname: str, status: int, cur_time: int):
-    """_summary_
+    """
     each logging time, vehicle log processing
     Args:
         vname (str): vehicle name
@@ -151,6 +151,7 @@ def vehicle_processing(vname: str, status: int, cur_time: int):
         vehicle_list[vname]['wait_alloc_time'] += cur_time - \
             vehicle_list[vname]['last_update_time']
         sys_logger.info(f"[{vname}][{cur_time}] : WAIT -> ALLOC, sub1 += {cur_time - vehicle_list[vname]['last_update_time']}")
+        vehicle_list[vname]['empty_event'].append([vehicle_list[vname]['last_update_time'], cur_time - vehicle_list[vname]['last_update_time']])
         vehicle_list[vname]['last_update_time'] = cur_time
     
     # Case 2 : STATUS ALLOC -> LOAD_START
@@ -181,13 +182,11 @@ def run(logs: dict):
             vehicle_processing(vehicle['name'], vehicle['status'], cur_time)
             
     # 3. write result
-    """
-    json_obj = {'logs': logs}
+    json_obj = {'task': task_list, 'vehicle': vehicle_list}
 
     log_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    with open(f'log/{log_time}.json', 'w') as outfile:
+    with open(f'statistics/log/result_{log_time}.json', 'w') as outfile:
         json.dump(json_obj, outfile, indent=4)
-    """
 
 
 if __name__ == "__main__":
