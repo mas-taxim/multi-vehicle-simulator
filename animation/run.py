@@ -3,6 +3,7 @@ import os
 import pygame
 import json
 import random
+import options
 
 from utils.color import Color, rgb, random as random_color
 from graph.route import get_graph
@@ -119,8 +120,11 @@ def set_task_color():
 if __name__ == "__main__":
     DIR = os.path.dirname(os.path.abspath(__file__))
     TAXI_IMAGE_PATH = os.path.join(DIR, 'taxi.jpg')
-    LOG_PATH = os.path.abspath(os.path.join(
-        DIR, '../log/20230312_214850.json'))
+    opts: dict = options.get_options()
+    LOG_PATH = opts["--log-file"] or None
+    if LOG_PATH is None:
+        print(opts["--help"])
+        exit(2)
 
     taxi_image = pygame.image.load(TAXI_IMAGE_PATH)
     taxi_image = pygame.transform.scale(taxi_image, (10, 10))
