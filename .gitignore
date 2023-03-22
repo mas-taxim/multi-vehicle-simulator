@@ -173,4 +173,5 @@ cython_debug/
 *.exe
 
 # MacOS
+**/.DS_Store
 .DS_Store
