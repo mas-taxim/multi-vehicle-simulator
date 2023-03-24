@@ -164,7 +164,7 @@ def vehicle_processing(vname: str, status: int, cur_time: int):
     vehicle_list[vname]['status'] = status
 
 
-def run(logs: dict):
+def generate_result(logs: dict) -> dict:
     # 1. vehicle list 생성
     init_vehicle_list(logs)
 
@@ -182,12 +182,13 @@ def run(logs: dict):
             vehicle_processing(vehicle['name'], vehicle['status'], cur_time)
             
     # 3. write result
-    json_obj = {'task': task_list, 'vehicle': vehicle_list}
+    result = {'task': task_list, 'vehicle': vehicle_list}
 
-    log_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    with open(f'statistics/log/result_{log_time}.json', 'w') as outfile:
-        json.dump(json_obj, outfile, indent=4)
+    #log_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+    with open(f'statistics/log/result.json', 'w') as outfile:
+        json.dump(result, outfile, indent=4)
 
+    return result
 
 if __name__ == "__main__":
 
@@ -200,16 +201,15 @@ if __name__ == "__main__":
         sys_logger.error("log is not exist.")
         exit()
     
-    run(logs)
+    generate_result(logs)
     
+    # logging INFO
     sys_logger.info("LAST task information")
     for tid in task_list:
         #print(f"tid : {tid}, data : {str(task_list[tid])}")
         sys_logger.info(f"tid : {tid}, data : {str(task_list[tid])}")
     
-    
     for vname in vehicle_list:
         #print(f"tid : {tid}, data : {str(task_list[tid])}")
         sys_logger.info(f"vname : {vname}, data : {vehicle_list[vname]}")
-        
     
