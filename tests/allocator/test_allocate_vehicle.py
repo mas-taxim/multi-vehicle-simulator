@@ -5,7 +5,7 @@ from entity import Location
 from manager import TaskManager, VehicleManager
 
 from allocator.vehicle_allocator import allocate
-from graph.route import get_graph
+from graph.route import get_map
 
 
 @pytest.fixture
@@ -33,7 +33,7 @@ def test_allocate(
         vehicle_mgr: VehicleManager,
         task_mgr: TaskManager):
     graph_name = 'rectangle'
-    node, node_idx, graph = get_graph(graph_name)
+    node, node_idx, graph = get_map(graph_name)
 
     vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]

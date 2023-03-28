@@ -7,7 +7,7 @@ from manager import TaskManager, VehicleManager
 from process.vehicle_process import vehicle_process, move
 from allocator.vehicle_allocator import allocate
 
-from graph.route import get_graph
+from graph.route import get_map
 
 
 @pytest.fixture
@@ -32,7 +32,7 @@ def n_time():
 
 def test_move1(n_time: datetime, vehicle_mgr: VehicleManager):
     graph_name = 'rectangle'
-    node, node_idx, graph = get_graph(graph_name)
+    node, node_idx, graph = get_map(graph_name)
 
     vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
@@ -48,9 +48,9 @@ def test_move1(n_time: datetime, vehicle_mgr: VehicleManager):
                 Location(
                     node[0][0], node[0][1]), Location(
                     node[1][0], node[1][1])), Path(
-                        Location(
-                            node[1][0], node[1][1]), Location(
-                                node[2][0], node[2][1]))])
+            Location(
+                node[1][0], node[1][1]), Location(
+                node[2][0], node[2][1]))])
 
     move(vehicle)
     assert vehicle.loc.x == 0
@@ -66,7 +66,7 @@ def test_script1(
         vehicle_mgr: VehicleManager,
         task_mgr: TaskManager):
     graph_name = 'rectangle'
-    node, node_idx, graph = get_graph(graph_name)
+    node, node_idx, graph = get_map(graph_name)
 
     vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
