@@ -6,7 +6,7 @@ from entity import Location, Task, Vehicle
 
 from process.main_process import main_process, set_epsilon
 
-from graph.route import get_graph
+from graph.route import get_map
 
 
 @pytest.fixture
@@ -35,7 +35,7 @@ def test_main_process(
         task_manager: TaskManager):
     set_epsilon(0)
     graph_name = 'rectangle'
-    node, node_idx, graph = get_graph(graph_name)
+    node, node_idx, graph = get_map(graph_name)
 
     vehicle_manager.get_vehicle("V1").loc.x = node[0][0]
     vehicle_manager.get_vehicle("V1").loc.y = node[0][1]
