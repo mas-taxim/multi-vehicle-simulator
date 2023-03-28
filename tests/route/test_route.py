@@ -1,5 +1,5 @@
 from entity import Location
-from graph.route import find_route, convert_route_tuple, find_graph_route, get_graph
+from graph.route import find_route, convert_route_tuple, find_graph_route, get_map
 
 
 def test_find_route():
@@ -21,7 +21,7 @@ def test_find_route():
 
 def test_find_route_graph():
     graph_name = 'rectangle'
-    node, node_idx, graph = get_graph(graph_name)
+    node, node_idx, graph = get_map(graph_name)
 
     route = find_graph_route(graph_name, Location(
         node[0][0], node[0][1]), Location(node[2][0], node[2][1]))

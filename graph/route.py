@@ -1,20 +1,18 @@
 import networkx as nx
 
 from entity import Location, Path
-from .map import get_rectangle_graph, get_grid_graph, get_yeouido_graph, get_seoul_gu_graph
+from .map import make_graph
+
+graph_dict = dict()
 
 
-def get_graph(graph_name) -> nx.Graph:
-    if graph_name == 'grid':
-        return get_grid_graph()
-    elif graph_name == 'rectangle':
-        return get_rectangle_graph()
-    elif graph_name == 'yeouido':
-        return get_yeouido_graph()
-    elif graph_name == 'seoul_gu':
-        return get_seoul_gu_graph()
+def get_map(graph_name):
+    if graph_dict.__contains__(graph_name):
+        return graph_dict[graph_name]
 
-    return None
+    nodes, node_idx, graph = make_graph(graph_name)
+    graph_dict[graph_name] = (nodes, node_idx, graph)
+    return graph_dict[graph_name]
 
 
 def get_nearest_idx(node_idx: dict, loc: Location):
@@ -29,7 +27,7 @@ def get_nearest_idx(node_idx: dict, loc: Location):
 
 
 def find_graph_route(graph_name: str, start: Location, dest: Location):
-    node, node_idx, graph = get_graph(graph_name)
+    node, node_idx, graph = get_map(graph_name)
 
     route = []
 
@@ -37,12 +35,7 @@ def find_graph_route(graph_name: str, start: Location, dest: Location):
     dest_idx = node_idx[(dest.x, dest.y)]
 
     cur_idx: int = start_idx
-    for n_idx in nx.shortest_path(
-            graph,
-            start_idx,
-            dest_idx,
-            weight='weight')[
-            1:]:
+    for n_idx in nx.shortest_path(graph, start_idx, dest_idx, weight='weight')[1:]:
         route.append(Path(Location(node[cur_idx][0], node[cur_idx][1]),
                           Location(node[n_idx][0], node[n_idx][1]),
                           graph[cur_idx][n_idx]['weight']))
