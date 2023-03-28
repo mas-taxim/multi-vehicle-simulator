@@ -6,6 +6,7 @@ from datetime import datetime
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from entity import Task as t, Vehicle as v
 
+import generate_graph as gg
 
 """
 log struct that this file using
@@ -201,7 +202,8 @@ if __name__ == "__main__":
         sys_logger.error("log is not exist.")
         exit()
     
-    generate_result(logs)
+    logData = generate_result(logs)
+    gg.generate_image(logData=logData)
     
     # logging INFO
     sys_logger.info("LAST task information")
