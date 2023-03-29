@@ -1,4 +1,4 @@
 
 # log file
-sys_log
-log
+sys_log/*.log
+log/*.json
