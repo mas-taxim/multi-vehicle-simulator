@@ -2,11 +2,16 @@ import requests
 import json
 import xmltodict
 import pandas as pd
-
+import os
+import sys
 import time
 
 # API KEY
-from graph.config import REST_API_KEY, OPEN_API_KEY
+#from graph.config import REST_API_KEY, OPEN_API_KEY
+REST_API_KEY = 'test'
+OPEN_API_KEY = 'test'
+os.chdir('./graph')
+
 
 OPEN_API_HOST = 'http://openapi.seoul.go.kr:8088'
 headers = {'Authorization': f'KakaoAK {REST_API_KEY}'}
@@ -29,7 +34,8 @@ def convert_coord():
         x = row['x']
         y = row['y']
 
-        params = {'x': x, 'y': y, 'input_coord': 'WTM', 'output_coord': 'WGS84'}
+        params = {'x': x, 'y': y, 'input_coord': 'WTM',
+                  'output_coord': 'WGS84'}
         rep = requests.get(url, headers=headers, params=params)
 
         lng = rep.json()['documents'][0]['x']
@@ -48,7 +54,7 @@ def convert_coord():
         #         'lng': lng_list,
         #         'lat': lat_list,
         #     })
-        #     coord_df.to_csv(f'data\\coord_start_end_{i}.csv')
+        #     coord_df.to_csv(f'data/coord_start_end_{i}.csv')
 
     coord_df = pd.DataFrame({
         'x': x_list,
@@ -56,12 +62,12 @@ def convert_coord():
         'lng': lng_list,
         'lat': lat_list,
     })
-    coord_df.to_csv(f'data\\coord_start_end.csv')
+    coord_df.to_csv(f'data/coord_start_end.csv')
 
 
 def get_vertex():
     # 서울시 차량통행속도 csv의 LINK_ID의 vertex 정보를 저장
-    edge_df = pd.read_csv(f'data\\2023년 1월 서울시 차량통행속도.csv', encoding='euc-kr')
+    edge_df = pd.read_csv(f'data/2023년 1월 서울시 차량통행속도.csv', encoding='euc-kr')
 
     link_id_list = []
     vertex_idx_list = []
@@ -70,7 +76,8 @@ def get_vertex():
 
     idx = 0
     for edge_id in edge_df['링크아이디'].unique():
-        rep = requests.get(f'{OPEN_API_HOST}/{OPEN_API_KEY}/xml/LinkVerInfo/1/1000/{edge_id}')
+        rep = requests.get(
+            f'{OPEN_API_HOST}/{OPEN_API_KEY}/xml/LinkVerInfo/1/1000/{edge_id}')
         print(idx, len(xmltodict.parse(rep.text)['LinkVerInfo']['row']))
         idx += 1
         for i, row in enumerate(xmltodict.parse(rep.text)['LinkVerInfo']['row']):
@@ -87,7 +94,7 @@ def get_vertex():
         #         'X': x_list,
         #         'Y': y_list,
         #     })
-        #     vertex_df.to_csv(f'data\\vertex_{idx}.csv')
+        #     vertex_df.to_csv(f'data/vertex_{idx}.csv')
 
     vertex_df = pd.DataFrame({
         'LINK_ID': link_id_list,
@@ -95,42 +102,46 @@ def get_vertex():
         'X': x_list,
         'Y': y_list,
     })
-    vertex_df.to_csv(f'data\\vertex.csv')
+    vertex_df.to_csv(f'data/vertex.csv')
 
 
 def get_vertex_start_end():
     # LINK_ID 당 start vertex와 end vertex만 추출하여 저장
-    df_vertex = pd.read_csv(f'graph\\data\\vertex.csv')
+    df_vertex = pd.read_csv(f'graph/data/vertex.csv')
     df_vertex.columns = ['idx', 'LINK_ID', 'VERTEX_IDX', 'x', 'y']
     df_vertex = df_vertex[['LINK_ID', 'VERTEX_IDX', 'x', 'y']]
 
-    df_vertex_start = df_vertex.loc[df_vertex.groupby('LINK_ID').VERTEX_IDX.idxmin()]
+    df_vertex_start = df_vertex.loc[df_vertex.groupby(
+        'LINK_ID').VERTEX_IDX.idxmin()]
     df_vertex_start.columns = ['LINK_ID', 'S_V', 'S_X', 'S_Y']
-    df_vertex_end = df_vertex.loc[df_vertex.groupby('LINK_ID').VERTEX_IDX.idxmax()]
+    df_vertex_end = df_vertex.loc[df_vertex.groupby(
+        'LINK_ID').VERTEX_IDX.idxmax()]
     df_vertex_end.columns = ['LINK_ID', 'E_V', 'E_X', 'E_Y']
     df_vertex_start_end = pd.concat([df_vertex_start, df_vertex_end])
-    df_vertex_start_end.to_csv(f'graph\\data\\vertex_start_end.csv')
+    df_vertex_start_end.to_csv(f'graph/data/vertex_start_end.csv')
 
 
 def make_graph():
-    df = pd.read_csv(r'data\2023년 1월 서울시 차량통행속도.csv', encoding='euc-kr')
+    df = pd.read_csv(r'data/2023년 1월 서울시 차량통행속도.CSV', encoding='euc-kr')
     df = df[['링크아이디', '시점명', '종점명', '방향', '거리', '08시']]
     df.columns = ['LINK_ID', '시점명', '종점명', '방향', '거리', '속력']
     df['소요시간'] = df['거리'] / (df['속력'] * 1000 / 60)
 
-    df_vertex = pd.read_csv(f'data\\vertex.csv')
+    df_vertex = pd.read_csv(f'data/vertex.csv')
     df_vertex.columns = ['idx', 'LINK_ID', 'VERTEX_IDX', 'x', 'y']
     df_vertex = df_vertex[['LINK_ID', 'VERTEX_IDX', 'x', 'y']]
 
-    df_vertex_start = df_vertex.loc[df_vertex.groupby('LINK_ID').VERTEX_IDX.idxmin()]
+    df_vertex_start = df_vertex.loc[df_vertex.groupby(
+        'LINK_ID').VERTEX_IDX.idxmin()]
     df_vertex_start.columns = ['LINK_ID', 'S_V', 'S_X', 'S_Y']
-    df_vertex_end = df_vertex.loc[df_vertex.groupby('LINK_ID').VERTEX_IDX.idxmax()]
+    df_vertex_end = df_vertex.loc[df_vertex.groupby(
+        'LINK_ID').VERTEX_IDX.idxmax()]
     df_vertex_end.columns = ['LINK_ID', 'E_V', 'E_X', 'E_Y']
 
     df_merge = pd.merge(df, df_vertex_start, on='LINK_ID')
     df_merge = pd.merge(df_merge, df_vertex_end, on='LINK_ID')
 
-    df_coord = pd.read_csv(f'data\\coord_start_end.csv')
+    df_coord = pd.read_csv(f'data/coord_start_end.csv')
     df_coord = df_coord[['x', 'y', 'lng', 'lat']]
     df_coord.columns = ['S_X', 'S_Y', 'S_lng', 'S_lat']
     df_merge = pd.merge(df_merge, df_coord, on=['S_X', 'S_Y'])
@@ -166,7 +177,6 @@ def make_graph():
                      'weight': int(row['소요시간']) + 1}
         })
 
-
     # 맨하탄 거리가 0.0002(50m) 이내라면 edge를 생성
     dist_criteria = 0.0005
     for i in range(len(nodes)):
@@ -189,7 +199,7 @@ def make_graph():
             "edges": edges}
 
     # 손으로 전처리 필요
-    with open('data\\seoul_all.json', 'w') as f:
+    with open('data/seoul_all.json', 'w') as f:
         json.dump(logs, f)
 
 
@@ -197,6 +207,6 @@ def make_graph():
 # get_vertex()
 # get_vertex_start_end()
 # convert_coord()
-# make_graph()
+make_graph()
 
 # insert_edge_id()
