@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "lat": 0,
+      "lng": 0,
+      "info": {}
+    },
+    {
+      "id": 1,
+      "lat": 0,
+      "lng": 2,
+      "info": {}
+    },
+    {
+      "id": 2,
+      "lat": 2,
+      "lng": 2,
+      "info": {}
+    },
+    {
+      "id": 3,
+      "lat": 2,
+      "lng": 0,
+      "info": {}
+    }
+  ],
+  "edges": [
+    {
+      "from": 0,
+      "to": 1,
+      "info": {"weight" :  1}
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "info": {"weight" :  1}
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "info": {"weight" :  1}
+    },
+    {
+      "from": 3,
+      "to": 0,
+      "info": {"weight" :  1}
+    }
+  ]
+}

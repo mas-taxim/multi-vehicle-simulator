@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from entity import Location
 from manager import TaskManager, VehicleManager
 from process.alloc_process import alloc_process
-from graph.route import get_graph
+from graph.route import get_map
 
 
 @pytest.fixture
@@ -33,7 +33,7 @@ def test_script1(
         vehicle_manager: VehicleManager,
         task_manager: TaskManager):
     graph_name = 'rectangle'
-    node, node_idx, graph = get_graph(graph_name)
+    node, node_idx, graph = get_map(graph_name)
 
     vehicle_manager.get_vehicle("V1").loc.x = node[0][0]
     vehicle_manager.get_vehicle("V1").loc.y = node[0][1]
