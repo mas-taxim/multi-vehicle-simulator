@@ -151,6 +151,11 @@ def make_graph():
 
     nodes = []
     edges = []
+    
+        
+    # startable_node dict : check that the node is startable node
+    startable_node = dict()
+    ended_node = dict()
 
     for i, row in df_merge.iterrows():
         start_id = i * 2
@@ -177,23 +182,31 @@ def make_graph():
                      'weight': int(row['소요시간']) + 1}
         })
 
+    
     # 맨하탄 거리가 0.0002(50m) 이내라면 edge를 생성
     dist_criteria = 0.0005
     for i in range(len(nodes)):
         for j in range(i + 1, len(nodes)):
+            # nearby check
             if abs(nodes[i]['lat'] - nodes[j]['lat']) + abs(nodes[i]['lng'] - nodes[j]['lng']) < dist_criteria:
-                edges.append({
-                    'from': i,
-                    'to': j,
-                    "info": {'id': '0000000000',
-                             'weight': 1}
-                })
-                edges.append({
-                    'from': j,
-                    'to': i,
-                    "info": {'id': '0000000000',
-                             'weight': 1}
-                })
+                
+                # Case 1 : i -> j link
+                if i in startable_node and j in ended_node:
+                    edges.append({
+                        'from': i,
+                        'to': j,
+                        "info": {'id': '0000000000',
+                                    'weight': 1}
+                    })
+                
+                # Case 2 : j -> i link
+                if j in startable_node and i in ended_node:
+                    edges.append({
+                        'from': j,
+                        'to': i,
+                        "info": {'id': '0000000000',
+                                    'weight': 1}
+                    })
 
     logs = {"nodes": nodes,
             "edges": edges}
@@ -207,6 +220,6 @@ def make_graph():
 # get_vertex()
 # get_vertex_start_end()
 # convert_coord()
-make_graph()
+# make_graph()
 
 # insert_edge_id()
