@@ -7,12 +7,7 @@ import sys
 import time
 
 # API KEY
-#from graph.config import REST_API_KEY, OPEN_API_KEY
-REST_API_KEY = 'test'
-OPEN_API_KEY = 'test'
-os.chdir('./graph')
-
-
+from graph.config import REST_API_KEY, OPEN_API_KEY
 OPEN_API_HOST = 'http://openapi.seoul.go.kr:8088'
 headers = {'Authorization': f'KakaoAK {REST_API_KEY}'}
 
@@ -122,20 +117,25 @@ def get_vertex_start_end():
 
 
 def make_graph():
-    df = pd.read_csv(r'data/2023년 1월 서울시 차량통행속도.CSV', encoding='euc-kr')
-    df = df[['링크아이디', '시점명', '종점명', '방향', '거리', '08시']]
-    df.columns = ['LINK_ID', '시점명', '종점명', '방향', '거리', '속력']
-    df['소요시간'] = df['거리'] / (df['속력'] * 1000 / 60)
+    df = pd.read_csv(r'data/3월 8일 차량속도.CSV', encoding='euc-kr')
+    df = df[['링크아이디', '시점명', '종점명', '방향', '거리',
+             '01시', '02시', '03시', '04시', '05시', '06시', '07시', '08시',
+             '09시', '10시', '11시', '12시', '13시', '14시', '15시', '16시',
+             '17시', '18시', '19시', '20시', '21시', '22시', '23시', '24시']]
+    df.columns = ['LINK_ID', '시점명', '종점명', '방향', '거리',
+                  '1시', '2시', '3시', '4시', '5시', '6시', '7시', '8시',
+                  '9시', '10시', '11시', '12시', '13시', '14시', '15시', '16시',
+                  '17시', '18시', '19시', '20시', '21시', '22시', '23시', '24시']
+    for i in range(1, 25):
+        df[f'소요시간_{i}'] = df['거리'] / (df[f'{i}시'] * 1000 / 60)
 
     df_vertex = pd.read_csv(f'data/vertex.csv')
     df_vertex.columns = ['idx', 'LINK_ID', 'VERTEX_IDX', 'x', 'y']
     df_vertex = df_vertex[['LINK_ID', 'VERTEX_IDX', 'x', 'y']]
 
-    df_vertex_start = df_vertex.loc[df_vertex.groupby(
-        'LINK_ID').VERTEX_IDX.idxmin()]
+    df_vertex_start = df_vertex.loc[df_vertex.groupby('LINK_ID').VERTEX_IDX.idxmin()]
     df_vertex_start.columns = ['LINK_ID', 'S_V', 'S_X', 'S_Y']
-    df_vertex_end = df_vertex.loc[df_vertex.groupby(
-        'LINK_ID').VERTEX_IDX.idxmax()]
+    df_vertex_end = df_vertex.loc[df_vertex.groupby('LINK_ID').VERTEX_IDX.idxmax()]
     df_vertex_end.columns = ['LINK_ID', 'E_V', 'E_X', 'E_Y']
 
     df_merge = pd.merge(df, df_vertex_start, on='LINK_ID')
@@ -151,8 +151,7 @@ def make_graph():
 
     nodes = []
     edges = []
-    
-        
+
     # startable_node dict : check that the node is startable node
     startable_node = dict()
     ended_node = dict()
@@ -175,38 +174,45 @@ def make_graph():
             "info": {}
         })
 
+        weight = {}
+
+        for i in range(1, 25):
+            weight[i] = int(row[f'소요시간_{i}']) + 1
+
         edges.append({
             'from': start_id,
             'to': end_id,
             "info": {'id': str(row['LINK_ID']),
-                     'weight': int(row['소요시간']) + 1}
+                     'weight': weight}
         })
 
-    
     # 맨하탄 거리가 0.0002(50m) 이내라면 edge를 생성
     dist_criteria = 0.0005
+    weight = {}
+
+    for i in range(1, 25):
+        weight[i] = 1
+
     for i in range(len(nodes)):
         for j in range(i + 1, len(nodes)):
             # nearby check
             if abs(nodes[i]['lat'] - nodes[j]['lat']) + abs(nodes[i]['lng'] - nodes[j]['lng']) < dist_criteria:
-                
-                # Case 1 : i -> j link
-                if i in startable_node and j in ended_node:
-                    edges.append({
-                        'from': i,
-                        'to': j,
-                        "info": {'id': '0000000000',
-                                    'weight': 1}
-                    })
-                
-                # Case 2 : j -> i link
-                if j in startable_node and i in ended_node:
-                    edges.append({
-                        'from': j,
-                        'to': i,
-                        "info": {'id': '0000000000',
-                                    'weight': 1}
-                    })
+                # # Case 1 : i -> j link
+                # if i in startable_node and j in ended_node:
+                edges.append({
+                    'from': i,
+                    'to': j,
+                    "info": {'id': '0000000000',
+                             'weight': weight}
+                })
+                # # Case 2 : j -> i link
+                # if j in startable_node and i in ended_node:
+                edges.append({
+                    'from': j,
+                    'to': i,
+                    "info": {'id': '0000000000',
+                             'weight': weight}
+                })
 
     logs = {"nodes": nodes,
             "edges": edges}
@@ -214,7 +220,6 @@ def make_graph():
     # 손으로 전처리 필요
     with open('data/seoul_all.json', 'w') as f:
         json.dump(logs, f)
-
 
 # 함수 순서
 # get_vertex()
