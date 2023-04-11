@@ -48,7 +48,7 @@ def init_sys_log(logLevel: int):
     sys_logger.setLevel(logLevel)
 
     # log 출력
-    sys_log_handler = logging.FileHandler(f'statistics/sys_log/{logFileName}')
+    sys_log_handler = logging.FileHandler(f'sys_log/{logFileName}')
     sys_log_handler.setFormatter(
         logging.Formatter('%(levelname)s - %(message)s'))
     sys_logger.addHandler(sys_log_handler)
@@ -94,8 +94,8 @@ def init_vehicle_list(logs: dict) -> None:
     start_time = logs[0]['time']
     sys_logger.info("INIT vehicle information")
     for vehicle in logs[0]['vehicles']:
-        vehicle_list[vehicle['name']] = {
-            'status': vehicle['status'], 'wait_alloc_time': 0, 'moving_to_load_time': 0, 'last_update_time': start_time, 'empty_event': []}
+        vehicle_list[vehicle['name']] = {'status': vehicle['status'], 'wait_alloc_time': 0, 'moving_to_load_time': 0,
+                                         'moving_time': 0, 'last_update_time': start_time, 'empty_event': []}
         sys_logger.info(f"vehicle name : {vehicle['name']}, value : {str(vehicle_list[vehicle['name']])}")
 
 
@@ -107,8 +107,8 @@ def add_task(tid: int, init_status: int, add_time: int) -> None:
         init_status (int): task first status
         add_time (int): task added time
     """
-    task_list[tid] = {'status': init_status, 'wait_alloc_time': 0,
-                      'wait_vehicle_time': 0, 'last_update_time': add_time, 'create_time': add_time}
+    task_list[tid] = {'status': init_status, 'wait_alloc_time': 0, 'wait_vehicle_time': 0,
+                       'moving_time': 0, 'last_update_time': add_time, 'create_time': add_time}
 
 
 def task_processing(tid: int, status: int, cur_time: int):
@@ -125,14 +125,17 @@ def task_processing(tid: int, status: int, cur_time: int):
     
     # Case 1 : STATUS WAIT -> ALLOC
     if status == t.MOVE_TO_LOAD and task_list[tid]['status'] < t.MOVE_TO_LOAD:
-        task_list[tid]['wait_alloc_time'] = cur_time - \
-            task_list[tid]['last_update_time']
+        task_list[tid]['wait_alloc_time'] = cur_time - task_list[tid]['last_update_time']
         task_list[tid]['last_update_time'] = cur_time
     
     # Case 2 : STATUS ALLOC -> LOAD_START
     elif status == t.LOAD_START and task_list[tid]['status'] < t.LOAD_START:
-        task_list[tid]['wait_vehicle_time'] = cur_time - \
-            task_list[tid]['last_update_time']
+        task_list[tid]['wait_vehicle_time'] = cur_time - task_list[tid]['last_update_time']
+        task_list[tid]['last_update_time'] = cur_time
+
+    # Case 3 : STATUS LOAD_START -> UNLOAD_START
+    elif status == t.UNLOAD_START and task_list[tid]['status'] < t.UNLOAD_START:
+        task_list[tid]['moving_time'] = cur_time - task_list[tid]['last_update_time']
         task_list[tid]['last_update_time'] = cur_time
     
     task_list[tid]['status'] = status
@@ -149,16 +152,20 @@ def vehicle_processing(vname: str, status: int, cur_time: int):
     
     # Case 1 : STATUS WAIT -> ALLOC -> MOVE_TO_LOAD
     if status == v.MOVE_TO_LOAD and vehicle_list[vname]['status'] < v.MOVE_TO_LOAD:
-        vehicle_list[vname]['wait_alloc_time'] += cur_time - \
-            vehicle_list[vname]['last_update_time']
+        vehicle_list[vname]['wait_alloc_time'] += cur_time - vehicle_list[vname]['last_update_time']
         sys_logger.info(f"[{vname}][{cur_time}] : WAIT -> ALLOC, sub1 += {cur_time - vehicle_list[vname]['last_update_time']}")
         vehicle_list[vname]['empty_event'].append([vehicle_list[vname]['last_update_time'], cur_time - vehicle_list[vname]['last_update_time']])
         vehicle_list[vname]['last_update_time'] = cur_time
     
     # Case 2 : STATUS ALLOC -> LOAD_START
     elif status == v.LOAD_START and vehicle_list[vname]['status'] < v.LOAD_START:
-        vehicle_list[vname]['moving_to_load_time'] += cur_time - \
-            vehicle_list[vname]['last_update_time']
+        vehicle_list[vname]['moving_to_load_time'] += cur_time - vehicle_list[vname]['last_update_time']
+        sys_logger.info(f"[{vname}][{cur_time}] : ALLOC -> LOAD_START, sub2 += {cur_time - vehicle_list[vname]['last_update_time']}")
+        vehicle_list[vname]['last_update_time'] = cur_time
+
+    # Case 2 : STATUS LOAD_START -> UNLOAD_START
+    elif status == v.UNLOAD_START and vehicle_list[vname]['status'] < v.UNLOAD_START:
+        vehicle_list[vname]['moving_time'] += cur_time - vehicle_list[vname]['last_update_time']
         sys_logger.info(f"[{vname}][{cur_time}] : ALLOC -> LOAD_START, sub2 += {cur_time - vehicle_list[vname]['last_update_time']}")
         vehicle_list[vname]['last_update_time'] = cur_time
     
@@ -185,33 +192,28 @@ def generate_result(logs: dict) -> dict:
     # 3. write result
     result = {'task': task_list, 'vehicle': vehicle_list}
 
-    #log_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    with open(f'statistics/log/result.json', 'w') as outfile:
-        json.dump(result, outfile, indent=4)
-
     return result
 
 if __name__ == "__main__":
 
-    #cur_dir = os.getcwd()
-    log_dir = "./log"
-    init_sys_log(logging.INFO)
-    logs = get_latest_log(log_dir)
+    f_name = '20230411_231802.json'
+    logs = read_log(f'../log/{f_name}')
     
     if logs == None:
         sys_logger.error("log is not exist.")
         exit()
     
     logData = generate_result(logs)
-    gg.generate_image(logData=logData)
-    
+    # gg.generate_image(logData=logData)
+    with open(f'log/{f_name}', 'w') as outfile:
+        json.dump(logData, outfile, indent=4)
+
     # logging INFO
     sys_logger.info("LAST task information")
     for tid in task_list:
         #print(f"tid : {tid}, data : {str(task_list[tid])}")
         sys_logger.info(f"tid : {tid}, data : {str(task_list[tid])}")
-    
+
     for vname in vehicle_list:
         #print(f"tid : {tid}, data : {str(task_list[tid])}")
         sys_logger.info(f"vname : {vname}, data : {vehicle_list[vname]}")
-    
