@@ -55,10 +55,8 @@ def alloc_process_nearest(n_time: datetime, graph_name: str, vehicle_mgr: Vehicl
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         if vehicle.status == Vehicle.WAIT:
-            try:
-                distance = nx.shortest_path_length(graph, node_idx[(vehicle.loc.x, vehicle.loc.y)], node_idx[(task.loc_load.x, task.loc_load.y)], weight='weight')
-            except:
-                distance = 999999999
+            distance = nx.shortest_path_length(graph, node_idx[(vehicle.loc.x, vehicle.loc.y)], node_idx[(task.loc_load.x, task.loc_load.y)], weight='weight')
+
             if min_distance > distance:
                 nearest_vehicle = vehicle
                 min_distance = distance
