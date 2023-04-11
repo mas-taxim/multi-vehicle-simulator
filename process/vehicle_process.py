@@ -35,6 +35,8 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager):
             unloading(n_time, vehicle, task)
         elif vehicle.status == Vehicle.UNLOAD_END:
             unload_end(n_time, vehicle, task)
+        elif vehicle.status == Vehicle.CLOSE:
+            close(n_time, vehicle, task)
         else:
             logger.error(
                 f"[vehicle_process] Exception occurred in the status of vehicle -> name:{vehicle.name}, status:{vehicle.status}")
@@ -131,5 +133,15 @@ def unloading(n_time: datetime, vehicle: Vehicle, task: Task):
 
 
 def unload_end(n_time: datetime, vehicle: Vehicle, task: Task):
-    vehicle.status = Vehicle.WAIT
+    if vehicle.running:
+        vehicle.status = Vehicle.WAIT
+    else:
+        vehicle.status = Vehicle.CLOSE
     vehicle.route = []
+
+
+def close(n_time: datetime, vehicle: Vehicle, task: Task):
+    if vehicle.running:
+        vehicle.status = Vehicle.WAIT
+    else:
+        vehicle.status = Vehicle.CLOSE
