@@ -2,8 +2,6 @@ import requests
 import json
 import xmltodict
 import pandas as pd
-import os
-import sys
 import time
 
 # API KEY
@@ -160,6 +158,10 @@ def make_graph():
         start_id = i * 2
         end_id = i * 2 + 1
 
+        # marking startable node
+        startable_node[start_id] = True
+        ended_node[end_id] = True
+
         nodes.append({
             "id": start_id,
             "lat": float(row['S_lat']),
@@ -198,21 +200,21 @@ def make_graph():
             # nearby check
             if abs(nodes[i]['lat'] - nodes[j]['lat']) + abs(nodes[i]['lng'] - nodes[j]['lng']) < dist_criteria:
                 # # Case 1 : i -> j link
-                # if i in startable_node and j in ended_node:
-                edges.append({
-                    'from': i,
-                    'to': j,
-                    "info": {'id': '0000000000',
-                             'weight': weight}
-                })
+                if i in startable_node and j in ended_node:
+                    edges.append({
+                        'from': j,
+                        'to': i,
+                        "info": {'id': '0000000000',
+                                 'weight': weight}
+                    })
                 # # Case 2 : j -> i link
-                # if j in startable_node and i in ended_node:
-                edges.append({
-                    'from': j,
-                    'to': i,
-                    "info": {'id': '0000000000',
-                             'weight': weight}
-                })
+                if j in startable_node and i in ended_node:
+                    edges.append({
+                        'from': i,
+                        'to': j,
+                        "info": {'id': '0000000000',
+                                 'weight': weight}
+                    })
 
     logs = {"nodes": nodes,
             "edges": edges}
