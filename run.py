@@ -27,20 +27,35 @@ def run():
 
     random.seed(0)
 
-    graph_name = 'seoul_all'
+    graph_name = 'seoul'
     nodes, node_idx, graph = get_map(graph_name)
 
     vehicle_mgr: VehicleManager = VehicleManager()
-    for i in range(30):
+
+    vehicles_run_time = []
+    vehicles_run_time.extend([0, 7] for _ in range(3))
+    vehicles_run_time.extend([7, 13] for _ in range(5))
+    vehicles_run_time.extend([9, 18] for _ in range(10))
+    vehicles_run_time.extend([16, 24] for _ in range(3))
+    vehicles_run_time.extend([24, 30] for _ in range(5))
+
+    for i in range(len(vehicles_run_time)):
         vehicle_mgr.add_vehicle("V" + str(i), nodes[3878][0], nodes[3878][1])
 
     task_mgr: TaskManager = TaskManager()
 
     logs = []
     n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
-    for h in range(1, 25):
+    for h in range(0, 30):
         print(h)
-        update_weight(graph_name, h)
+        update_weight(graph_name, h % 24 + 1)
+
+        for i, run_time in enumerate(vehicles_run_time):
+            if run_time[0] == h:
+                vehicle_mgr.open_vehicle("V" + str(i))
+            if run_time[1] == h:
+                vehicle_mgr.close_vehicle("V" + str(i))
+
         for m in range(60):
             n_time += timedelta(minutes=1)
             logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr))
@@ -60,10 +75,11 @@ def run():
             elif 19 <= h < 21:
                 set_epsilon(random.random() * 0.15)
             elif 21 <= h < 24:
-                set_epsilon(random.random() * 0.5)
+                set_epsilon(random.random() * 0.05)
             else:
-                set_epsilon(random.random() * 0.2)
+                set_epsilon(random.random() * 0)
 
+    print(task_mgr.wait_queue)
     json_obj = {'logs': logs}
 
     log_time = datetime.now().strftime("%Y%m%d_%H%M%S")
