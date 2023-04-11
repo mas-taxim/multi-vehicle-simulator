@@ -196,7 +196,7 @@ def generate_result(logs: dict) -> dict:
 
 if __name__ == "__main__":
 
-    f_name = '20230411_231802.json'
+    f_name = '20230412_002437.json'
     logs = read_log(f'../log/{f_name}')
     
     if logs == None:
@@ -204,9 +204,11 @@ if __name__ == "__main__":
         exit()
     
     logData = generate_result(logs)
-    # gg.generate_image(logData=logData)
+
     with open(f'log/{f_name}', 'w') as outfile:
         json.dump(logData, outfile, indent=4)
+
+    gg.generate_histogram(f_name)
 
     # logging INFO
     sys_logger.info("LAST task information")
