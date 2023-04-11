@@ -3,6 +3,13 @@ import os
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import seaborn as sns
+import json
+
+
+def read_log(f_name):
+    with open(f'log/{f_name}', 'r') as file:
+        logs = json.load(file)
+    return pd.DataFrame(logs['task']).transpose(), pd.DataFrame(logs['vehicle']).transpose()
 
 
 def generate_task_graph(log_df: pd.DataFrame):
@@ -98,9 +105,81 @@ def generate_vehicle_graph(log_df: pd.DataFrame):
     return v_alloc_time_avg, v_moving_to_load_time
 
 
+# task 시간 histogram (배차 대기 시간, 배차 후 대기 시간, 이동 시간)
+def generate_task_histogram(f_name, df_task):
+    # Data preprocessing
+    df_task['wait_alloc_time'] /= 60000
+    df_task['wait_vehicle_time'] /= 60000
+    df_task['moving_time'] /= 60000
+
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(8, 8))
+    fig.tight_layout()
+    plt.suptitle(f'Task Histogram {f_name}')
+    plt.subplots_adjust(hspace=0.3, top=0.95, bottom=0.08, left=0.08)
+    plt.subplot(311)
+
+    plt.subplot(311)
+    sns.histplot(data=df_task['wait_alloc_time'])
+    plt.axvline(x=df_task['wait_alloc_time'].mean(), color='red')
+
+    plt.subplot(312)
+    sns.histplot(data=df_task['wait_vehicle_time'])
+    plt.axvline(x=df_task['wait_vehicle_time'].mean(), color='red')
+
+    plt.subplot(313)
+    sns.histplot(data=df_task['moving_time'])
+    plt.axvline(x=df_task['moving_time'].mean(), color='red')
+    # plt.show()
+
+    plt.savefig(f'images/{f_name.split(".")[0]}_task.png')
+
+    return
+
+# task 시간 histogram (배차 대기 시간, 배차 후 대기 시간, 이동 시간)
+def generate_vehicle_histogram(f_name, df_vehicle):
+    # Data preprocessing
+    df_vehicle['wait_alloc_time'] /= 60000
+    df_vehicle['moving_to_load_time'] /= 60000
+    df_vehicle['moving_time'] /= 60000
+
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(8, 8))
+    fig.tight_layout()
+    plt.suptitle(f'Vehicle Histogram {f_name}')
+    plt.subplots_adjust(hspace=0.3, top=0.95, bottom=0.08, left=0.08)
+    plt.subplot(311)
+
+    plt.subplot(311)
+    sns.histplot(data=df_vehicle['wait_alloc_time'])
+    plt.axvline(x=df_vehicle['wait_alloc_time'].mean(), color='red')
+
+    plt.subplot(312)
+    sns.histplot(data=df_vehicle['moving_to_load_time'])
+    plt.axvline(x=df_vehicle['moving_to_load_time'].mean(), color='red')
+
+    plt.subplot(313)
+    sns.histplot(data=df_vehicle['moving_time'])
+    plt.axvline(x=df_vehicle['moving_time'].mean(), color='red')
+    # plt.show()
+
+    plt.savefig(f'images/{f_name.split(".")[0]}_vehicle.png')
+
+    return
+
+
 def generate_image(logData: dict):
     print(os.getcwd())
     generate_task_graph(pd.DataFrame(logData['task']).T)
     generate_vehicle_graph(pd.DataFrame(logData['vehicle']).T)
 
     return
+
+
+def generate_histogram(f_name):
+    df_task, df_vehicle = read_log(f_name)
+    generate_task_histogram(f_name, df_task)
+    generate_vehicle_histogram(f_name, df_vehicle)
+
+
+f_name = '20230411_231802.json'
+generate_histogram(f_name)
+
