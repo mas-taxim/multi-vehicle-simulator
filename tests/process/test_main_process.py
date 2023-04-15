@@ -33,15 +33,20 @@ def test_main_process(
         n_time: datetime,
         vehicle_manager: VehicleManager,
         task_manager: TaskManager):
-    set_epsilon(0)
     graph_name = 'rectangle'
     node, node_idx, graph = get_map(graph_name)
 
+    tasks = []
+
     vehicle_manager.get_vehicle("V1").loc.x = node[0][0]
     vehicle_manager.get_vehicle("V1").loc.y = node[0][1]
+    vehicle_manager.open_vehicle("V1")
+    vehicle_manager.get_vehicle("V1").status = Vehicle.WAIT
 
     vehicle_manager.get_vehicle("V2").loc.x = node[0][0]
     vehicle_manager.get_vehicle("V2").loc.y = node[0][1]
+    vehicle_manager.open_vehicle("V2")
+    vehicle_manager.get_vehicle("V2").status = Vehicle.WAIT
 
     task_manager.add_task(len(task_manager.tasks), Location(
         node[0][0], node[0][1]), Location(node[1][0], node[1][1]), n_time, 1)
@@ -49,7 +54,7 @@ def test_main_process(
         node[2][0], node[2][1]), Location(node[3][0], node[3][1]), n_time, 1)
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.MOVE_TO_LOAD
     assert vehicle_manager.get_alloced_task("V1").idx == 0
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
@@ -61,7 +66,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 0
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.LOAD_START
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 0
@@ -71,7 +76,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 2
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.LOADING
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 0
@@ -81,7 +86,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 2
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.LOAD_END
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 0
@@ -91,7 +96,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 2
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.MOVE_TO_UNLOAD
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 0
@@ -101,7 +106,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 2
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.MOVE_TO_UNLOAD
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 2
@@ -111,7 +116,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 2
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.UNLOAD_START
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 2
@@ -121,7 +126,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 2
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.UNLOADING
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 2
@@ -131,7 +136,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 0
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.UNLOAD_END
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 2
@@ -141,7 +146,7 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 0
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V1").status == Vehicle.WAIT
     assert vehicle_manager.get_vehicle("V1").loc.x == 0
     assert vehicle_manager.get_vehicle("V1").loc.y == 2
@@ -151,13 +156,13 @@ def test_main_process(
     assert vehicle_manager.get_vehicle("V2").loc.y == 0
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V2").status == Vehicle.UNLOAD_END
     assert vehicle_manager.get_vehicle("V2").loc.x == 2
     assert vehicle_manager.get_vehicle("V2").loc.y == 0
 
     n_time += timedelta(minutes=1)
-    main_process(n_time, graph_name, vehicle_manager, task_manager)
+    main_process(n_time, graph_name, vehicle_manager, task_manager, tasks)
     assert vehicle_manager.get_vehicle("V2").status == Vehicle.WAIT
     assert vehicle_manager.get_vehicle("V2").loc.x == 2
     assert vehicle_manager.get_vehicle("V2").loc.y == 0
