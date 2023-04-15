@@ -179,7 +179,7 @@ def make_graph():
         weight = {}
 
         for i in range(1, 25):
-            weight[i] = int(row[f'소요시간_{i}']) + 1
+            weight[i] = int(row[f'소요시간_{i}']) if int(row[f'소요시간_{i}']) > 0 else 1
 
         edges.append({
             'from': start_id,
@@ -220,7 +220,7 @@ def make_graph():
             "edges": edges}
 
     # 손으로 전처리 필요
-    with open('data/seoul_all.json', 'w') as f:
+    with open('data/seoul_2.json', 'w') as f:
         json.dump(logs, f)
 
 # 함수 순서
