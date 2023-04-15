@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import logging
 import random
 import json
+import pandas as pd
 
 from manager import TaskManager, VehicleManager
 
@@ -27,17 +28,24 @@ def run():
 
     random.seed(0)
 
-    graph_name = 'seoul'
+    graph_name = 'seoul_2_link'
     nodes, node_idx, graph = get_map(graph_name)
+
+    df_task = pd.read_csv('reqeust_200108.csv')
+    df_task = df_task[['req_time', 'start_node', 'end_node']]
+
+    tasks = []
+    for i, row in df_task.iterrows():
+        tasks.append((row['req_time'], row['start_node'], row['end_node']))
 
     vehicle_mgr: VehicleManager = VehicleManager()
 
     vehicles_run_time = []
-    vehicles_run_time.extend([0, 7] for _ in range(3))
-    vehicles_run_time.extend([7, 13] for _ in range(5))
-    vehicles_run_time.extend([9, 18] for _ in range(10))
-    vehicles_run_time.extend([16, 24] for _ in range(3))
-    vehicles_run_time.extend([24, 30] for _ in range(5))
+    vehicles_run_time.extend([0, 7] for _ in range(30))
+    vehicles_run_time.extend([7, 16] for _ in range(140))
+    vehicles_run_time.extend([8, 17] for _ in range(140))
+    vehicles_run_time.extend([10, 20] for _ in range(140))
+    vehicles_run_time.extend([20, 30] for _ in range(30))
 
     for i in range(len(vehicles_run_time)):
         vehicle_mgr.add_vehicle("V" + str(i), nodes[3878][0], nodes[3878][1])
@@ -58,26 +66,7 @@ def run():
 
         for m in range(60):
             n_time += timedelta(minutes=1)
-            logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr))
-
-            if h < 6:
-                set_epsilon(random.random() * 0.05)
-            elif 6 <= h < 8:
-                set_epsilon(random.random() * 0.1)
-            elif 8 <= h < 10:
-                set_epsilon(random.random() * 0.3)
-            elif 10 <= h < 14:
-                set_epsilon(random.random() * 0.15)
-            elif 14 <= h < 16:
-                set_epsilon(random.random() * 0.2)
-            elif 16 <= h < 19:
-                set_epsilon(random.random() * 0.3)
-            elif 19 <= h < 21:
-                set_epsilon(random.random() * 0.15)
-            elif 21 <= h < 24:
-                set_epsilon(random.random() * 0.05)
-            else:
-                set_epsilon(random.random() * 0)
+            logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr, tasks))
 
     print(task_mgr.wait_queue)
     json_obj = {'logs': logs}
