@@ -18,9 +18,10 @@ def main_process(
         n_time: datetime,
         graph_name: str,
         vehicle_mgr: VehicleManager,
-        task_mgr: TaskManager) -> dict:
+        task_mgr: TaskManager,
+        tasks) -> dict:
     ''' processing each time, return value is result log '''
-    generate_process(n_time, graph_name, task_mgr, epsilon)
+    generate_process(n_time, graph_name, task_mgr, tasks)
 
     for i in range(len(vehicle_mgr.vehicles)):
         v_name, t_idx = alloc_process_nearest(
