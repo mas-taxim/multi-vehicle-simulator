@@ -10,23 +10,19 @@ from graph.route import get_map
 logger = logging.getLogger("main")
 subgraph = None
 
-def generate_task(n_time: datetime, node: dict, task_mgr: TaskManager, sub_graph):
-    # load_idx, unload_idx = random.sample(node.keys(), 2)
-    load_idx, unload_idx = random.sample(sub_graph, 2)
+
+def generate_task(n_time: datetime, node: dict, task_mgr: TaskManager, task: tuple):
+    req_time, load_idx, unload_idx = task
 
     task_mgr.add_task(len(task_mgr.tasks),
                       Location(node[load_idx][0], node[load_idx][1]),
                       Location(node[unload_idx][0], node[unload_idx][1]),
-                      n_time, random.randint(2, 5))
+                      n_time, random.randint(1, 3))
 
 
-def generate_process(n_time: datetime, graph_name: str, task_mgr: TaskManager, epsilon: float):
+def generate_process(n_time: datetime, graph_name: str, task_mgr: TaskManager, tasks: list):
     node, node_idx, graph = get_map(graph_name)
 
-    # 임시
-    if subgraph is None:
-        import networkx as nx
-        sub_graph = list(nx.connected_components(graph.to_undirected()))[0]
-
-    if random.random() < epsilon:
-        generate_task(n_time, node, task_mgr, sub_graph)
+    while len(tasks) > 0 and tasks[0][0][0:5] == n_time.strftime('%H:%M'):
+        generate_task(n_time, node, task_mgr, tasks[0])
+        tasks.pop(0)

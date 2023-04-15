@@ -2,12 +2,12 @@ from datetime import datetime, timedelta
 import logging
 import random
 import json
+import pandas as pd
 
 from manager import TaskManager, VehicleManager
 
-from graph.route import get_graph
+from graph.route import get_map, update_weight
 from process.main_process import main_process, set_epsilon
-from process.generate_process import generate_task
 
 
 def init_log():
@@ -28,34 +28,47 @@ def run():
 
     random.seed(0)
 
-    n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
+    graph_name = 'seoul_2_link'
+    nodes, node_idx, graph = get_map(graph_name)
 
-    graph_name = 'seoul_gu'
-    node, node_idx, graph = get_graph(graph_name)
+    df_task = pd.read_csv('reqeust_200108.csv')
+    df_task = df_task[['req_time', 'start_node', 'end_node']]
+
+    tasks = []
+    for i, row in df_task.iterrows():
+        tasks.append((row['req_time'], row['start_node'], row['end_node']))
 
     vehicle_mgr: VehicleManager = VehicleManager()
-    vehicle_mgr.add_vehicle("V1", node[0][0], node[0][1])
-    vehicle_mgr.add_vehicle("V2", node[0][0], node[0][1])
-    vehicle_mgr.add_vehicle("V3", node[0][0], node[0][1])
-    vehicle_mgr.add_vehicle("V4", node[0][0], node[0][1])
-    vehicle_mgr.add_vehicle("V5", node[0][0], node[0][1])
+
+    vehicles_run_time = []
+    vehicles_run_time.extend([0, 7] for _ in range(30))
+    vehicles_run_time.extend([7, 16] for _ in range(140))
+    vehicles_run_time.extend([8, 17] for _ in range(140))
+    vehicles_run_time.extend([10, 20] for _ in range(140))
+    vehicles_run_time.extend([20, 30] for _ in range(30))
+
+    for i in range(len(vehicles_run_time)):
+        vehicle_mgr.add_vehicle("V" + str(i), nodes[3878][0], nodes[3878][1])
 
     task_mgr: TaskManager = TaskManager()
 
-    generate_task(n_time, node, task_mgr)
-
-
     logs = []
-    for i in range(24 * 60):
-        n_time += timedelta(minutes=1)
-        logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr))
-        #set_epsilon(random.random() * 0.04)
-        if i < 6 * 60:
-            set_epsilon(random.random() * 0.44)
-        else:
-            set_epsilon(random.random() * 0.04)
-        
-        
+    n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
+    for h in range(0, 30):
+        print(h)
+        update_weight(graph_name, h % 24 + 1)
+
+        for i, run_time in enumerate(vehicles_run_time):
+            if run_time[0] == h:
+                vehicle_mgr.open_vehicle("V" + str(i))
+            if run_time[1] == h:
+                vehicle_mgr.close_vehicle("V" + str(i))
+
+        for m in range(60):
+            n_time += timedelta(minutes=1)
+            logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr, tasks))
+
+    print(task_mgr.wait_queue)
     json_obj = {'logs': logs}
 
     log_time = datetime.now().strftime("%Y%m%d_%H%M%S")

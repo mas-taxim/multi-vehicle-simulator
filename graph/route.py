@@ -6,11 +6,16 @@ from .map import make_graph
 graph_dict = dict()
 
 
-def get_map(graph_name):
+def update_weight(graph_name, hour):
+    nodes, node_idx, graph = make_graph(graph_name, hour)
+    graph_dict[graph_name] = (nodes, node_idx, graph)
+
+
+def get_map(graph_name) -> (dict, dict, nx.DiGraph):
     if graph_dict.__contains__(graph_name):
         return graph_dict[graph_name]
 
-    nodes, node_idx, graph = make_graph(graph_name)
+    nodes, node_idx, graph = make_graph(graph_name, 1)
     graph_dict[graph_name] = (nodes, node_idx, graph)
     return graph_dict[graph_name]
 

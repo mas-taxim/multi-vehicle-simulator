@@ -1,11 +1,9 @@
 import datetime
-# import logging
-# import json
 
 from manager import TaskManager, VehicleManager
 
 from process.generate_process import generate_process
-from process.alloc_process import alloc_process
+from process.alloc_process import alloc_process, alloc_process_nearest
 from process.vehicle_process import vehicle_process
 
 epsilon = 0.05
@@ -20,12 +18,13 @@ def main_process(
         n_time: datetime,
         graph_name: str,
         vehicle_mgr: VehicleManager,
-        task_mgr: TaskManager) -> dict:
+        task_mgr: TaskManager,
+        tasks) -> dict:
     ''' processing each time, return value is result log '''
-    generate_process(n_time, graph_name, task_mgr, epsilon)
+    generate_process(n_time, graph_name, task_mgr, tasks)
 
     for i in range(len(vehicle_mgr.vehicles)):
-        v_name, t_idx = alloc_process(
+        v_name, t_idx = alloc_process_nearest(
             n_time, graph_name, vehicle_mgr, task_mgr)
         if v_name is None:
             break
