@@ -17,8 +17,6 @@ def generate_task_graph(log_df: pd.DataFrame):
     log_df['last_update_time'] = pd.to_datetime(
         log_df['last_update_time'], unit='ms')
     log_df['create_time'] = pd.to_datetime(log_df['create_time'], unit='ms')
-    log_df['wait_alloc_time'] /= 60000
-    log_df['wait_vehicle_time'] /= 60000
     log_df['wait_total_time'] = log_df['wait_alloc_time'] + \
                                 log_df['wait_vehicle_time']
 
@@ -62,10 +60,6 @@ def generate_task_graph(log_df: pd.DataFrame):
 
 
 def generate_vehicle_graph(log_df: pd.DataFrame):
-    # Data preprocessing
-    log_df['wait_alloc_time'] /= 60000
-    log_df['moving_to_load_time'] /= 60000
-
     # summary Data
     v_alloc_time_avg = log_df['wait_alloc_time'].mean()
     v_moving_to_load_time = log_df['moving_to_load_time'].mean()
@@ -82,7 +76,7 @@ def generate_vehicle_graph(log_df: pd.DataFrame):
 
     event_df = pd.DataFrame(event_list, columns=['time', 'empty_time'])
     event_df['time'] = pd.to_datetime(event_df['time'], unit='ms')
-    event_df['empty_time'] /= 60000
+
 
     # to koran time
     event_df['time'] = pd.DatetimeIndex(event_df['time'] + timedelta(hours=9))
@@ -106,10 +100,7 @@ def generate_vehicle_graph(log_df: pd.DataFrame):
 # task 시간 histogram (배차 대기 시간, 배차 후 대기 시간, 이동 시간)
 def generate_task_histogram(f_name, df_task):
     # Data preprocessing
-    df_task['wait_alloc_time'] /= 60000
-    df_task['wait_vehicle_time'] /= 60000
     df_task['total_wait_time'] = df_task['wait_alloc_time'] + df_task['wait_vehicle_time']
-    df_task['moving_time'] /= 60000
 
     fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(8, 12))
     fig.tight_layout()
@@ -144,11 +135,6 @@ def generate_task_histogram(f_name, df_task):
 
 # task 시간 histogram (배차 대기 시간, 배차 후 대기 시간, 이동 시간)
 def generate_vehicle_histogram(f_name, df_vehicle):
-    # Data preprocessing
-    df_vehicle['wait_alloc_time'] /= 60000
-    df_vehicle['moving_to_load_time'] /= 60000
-    df_vehicle['moving_time'] /= 60000
-
     fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(8, 8))
     fig.tight_layout()
     plt.suptitle(f'Vehicle Histogram {f_name}')

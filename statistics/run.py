@@ -125,17 +125,17 @@ def task_processing(tid: int, status: int, cur_time: int):
     
     # Case 1 : STATUS WAIT -> ALLOC
     if status == t.MOVE_TO_LOAD and task_list[tid]['status'] < t.MOVE_TO_LOAD:
-        task_list[tid]['wait_alloc_time'] = cur_time - task_list[tid]['last_update_time']
+        task_list[tid]['wait_alloc_time'] = (cur_time - task_list[tid]['last_update_time']) / 60000
         task_list[tid]['last_update_time'] = cur_time
     
     # Case 2 : STATUS ALLOC -> LOAD_START
     elif status == t.LOAD_START and task_list[tid]['status'] < t.LOAD_START:
-        task_list[tid]['wait_vehicle_time'] = cur_time - task_list[tid]['last_update_time']
+        task_list[tid]['wait_vehicle_time'] = (cur_time - task_list[tid]['last_update_time']) / 60000
         task_list[tid]['last_update_time'] = cur_time
 
     # Case 3 : STATUS LOAD_START -> UNLOAD_START
     elif status == t.UNLOAD_START and task_list[tid]['status'] < t.UNLOAD_START:
-        task_list[tid]['moving_time'] = cur_time - task_list[tid]['last_update_time']
+        task_list[tid]['moving_time'] = (cur_time - task_list[tid]['last_update_time']) / 60000
         task_list[tid]['last_update_time'] = cur_time
     
     task_list[tid]['status'] = status
@@ -152,20 +152,20 @@ def vehicle_processing(vname: str, status: int, cur_time: int):
     
     # Case 1 : STATUS WAIT -> ALLOC -> MOVE_TO_LOAD
     if status == v.MOVE_TO_LOAD and vehicle_list[vname]['status'] < v.MOVE_TO_LOAD:
-        vehicle_list[vname]['wait_alloc_time'] += cur_time - vehicle_list[vname]['last_update_time']
+        vehicle_list[vname]['wait_alloc_time'] += (cur_time - vehicle_list[vname]['last_update_time']) / 60000
         sys_logger.info(f"[{vname}][{cur_time}] : WAIT -> ALLOC, sub1 += {cur_time - vehicle_list[vname]['last_update_time']}")
         vehicle_list[vname]['empty_event'].append([vehicle_list[vname]['last_update_time'], cur_time - vehicle_list[vname]['last_update_time']])
         vehicle_list[vname]['last_update_time'] = cur_time
     
     # Case 2 : STATUS ALLOC -> LOAD_START
     elif status == v.LOAD_START and vehicle_list[vname]['status'] < v.LOAD_START:
-        vehicle_list[vname]['moving_to_load_time'] += cur_time - vehicle_list[vname]['last_update_time']
+        vehicle_list[vname]['moving_to_load_time'] += (cur_time - vehicle_list[vname]['last_update_time']) / 60000
         sys_logger.info(f"[{vname}][{cur_time}] : ALLOC -> LOAD_START, sub2 += {cur_time - vehicle_list[vname]['last_update_time']}")
         vehicle_list[vname]['last_update_time'] = cur_time
 
     # Case 2 : STATUS LOAD_START -> UNLOAD_START
     elif status == v.UNLOAD_START and vehicle_list[vname]['status'] < v.UNLOAD_START:
-        vehicle_list[vname]['moving_time'] += cur_time - vehicle_list[vname]['last_update_time']
+        vehicle_list[vname]['moving_time'] += (cur_time - vehicle_list[vname]['last_update_time']) / 60000
         sys_logger.info(f"[{vname}][{cur_time}] : ALLOC -> LOAD_START, sub2 += {cur_time - vehicle_list[vname]['last_update_time']}")
         vehicle_list[vname]['last_update_time'] = cur_time
     
@@ -196,7 +196,7 @@ def generate_result(logs: dict) -> dict:
 
 if __name__ == "__main__":
 
-    f_name = '20230412_002437.json'
+    f_name = '20230416_002223.json'
     logs = read_log(f'../log/{f_name}')
     
     if logs == None:
