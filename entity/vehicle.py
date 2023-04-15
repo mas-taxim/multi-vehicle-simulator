@@ -18,7 +18,7 @@ class Vehicle:
         self.name: str = name
         self.loc: Location = Location()
         self.battery: float = 1
-        self.status = Vehicle.WAIT
+        self.status = Vehicle.CLOSE
         self.route: list[Location] = []
         self.running: bool = False
 
