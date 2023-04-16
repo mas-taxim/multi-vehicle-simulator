@@ -3,6 +3,7 @@ import logging
 import random
 import json
 import pandas as pd
+from tqdm import tqdm
 
 from manager import TaskManager, VehicleManager
 
@@ -28,7 +29,7 @@ def run():
 
     random.seed(0)
 
-    graph_name = 'seoul'
+    graph_name = 'seoul_link_j'
     nodes, node_idx, graph = get_map(graph_name)
 
     df_task = pd.read_csv('./data/reqeust_200108.csv')
@@ -54,8 +55,7 @@ def run():
 
     logs = []
     n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
-    for h in range(0, 30):
-        print(h)
+    for h in tqdm(range(0, 30), position=0, desc="hour : "):
         update_weight(graph_name, h % 24 + 1)
 
         for i, run_time in enumerate(vehicles_run_time):
@@ -64,10 +64,12 @@ def run():
             if run_time[1] == h:
                 vehicle_mgr.close_vehicle("V" + str(i))
 
-        for m in range(60):
+        for m in tqdm(range(60), position=1, leave=False, desc="minute : "):
             n_time += timedelta(minutes=1)
-            logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr, tasks))
+            logs.append(main_process(n_time, graph_name,
+                        vehicle_mgr, task_mgr, tasks))
 
+    print("left task in wait queue")
     print(task_mgr.wait_queue)
     json_obj = {'logs': logs}
 
