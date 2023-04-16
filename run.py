@@ -28,10 +28,10 @@ def run():
 
     random.seed(0)
 
-    graph_name = 'seoul_2_link'
+    graph_name = 'seoul'
     nodes, node_idx, graph = get_map(graph_name)
 
-    df_task = pd.read_csv('reqeust_200108.csv')
+    df_task = pd.read_csv('./data/reqeust_200108.csv')
     df_task = df_task[['req_time', 'start_node', 'end_node']]
 
     tasks = []
