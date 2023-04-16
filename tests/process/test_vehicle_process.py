@@ -50,11 +50,11 @@ def test_move1(n_time: datetime, vehicle_mgr: VehicleManager):
         [Path(Location(node[0][0], node[0][1]), Location(node[1][0], node[1][1])),
          Path(Location(node[1][0], node[1][1]), Location(node[2][0], node[2][1]))])
 
-    move(vehicle)
+    move(vehicle, Location(node[1][0], node[1][1]))
     assert vehicle.loc.x == 0
     assert vehicle.loc.y == 2
 
-    move(vehicle)
+    move(vehicle, Location(node[1][0], node[1][1]))
     assert vehicle.loc.x == 2
     assert vehicle.loc.y == 2
 
