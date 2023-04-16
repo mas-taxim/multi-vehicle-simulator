@@ -11,7 +11,7 @@ def update_weight(graph_name, hour):
     graph_dict[graph_name] = (nodes, node_idx, graph)
 
 
-def get_map(graph_name) -> (dict, dict, nx.DiGraph):
+def get_map(graph_name) -> tuple(dict, dict, nx.DiGraph):
     if graph_dict.__contains__(graph_name):
         return graph_dict[graph_name]
 
