@@ -34,7 +34,7 @@ def alloc_process(
             task_mgr.poll_wait_task()
             logger.info(
                 f"[alloc_process] : {task.idx} is allocated to {v_name}")
-            print(f"[alloc_process] : {task.idx} is allocated to {v_name}")
+            # print(f"[alloc_process] : {task.idx} is allocated to {v_name}")
             return [v_name, task.idx]
 
     logger.info("[alloc_process] : Vehicle to be allocated does not exist")
@@ -53,17 +53,20 @@ def alloc_process_nearest(n_time: datetime, graph_name: str, vehicle_mgr: Vehicl
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         if vehicle.status == Vehicle.WAIT:
-            distance = abs(vehicle.loc.x - task.loc_load.x) + abs(vehicle.loc.y - task.loc_load.y)
+            distance = abs(vehicle.loc.x - task.loc_load.x) + \
+                abs(vehicle.loc.y - task.loc_load.y)
 
             if min_distance > distance:
                 nearest_vehicle = vehicle
                 min_distance = distance
 
     if nearest_vehicle is not None:
-        allocate(n_time, graph_name, vehicle_mgr, task_mgr, nearest_vehicle.name, task.idx)
+        allocate(n_time, graph_name, vehicle_mgr,
+                 task_mgr, nearest_vehicle.name, task.idx)
         task_mgr.poll_wait_task()
-        logger.info(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
-        print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
+        logger.info(
+            f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
+        # print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
         return [nearest_vehicle.name, task.idx]
 
     logger.info("[alloc_process] : Vehicle to be allocated does not exist")
@@ -84,17 +87,20 @@ def alloc_process_min_time(n_time: datetime, graph_name: str, vehicle_mgr: Vehic
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         if vehicle.status == Vehicle.WAIT:
-            distance = nx.shortest_path_length(graph, node_idx[(vehicle.loc.x, vehicle.loc.y)], node_idx[(task.loc_load.x, task.loc_load.y)], weight='weight')
+            distance = nx.shortest_path_length(graph, node_idx[(vehicle.loc.x, vehicle.loc.y)], node_idx[(
+                task.loc_load.x, task.loc_load.y)], weight='weight')
 
             if min_distance > distance:
                 nearest_vehicle = vehicle
                 min_distance = distance
 
     if nearest_vehicle is not None:
-        allocate(n_time, graph_name, vehicle_mgr, task_mgr, nearest_vehicle.name, task.idx)
+        allocate(n_time, graph_name, vehicle_mgr,
+                 task_mgr, nearest_vehicle.name, task.idx)
         task_mgr.poll_wait_task()
-        logger.info(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
-        print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
+        logger.info(
+            f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
+        # print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
         return [nearest_vehicle.name, task.idx]
 
     logger.info("[alloc_process] : Vehicle to be allocated does not exist")
