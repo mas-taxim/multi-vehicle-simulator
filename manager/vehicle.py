@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from entity import Task, Vehicle
 
@@ -27,8 +28,9 @@ class VehicleManager:
             self.vehicles[v_name].loc.x = init_x
             self.vehicles[v_name].loc.y = init_y
 
-    def open_vehicle(self, v_name: str):
+    def open_vehicle(self, v_name: str, close_time: datetime):
         self.vehicles[v_name].running = True
+        self.vehicles[v_name].close_time = close_time
 
     def close_vehicle(self, v_name: str):
         self.vehicles[v_name].running = False
