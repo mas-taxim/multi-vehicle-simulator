@@ -3,24 +3,14 @@ from datetime import datetime, timedelta
 
 from entity import Task, Vehicle, Location, Schedule
 from graph.route import get_map
-from manager import VehicleManager
-
-schedules = dict()
+from manager import VehicleManager, TaskManager, ScheduleManager
 
 
-def init_schedule(v_name: str):
-    schedules[v_name] = []
-
-
-def get_schedule(v_name: str):
-    return schedules[v_name]
-
-
-def add_schedule(n_time: datetime, graph_name: str, vehicle: Vehicle, task: Task):
+def add_schedule(n_time: datetime, graph_name: str, vehicle: Vehicle, task: Task, schedule_mgr: ScheduleManager):
     node, node_idx, graph = get_map(graph_name)
 
     v_name = vehicle.name
-    schedule = schedules[v_name]
+    schedule = schedule_mgr.get_schedule(v_name)
 
     # load 지점까지 움직이는 schedule
     if len(schedule) == 0:
@@ -53,7 +43,8 @@ def add_schedule(n_time: datetime, graph_name: str, vehicle: Vehicle, task: Task
     schedule.append(Schedule(task.idx, start_time, start_loc, end_time, end_loc))
 
 
-def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task: Task) -> Vehicle:
+def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, schedule_mgr: ScheduleManager,
+                         task: Task) -> Vehicle:
     node, node_idx, graph = get_map(graph_name)
 
     min_sched_load_time: datetime = n_time + timedelta(hours=240)
@@ -64,7 +55,7 @@ def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: Vehicle
 
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
-        schedule = schedules[v_name]
+        schedule = schedule_mgr.get_schedule(v_name)
 
         if len(schedule) == 0:
             last_sched_time = n_time
@@ -85,3 +76,27 @@ def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: Vehicle
                     min_vehicle = vehicle
 
     return min_vehicle
+
+
+def schedule_process(
+        n_time: datetime,
+        graph_name: str,
+        vehicle_mgr: VehicleManager,
+        task_mgr: TaskManager,
+        schedule_mgr: ScheduleManager):
+    if not task_mgr.is_remain_wait_task():
+        # print("[schedule_process] : Task to schedule does not exist")
+        return [None, None]
+
+    task: Task = task_mgr.peek_wait_task()
+
+    sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task)
+
+    if sched_vehicle is not None:
+        task_mgr.poll_wait_task()
+        add_schedule(n_time, graph_name, sched_vehicle, task, schedule_mgr)
+        print(f"[schedule_process] : {task.idx} is sched to {sched_vehicle.name}")
+        return sched_vehicle.name, task.idx
+
+    return [None, None]
+
