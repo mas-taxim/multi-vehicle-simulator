@@ -5,14 +5,20 @@ from datetime import datetime, timedelta
 
 from entity import Path, Task, Vehicle, Location
 from entity.location import is_same_location
-from manager import VehicleManager
+from manager import VehicleManager, ScheduleManager
 
 logger = logging.getLogger("main")
 
 
-def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager):
+def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager, schedule_mgr: ScheduleManager=None):
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
+
+        if schedule_mgr is not None:
+            schedule: list = schedule_mgr.get_schedule(v_name)
+        else:
+            schedule = None
+
         task: Task = vehicle_mgr.get_alloced_task(v_name)
 
         if vehicle.status == Vehicle.WAIT:
@@ -34,7 +40,7 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager):
         elif vehicle.status == Vehicle.UNLOADING:
             unloading(n_time, vehicle, task)
         elif vehicle.status == Vehicle.UNLOAD_END:
-            unload_end(n_time, vehicle, task)
+            unload_end(n_time, vehicle, task, schedule)
         elif vehicle.status == Vehicle.CLOSE:
             close(n_time, vehicle, task)
         else:
@@ -232,11 +238,15 @@ def unloading(n_time: datetime, vehicle: Vehicle, task: Task):
         task.unload_end_time = n_time
 
 
-def unload_end(n_time: datetime, vehicle: Vehicle, task: Task):
+def unload_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule: list):
     if vehicle.running:
         vehicle.status = Vehicle.WAIT
     else:
         vehicle.status = Vehicle.CLOSE
+
+    if schedule is not None:
+        schedule.pop(0)
+        schedule.pop(0)
     vehicle.route = []
 
 

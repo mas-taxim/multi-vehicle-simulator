@@ -4,9 +4,10 @@ import datetime
 import networkx as nx
 
 from entity import Task, Vehicle
-from manager import TaskManager, VehicleManager
+from manager import TaskManager, VehicleManager, ScheduleManager
 
 from allocator.vehicle_allocator import allocate
+
 from graph.route import get_map
 
 logger = logging.getLogger("main")
@@ -41,6 +42,20 @@ def alloc_process(
     return [None, None]
 
 
+def alloc_by_schedule(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager,
+                      schedule_mgr: ScheduleManager):
+    for v_name in vehicle_mgr.vehicles:
+        vehicle = vehicle_mgr.get_vehicle(v_name)
+        schedule = schedule_mgr.get_schedule(v_name)
+
+        if vehicle.status == Vehicle.WAIT and len(schedule) > 0:
+            load_schedule = schedule[0]
+            unload_schedule = schedule[1]
+            allocate(n_time, graph_name, vehicle_mgr, task_mgr, v_name, unload_schedule.task_id)
+
+            print(f"[alloc_process] : {unload_schedule.task_id} is allocated to {v_name}")
+
+
 def alloc_process_nearest(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager):
     if not task_mgr.is_remain_wait_task():
         logger.info("[alloc_process] : Task to assign does not exist")
@@ -54,7 +69,7 @@ def alloc_process_nearest(n_time: datetime, graph_name: str, vehicle_mgr: Vehicl
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         if vehicle.status == Vehicle.WAIT:
             distance = abs(vehicle.loc.x - task.loc_load.x) + \
-                abs(vehicle.loc.y - task.loc_load.y)
+                       abs(vehicle.loc.y - task.loc_load.y)
 
             if min_distance > distance:
                 nearest_vehicle = vehicle
@@ -66,7 +81,7 @@ def alloc_process_nearest(n_time: datetime, graph_name: str, vehicle_mgr: Vehicl
         task_mgr.poll_wait_task()
         logger.info(
             f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
-        # print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
+        print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
         return [nearest_vehicle.name, task.idx]
 
     logger.info("[alloc_process] : Vehicle to be allocated does not exist")
@@ -100,7 +115,7 @@ def alloc_process_min_time(n_time: datetime, graph_name: str, vehicle_mgr: Vehic
         task_mgr.poll_wait_task()
         logger.info(
             f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
-        # print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
+        print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
         return [nearest_vehicle.name, task.idx]
 
     logger.info("[alloc_process] : Vehicle to be allocated does not exist")
