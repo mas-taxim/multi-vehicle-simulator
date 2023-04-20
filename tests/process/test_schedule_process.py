@@ -2,8 +2,8 @@ import pytest
 from datetime import datetime, timedelta
 
 from entity import Location, Vehicle
-from manager import VehicleManager, TaskManager
-from process.schedule_process import init_schedule, add_schedule, get_schedule, get_earliest_vehicle
+from manager import VehicleManager, TaskManager, ScheduleManager
+from process.schedule_process import add_schedule, get_earliest_vehicle
 
 from graph.route import get_map
 
@@ -13,9 +13,6 @@ def vehicle_mgr():
     vehicle_mgr: VehicleManager = VehicleManager()
     vehicle_mgr.add_vehicle("V1")
     vehicle_mgr.add_vehicle("V2")
-
-    init_schedule("V1")
-    init_schedule("V2")
 
     return vehicle_mgr
 
@@ -27,13 +24,22 @@ def task_mgr():
 
 
 @pytest.fixture
+def schedule_mgr():
+    schedule_mgr: ScheduleManager = ScheduleManager()
+    return schedule_mgr
+
+
+@pytest.fixture
 def n_time():
     return datetime.strptime("2023-02-02", '%Y-%m-%d')
 
 
-def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskManager):
+def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskManager, schedule_mgr: ScheduleManager):
     graph_name = 'rectangle'
     node, node_idx, graph = get_map(graph_name)
+
+    schedule_mgr.init_schedule("V1")
+    schedule_mgr.init_schedule("V2")
 
     vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
@@ -50,11 +56,11 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskMa
     task_mgr.add_task(len(task_mgr.tasks), Location(
         node[2][0], node[2][1]), Location(node[3][0], node[3][1]), n_time, 1)
 
-    sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, task_mgr.get_task(0))
+    sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task_mgr.get_task(0))
     assert sched_vehicle.name == "V1"
 
-    add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(0))
-    schedule_v1 = get_schedule(sched_vehicle.name)
+    add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(0), schedule_mgr)
+    schedule_v1 = schedule_mgr.get_schedule(sched_vehicle.name)
 
     assert schedule_v1[0].task_id == -1
     assert schedule_v1[0].start_time == datetime.strptime("2023-02-02", '%Y-%m-%d')
@@ -72,11 +78,11 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskMa
     assert schedule_v1[1].end_loc.x == 0
     assert schedule_v1[1].end_loc.y == 0
 
-    sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, task_mgr.get_task(1))
+    sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task_mgr.get_task(1))
     assert sched_vehicle.name == "V1"
 
-    add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(1))
-    schedule_v1 = get_schedule(sched_vehicle.name)
+    add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(1), schedule_mgr)
+    schedule_v1 = schedule_mgr.get_schedule(sched_vehicle.name)
 
     assert schedule_v1[2].task_id == -1
     assert schedule_v1[2].start_time == datetime.strptime("2023-02-02 00:04:00", '%Y-%m-%d %H:%M:%S')
