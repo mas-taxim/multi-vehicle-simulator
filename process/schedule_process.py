@@ -10,6 +10,7 @@ def add_schedule(n_time: datetime, graph_name: str, vehicle: Vehicle, task: Task
     node, node_idx, graph = get_map(graph_name)
 
     v_name = vehicle.name
+
     schedule_list = schedule_mgr.get_schedule_list(v_name)
 
     # load 지점까지 움직이는 schedule
@@ -56,6 +57,7 @@ def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: Vehicle
 
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
+
         schedule_list = schedule_mgr.get_schedule_list(v_name)
 
         if len(schedule_list) == 0:

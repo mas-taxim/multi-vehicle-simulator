@@ -60,6 +60,7 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskMa
     assert sched_vehicle.name == "V1"
 
     add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(0), schedule_mgr)
+
     schedule_list_v1 = schedule_mgr.get_schedule_list(sched_vehicle.name)
 
     assert schedule_list_v1.get_schedule(0).task_id == -1
@@ -82,6 +83,7 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskMa
     assert sched_vehicle.name == "V1"
 
     add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(1), schedule_mgr)
+
     schedule_list_v1 = schedule_mgr.get_schedule_list(sched_vehicle.name)
 
     assert schedule_list_v1.get_schedule(2).task_id == -1

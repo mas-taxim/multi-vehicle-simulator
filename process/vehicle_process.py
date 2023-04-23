@@ -242,7 +242,9 @@ def unloading(n_time: datetime, vehicle: Vehicle, task: Task):
         task.unload_end_time = n_time
 
 
+
 def unload_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: ScheduleList):
+
     if vehicle.running:
         vehicle.status = Vehicle.WAIT
     else:
