@@ -215,6 +215,7 @@ def load_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: Sche
 
     if schedule_list is not None:
         schedule_list.pop_schedule()
+        schedule_list.update_schedule(n_time)
 
 
 def move_to_unload(n_time: datetime, vehicle: Vehicle, task: Task):
@@ -249,6 +250,8 @@ def unload_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: Sc
 
     if schedule_list is not None:
         schedule_list.pop_schedule()
+        schedule_list.update_schedule(n_time)
+
     vehicle.route = []
 
 

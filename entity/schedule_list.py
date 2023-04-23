@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime
 
 from entity import Schedule
 
@@ -25,7 +25,10 @@ class ScheduleList:
     def get_schedule_list(self):
         return self.schedule_list
 
-    def update_schedule(self, delta: int):
-        for schedule in self.schedule_list:
-            schedule.start_time = schedule.start_time + timedelta(minutes=delta)
-            schedule.end_time = schedule.end_time + timedelta(minutes=delta)
+    def update_schedule(self, n_time: datetime):
+        if len(self.schedule_list) > 0:
+            delta = n_time - self.schedule_list[0].start_time
+
+            for schedule in self.schedule_list:
+                schedule.start_time = schedule.start_time + delta
+                schedule.end_time = schedule.end_time + delta
