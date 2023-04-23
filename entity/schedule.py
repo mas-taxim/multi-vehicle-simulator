@@ -12,3 +12,12 @@ class Schedule:
         self.start_loc: Location = start_loc
         self.end_time: datetime = end_time
         self.end_loc: Location = end_loc
+
+    def get_log(self):
+        log = dict()
+
+        log["task_id"] = self.task_id
+        log["start_time"] = self.start_time.strftime("%Y-%m-%d %H:%M:%S")
+        log["end_time"] = self.end_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        return log

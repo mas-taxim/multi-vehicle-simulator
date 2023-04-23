@@ -46,11 +46,11 @@ def alloc_by_schedule(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMan
                       schedule_mgr: ScheduleManager):
     for v_name in vehicle_mgr.vehicles:
         vehicle = vehicle_mgr.get_vehicle(v_name)
-        schedule = schedule_mgr.get_schedule(v_name)
+        schedule_list = schedule_mgr.get_schedule_list(v_name)
 
-        if vehicle.status == Vehicle.WAIT and len(schedule) > 0:
-            load_schedule = schedule[0]
-            unload_schedule = schedule[1]
+        if vehicle.status == Vehicle.WAIT and len(schedule_list) > 0:
+            load_schedule = schedule_list.get_schedule(0)
+            unload_schedule = schedule_list.get_schedule(1)
             allocate(n_time, graph_name, vehicle_mgr, task_mgr, v_name, unload_schedule.task_id)
 
             print(f"[alloc_process] : {unload_schedule.task_id} is allocated to {v_name}")
