@@ -4,9 +4,10 @@ import datetime
 import networkx as nx
 
 from entity import Task, Vehicle
-from manager import TaskManager, VehicleManager
+from manager import TaskManager, VehicleManager, ScheduleManager
 
 from allocator.vehicle_allocator import allocate
+
 from graph.route import get_map
 
 logger = logging.getLogger("main")
@@ -34,11 +35,27 @@ def alloc_process(
             task_mgr.poll_wait_task()
             logger.info(
                 f"[alloc_process] : {task.idx} is allocated to {v_name}")
-            print(f"[alloc_process] : {task.idx} is allocated to {v_name}")
+            # print(f"[alloc_process] : {task.idx} is allocated to {v_name}")
             return [v_name, task.idx]
 
     logger.info("[alloc_process] : Vehicle to be allocated does not exist")
     return [None, None]
+
+
+def alloc_by_schedule(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager,
+                      schedule_mgr: ScheduleManager):
+    for v_name in vehicle_mgr.vehicles:
+        vehicle = vehicle_mgr.get_vehicle(v_name)
+
+        schedule_list = schedule_mgr.get_schedule_list(v_name)
+
+        if vehicle.status == Vehicle.WAIT and len(schedule_list) > 0:
+            load_schedule = schedule_list.get_schedule(0)
+            unload_schedule = schedule_list.get_schedule(1)
+
+            allocate(n_time, graph_name, vehicle_mgr, task_mgr, v_name, unload_schedule.task_id)
+
+            print(f"[alloc_process] : {unload_schedule.task_id} is allocated to {v_name}")
 
 
 def alloc_process_nearest(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager):
@@ -53,16 +70,19 @@ def alloc_process_nearest(n_time: datetime, graph_name: str, vehicle_mgr: Vehicl
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         if vehicle.status == Vehicle.WAIT:
-            distance = abs(vehicle.loc.x - task.loc_load.x) + abs(vehicle.loc.y - task.loc_load.y)
+            distance = abs(vehicle.loc.x - task.loc_load.x) + \
+                       abs(vehicle.loc.y - task.loc_load.y)
 
             if min_distance > distance:
                 nearest_vehicle = vehicle
                 min_distance = distance
 
     if nearest_vehicle is not None:
-        allocate(n_time, graph_name, vehicle_mgr, task_mgr, nearest_vehicle.name, task.idx)
+        allocate(n_time, graph_name, vehicle_mgr,
+                 task_mgr, nearest_vehicle.name, task.idx)
         task_mgr.poll_wait_task()
-        logger.info(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
+        logger.info(
+            f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
         print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
         return [nearest_vehicle.name, task.idx]
 
@@ -84,16 +104,19 @@ def alloc_process_min_time(n_time: datetime, graph_name: str, vehicle_mgr: Vehic
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
         if vehicle.status == Vehicle.WAIT:
-            distance = nx.shortest_path_length(graph, node_idx[(vehicle.loc.x, vehicle.loc.y)], node_idx[(task.loc_load.x, task.loc_load.y)], weight='weight')
+            distance = nx.shortest_path_length(graph, node_idx[(vehicle.loc.x, vehicle.loc.y)], node_idx[(
+                task.loc_load.x, task.loc_load.y)], weight='weight')
 
             if min_distance > distance:
                 nearest_vehicle = vehicle
                 min_distance = distance
 
     if nearest_vehicle is not None:
-        allocate(n_time, graph_name, vehicle_mgr, task_mgr, nearest_vehicle.name, task.idx)
+        allocate(n_time, graph_name, vehicle_mgr,
+                 task_mgr, nearest_vehicle.name, task.idx)
         task_mgr.poll_wait_task()
-        logger.info(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
+        logger.info(
+            f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
         print(f"[alloc_process] : {task.idx} is allocated to {nearest_vehicle.name}")
         return [nearest_vehicle.name, task.idx]
 

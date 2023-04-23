@@ -40,12 +40,12 @@ def test_main_process(
 
     vehicle_manager.get_vehicle("V1").loc.x = node[0][0]
     vehicle_manager.get_vehicle("V1").loc.y = node[0][1]
-    vehicle_manager.open_vehicle("V1")
+    vehicle_manager.open_vehicle("V1", n_time + timedelta(hours=8))
     vehicle_manager.get_vehicle("V1").status = Vehicle.WAIT
 
     vehicle_manager.get_vehicle("V2").loc.x = node[0][0]
     vehicle_manager.get_vehicle("V2").loc.y = node[0][1]
-    vehicle_manager.open_vehicle("V2")
+    vehicle_manager.open_vehicle("V2", n_time + timedelta(hours=8))
     vehicle_manager.get_vehicle("V2").status = Vehicle.WAIT
 
     task_manager.add_task(len(task_manager.tasks), Location(

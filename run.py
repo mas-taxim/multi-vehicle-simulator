@@ -3,11 +3,12 @@ import logging
 import random
 import json
 import pandas as pd
+from tqdm import tqdm
 
-from manager import TaskManager, VehicleManager
+from manager import TaskManager, VehicleManager, ScheduleManager
 
 from graph.route import get_map, update_weight
-from process.main_process import main_process, set_epsilon
+from process.main_process import main_process, main_process_schedule
 
 
 def init_log():
@@ -28,11 +29,14 @@ def run():
 
     random.seed(0)
 
-    graph_name = 'seoul_2_link'
+    graph_name = 'seoul'
     nodes, node_idx, graph = get_map(graph_name)
 
-    df_task = pd.read_csv('reqeust_200108.csv')
+    df_task = pd.read_csv('data/reqeust_200108.csv')
+    df_task = df_task.sample(200, random_state=0)
+    df_task = df_task.sort_values('req_time')
     df_task = df_task[['req_time', 'start_node', 'end_node']]
+    print(df_task)
 
     tasks = []
     for i, row in df_task.iterrows():
@@ -41,14 +45,14 @@ def run():
     vehicle_mgr: VehicleManager = VehicleManager()
 
     vehicles_run_time = []
-    vehicles_run_time.extend([0, 7] for _ in range(30))
-    vehicles_run_time.extend([7, 16] for _ in range(140))
-    vehicles_run_time.extend([8, 17] for _ in range(140))
-    vehicles_run_time.extend([10, 20] for _ in range(140))
-    vehicles_run_time.extend([20, 30] for _ in range(30))
+    vehicles_run_time.extend([0, 26] for _ in range(15))
+
+    schedule_mgr: ScheduleManager = ScheduleManager()
 
     for i in range(len(vehicles_run_time)):
-        vehicle_mgr.add_vehicle("V" + str(i), nodes[3878][0], nodes[3878][1])
+        v_name = "V" + str(i)
+        vehicle_mgr.add_vehicle(v_name, nodes[3878][0], nodes[3878][1])
+        schedule_mgr.init_schedule(v_name)
 
     task_mgr: TaskManager = TaskManager()
 
@@ -60,14 +64,16 @@ def run():
 
         for i, run_time in enumerate(vehicles_run_time):
             if run_time[0] == h:
-                vehicle_mgr.open_vehicle("V" + str(i))
+                vehicle_mgr.open_vehicle("V" + str(i), n_time + timedelta(hours=run_time[1] - run_time[0]))
             if run_time[1] == h:
                 vehicle_mgr.close_vehicle("V" + str(i))
 
         for m in range(60):
             n_time += timedelta(minutes=1)
+            # logs.append(main_process_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr, tasks))
             logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr, tasks))
 
+    print("left task in wait queue")
     print(task_mgr.wait_queue)
     json_obj = {'logs': logs}
 

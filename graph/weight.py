@@ -3,11 +3,15 @@ import json
 import xmltodict
 import pandas as pd
 import time
+from tqdm import tqdm
 
 # API KEY
-from graph.config import REST_API_KEY, OPEN_API_KEY
+from config import REST_API_KEY, OPEN_API_KEY
 OPEN_API_HOST = 'http://openapi.seoul.go.kr:8088'
 headers = {'Authorization': f'KakaoAK {REST_API_KEY}'}
+
+# CONST
+DEFAULT_WEIGHT: float = 0.5
 
 
 def convert_coord():
@@ -115,7 +119,11 @@ def get_vertex_start_end():
 
 
 def make_graph():
+
+    print('Make Graph Start')
+
     df = pd.read_csv(r'data/3월 8일 차량속도.CSV', encoding='euc-kr')
+    # df = pd.read_csv(r'data/2023년 1월 서울시 차량통행속도.CSV', encoding='euc-kr')
     df = df[['링크아이디', '시점명', '종점명', '방향', '거리',
              '01시', '02시', '03시', '04시', '05시', '06시', '07시', '08시',
              '09시', '10시', '11시', '12시', '13시', '14시', '15시', '16시',
@@ -131,9 +139,11 @@ def make_graph():
     df_vertex.columns = ['idx', 'LINK_ID', 'VERTEX_IDX', 'x', 'y']
     df_vertex = df_vertex[['LINK_ID', 'VERTEX_IDX', 'x', 'y']]
 
-    df_vertex_start = df_vertex.loc[df_vertex.groupby('LINK_ID').VERTEX_IDX.idxmin()]
+    df_vertex_start = df_vertex.loc[df_vertex.groupby(
+        'LINK_ID').VERTEX_IDX.idxmin()]
     df_vertex_start.columns = ['LINK_ID', 'S_V', 'S_X', 'S_Y']
-    df_vertex_end = df_vertex.loc[df_vertex.groupby('LINK_ID').VERTEX_IDX.idxmax()]
+    df_vertex_end = df_vertex.loc[df_vertex.groupby(
+        'LINK_ID').VERTEX_IDX.idxmax()]
     df_vertex_end.columns = ['LINK_ID', 'E_V', 'E_X', 'E_Y']
 
     df_merge = pd.merge(df, df_vertex_start, on='LINK_ID')
@@ -154,7 +164,8 @@ def make_graph():
     startable_node = dict()
     ended_node = dict()
 
-    for i, row in df_merge.iterrows():
+    print('Gemerate Node & Link')
+    for i, row in tqdm(df_merge.iterrows()):
         start_id = i * 2
         end_id = i * 2 + 1
 
@@ -179,7 +190,9 @@ def make_graph():
         weight = {}
 
         for i in range(1, 25):
-            weight[i] = int(row[f'소요시간_{i}']) if int(row[f'소요시간_{i}']) > 0 else 1
+            if row[f'소요시간_{i}'] == 0:
+                print("[WARNING] weigh 0 data exist!")
+            weight[i] = row[f'소요시간_{i}']
 
         edges.append({
             'from': start_id,
@@ -193,9 +206,10 @@ def make_graph():
     weight = {}
 
     for i in range(1, 25):
-        weight[i] = 1
+        weight[i] = DEFAULT_WEIGHT
 
-    for i in range(len(nodes)):
+    print("link under 500m node")
+    for i in tqdm(range(len(nodes))):
         for j in range(i + 1, len(nodes)):
             # nearby check
             if abs(nodes[i]['lat'] - nodes[j]['lat']) + abs(nodes[i]['lng'] - nodes[j]['lng']) < dist_criteria:
@@ -220,13 +234,16 @@ def make_graph():
             "edges": edges}
 
     # 손으로 전처리 필요
-    with open('data/seoul_2.json', 'w') as f:
+    with open('data/seoul_j.json', 'w') as f:
         json.dump(logs, f)
+
+    print("Generate Process end")
+
 
 # 함수 순서
 # get_vertex()
 # get_vertex_start_end()
 # convert_coord()
-# make_graph()
+make_graph()
 
 # insert_edge_id()

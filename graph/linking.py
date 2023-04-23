@@ -3,9 +3,11 @@ from collections import deque
 from tqdm import tqdm
 
 weight = {}
+DEFAULT_WEIGHT: float = 0.5
 
 for i in range(1, 25):
-    weight[i] = 1
+    weight[i] = DEFAULT_WEIGHT
+
 
 class Linker:
     """
@@ -138,7 +140,7 @@ class Linker:
             shortest_distance = 10000000
             for c0 in self.Case_0:
                 distance = abs(self.nodes[c1]['lat'] - self.nodes[c0]['lat']) + \
-                           abs(self.nodes[c1]['lng'] - self.nodes[c0]['lng'])
+                    abs(self.nodes[c1]['lng'] - self.nodes[c0]['lng'])
                 if distance < shortest_distance:
                     shortest_distance = distance
                     nearby_node = c0
@@ -222,7 +224,7 @@ class Linker:
             shortest_distance = 10000000
             for c2 in self.Case_2:
                 distance = abs(self.nodes[c3]['lat'] - self.nodes[c2]['lat']) + \
-                           abs(self.nodes[c3]['lng'] - self.nodes[c2]['lng'])
+                    abs(self.nodes[c3]['lng'] - self.nodes[c2]['lng'])
                 if distance < shortest_distance:
                     shortest_distance = distance
                     nearby_node = c2
@@ -288,6 +290,6 @@ class Linker:
 
 
 if __name__ == "__main__":
-    linker = Linker('../graph/data/seoul_all.json',
-                    '../graph/data/seoul_all_test.json', 0)
+    linker = Linker('./data/seoul_j.json',
+                    './data/seoul_link_j.json', 0)
     linker.processing()

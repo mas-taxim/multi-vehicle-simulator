@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from .location import Location
 
 
@@ -21,6 +23,7 @@ class Vehicle:
         self.status = Vehicle.CLOSE
         self.route: list[Location] = []
         self.running: bool = False
+        self.close_time: datetime = datetime.strptime("2000-01-01", "%Y-%m-%d")
 
     def get_route_tuple(self):
         route_list = []

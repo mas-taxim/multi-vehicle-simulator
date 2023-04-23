@@ -36,12 +36,12 @@ def test_move1(n_time: datetime, vehicle_mgr: VehicleManager):
 
     vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
-    vehicle_mgr.open_vehicle("V1")
+    vehicle_mgr.open_vehicle("V1", n_time + timedelta(hours=8))
     vehicle_mgr.get_vehicle("V1").status = Vehicle.WAIT
 
     vehicle_mgr.get_vehicle("V2").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V2").loc.y = node[0][1]
-    vehicle_mgr.open_vehicle("V2")
+    vehicle_mgr.open_vehicle("V2", n_time + timedelta(hours=8))
     vehicle_mgr.get_vehicle("V2").status = Vehicle.WAIT
 
     vehicle: Vehicle = vehicle_mgr.get_vehicle("V1")
@@ -50,11 +50,11 @@ def test_move1(n_time: datetime, vehicle_mgr: VehicleManager):
         [Path(Location(node[0][0], node[0][1]), Location(node[1][0], node[1][1])),
          Path(Location(node[1][0], node[1][1]), Location(node[2][0], node[2][1]))])
 
-    move(vehicle)
+    move(vehicle, Location(node[1][0], node[1][1]))
     assert vehicle.loc.x == 0
     assert vehicle.loc.y == 2
 
-    move(vehicle)
+    move(vehicle, Location(node[1][0], node[1][1]))
     assert vehicle.loc.x == 2
     assert vehicle.loc.y == 2
 
@@ -68,12 +68,12 @@ def test_script1(
 
     vehicle_mgr.get_vehicle("V1").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V1").loc.y = node[0][1]
-    vehicle_mgr.open_vehicle("V1")
+    vehicle_mgr.open_vehicle("V1", n_time + timedelta(hours=8))
     vehicle_mgr.get_vehicle("V1").status = Vehicle.WAIT
 
     vehicle_mgr.get_vehicle("V2").loc.x = node[0][0]
     vehicle_mgr.get_vehicle("V2").loc.y = node[0][1]
-    vehicle_mgr.open_vehicle("V2")
+    vehicle_mgr.open_vehicle("V2", n_time + timedelta(hours=8))
     vehicle_mgr.get_vehicle("V2").status = Vehicle.WAIT
 
     task_mgr.add_task(len(task_mgr.tasks), Location(node[0][0], node[0][1]),
