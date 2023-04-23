@@ -60,42 +60,44 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskMa
     assert sched_vehicle.name == "V1"
 
     add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(0), schedule_mgr)
-    schedule_v1 = schedule_mgr.get_schedule(sched_vehicle.name)
 
-    assert schedule_v1[0].task_id == -1
-    assert schedule_v1[0].start_time == datetime.strptime("2023-02-02", '%Y-%m-%d')
-    assert schedule_v1[0].start_loc.x == 0
-    assert schedule_v1[0].start_loc.y == 0
-    assert schedule_v1[0].end_time == datetime.strptime("2023-02-02 00:01:00", '%Y-%m-%d %H:%M:%S')
-    assert schedule_v1[0].end_loc.x == 0
-    assert schedule_v1[0].end_loc.y == 2
+    schedule_list_v1 = schedule_mgr.get_schedule_list(sched_vehicle.name)
 
-    assert schedule_v1[1].task_id == 0
-    assert schedule_v1[1].start_time == datetime.strptime("2023-02-02 00:01:00", '%Y-%m-%d %H:%M:%S')
-    assert schedule_v1[1].start_loc.x == 0
-    assert schedule_v1[1].start_loc.y == 2
-    assert schedule_v1[1].end_time == datetime.strptime("2023-02-02 00:04:00", '%Y-%m-%d %H:%M:%S')
-    assert schedule_v1[1].end_loc.x == 0
-    assert schedule_v1[1].end_loc.y == 0
+    assert schedule_list_v1.get_schedule(0).task_id == -1
+    assert schedule_list_v1.get_schedule(0).start_time == datetime.strptime("2023-02-02", '%Y-%m-%d')
+    assert schedule_list_v1.get_schedule(0).start_loc.x == 0
+    assert schedule_list_v1.get_schedule(0).start_loc.y == 0
+    assert schedule_list_v1.get_schedule(0).end_time == datetime.strptime("2023-02-02 00:01:00", '%Y-%m-%d %H:%M:%S')
+    assert schedule_list_v1.get_schedule(0).end_loc.x == 0
+    assert schedule_list_v1.get_schedule(0).end_loc.y == 2
+
+    assert schedule_list_v1.get_schedule(1).task_id == 0
+    assert schedule_list_v1.get_schedule(1).start_time == datetime.strptime("2023-02-02 00:01:00", '%Y-%m-%d %H:%M:%S')
+    assert schedule_list_v1.get_schedule(1).start_loc.x == 0
+    assert schedule_list_v1.get_schedule(1).start_loc.y == 2
+    assert schedule_list_v1.get_schedule(1).end_time == datetime.strptime("2023-02-02 00:04:00", '%Y-%m-%d %H:%M:%S')
+    assert schedule_list_v1.get_schedule(1).end_loc.x == 0
+    assert schedule_list_v1.get_schedule(1).end_loc.y == 0
 
     sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task_mgr.get_task(1))
     assert sched_vehicle.name == "V1"
 
     add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(1), schedule_mgr)
-    schedule_v1 = schedule_mgr.get_schedule(sched_vehicle.name)
 
-    assert schedule_v1[2].task_id == -1
-    assert schedule_v1[2].start_time == datetime.strptime("2023-02-02 00:04:00", '%Y-%m-%d %H:%M:%S')
-    assert schedule_v1[2].start_loc.x == 0
-    assert schedule_v1[2].start_loc.y == 0
-    assert schedule_v1[2].end_time == datetime.strptime("2023-02-02 00:06:00", '%Y-%m-%d %H:%M:%S')
-    assert schedule_v1[2].end_loc.x == 2
-    assert schedule_v1[2].end_loc.y == 2
+    schedule_list_v1 = schedule_mgr.get_schedule_list(sched_vehicle.name)
 
-    assert schedule_v1[3].task_id == 1
-    assert schedule_v1[3].start_time == datetime.strptime("2023-02-02 00:06:00", '%Y-%m-%d %H:%M:%S')
-    assert schedule_v1[3].start_loc.x == 2
-    assert schedule_v1[3].start_loc.y == 2
-    assert schedule_v1[3].end_time == datetime.strptime("2023-02-02 00:07:00", '%Y-%m-%d %H:%M:%S')
-    assert schedule_v1[3].end_loc.x == 2
-    assert schedule_v1[3].end_loc.y == 0
+    assert schedule_list_v1.get_schedule(2).task_id == -1
+    assert schedule_list_v1.get_schedule(2).start_time == datetime.strptime("2023-02-02 00:04:00", '%Y-%m-%d %H:%M:%S')
+    assert schedule_list_v1.get_schedule(2).start_loc.x == 0
+    assert schedule_list_v1.get_schedule(2).start_loc.y == 0
+    assert schedule_list_v1.get_schedule(2).end_time == datetime.strptime("2023-02-02 00:06:00", '%Y-%m-%d %H:%M:%S')
+    assert schedule_list_v1.get_schedule(2).end_loc.x == 2
+    assert schedule_list_v1.get_schedule(2).end_loc.y == 2
+
+    assert schedule_list_v1.get_schedule(3).task_id == 1
+    assert schedule_list_v1.get_schedule(3).start_time == datetime.strptime("2023-02-02 00:06:00", '%Y-%m-%d %H:%M:%S')
+    assert schedule_list_v1.get_schedule(3).start_loc.x == 2
+    assert schedule_list_v1.get_schedule(3).start_loc.y == 2
+    assert schedule_list_v1.get_schedule(3).end_time == datetime.strptime("2023-02-02 00:07:00", '%Y-%m-%d %H:%M:%S')
+    assert schedule_list_v1.get_schedule(3).end_loc.x == 2
+    assert schedule_list_v1.get_schedule(3).end_loc.y == 0

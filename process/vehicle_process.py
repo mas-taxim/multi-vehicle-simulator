@@ -3,7 +3,7 @@ import math
 from datetime import datetime, timedelta
 
 
-from entity import Path, Task, Vehicle, Location
+from entity import Path, Task, Vehicle, Location, ScheduleList
 from entity.location import is_same_location
 from manager import VehicleManager, ScheduleManager
 
@@ -15,9 +15,9 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager, schedule_mgr:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
 
         if schedule_mgr is not None:
-            schedule: list = schedule_mgr.get_schedule(v_name)
+            schedule_list = schedule_mgr.get_schedule_list(v_name)
         else:
-            schedule = None
+            schedule_list = None
 
         task: Task = vehicle_mgr.get_alloced_task(v_name)
 
@@ -32,7 +32,7 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager, schedule_mgr:
         elif vehicle.status == Vehicle.LOADING:
             loading(n_time, vehicle, task)
         elif vehicle.status == Vehicle.LOAD_END:
-            load_end(n_time, vehicle, task)
+            load_end(n_time, vehicle, task, schedule_list)
         elif vehicle.status == Vehicle.MOVE_TO_UNLOAD:
             move_to_unload(n_time, vehicle, task)
         elif vehicle.status == Vehicle.UNLOAD_START:
@@ -40,7 +40,7 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager, schedule_mgr:
         elif vehicle.status == Vehicle.UNLOADING:
             unloading(n_time, vehicle, task)
         elif vehicle.status == Vehicle.UNLOAD_END:
-            unload_end(n_time, vehicle, task, schedule)
+            unload_end(n_time, vehicle, task, schedule_list)
         elif vehicle.status == Vehicle.CLOSE:
             close(n_time, vehicle, task)
         else:
@@ -209,9 +209,13 @@ def loading(n_time: datetime, vehicle: Vehicle, task: Task):
         task.load_end_time = n_time
 
 
-def load_end(n_time: datetime, vehicle: Vehicle, task: Task):
+def load_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: ScheduleList):
     vehicle.status = Vehicle.MOVE_TO_UNLOAD
     task.status = Task.MOVE_TO_UNLOAD
+
+    if schedule_list is not None:
+        schedule_list.pop_schedule()
+        schedule_list.update_schedule(n_time)
 
 
 def move_to_unload(n_time: datetime, vehicle: Vehicle, task: Task):
@@ -238,15 +242,18 @@ def unloading(n_time: datetime, vehicle: Vehicle, task: Task):
         task.unload_end_time = n_time
 
 
-def unload_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule: list):
+
+def unload_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: ScheduleList):
+
     if vehicle.running:
         vehicle.status = Vehicle.WAIT
     else:
         vehicle.status = Vehicle.CLOSE
 
-    if schedule is not None:
-        schedule.pop(0)
-        schedule.pop(0)
+    if schedule_list is not None:
+        schedule_list.pop_schedule()
+        schedule_list.update_schedule(n_time)
+
     vehicle.route = []
 
 
