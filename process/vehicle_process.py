@@ -2,7 +2,6 @@ import logging
 import math
 from datetime import datetime, timedelta
 
-
 from entity import Path, Task, Vehicle, Location, ScheduleList
 from entity.location import is_same_location
 from manager import VehicleManager, ScheduleManager
@@ -10,7 +9,7 @@ from manager import VehicleManager, ScheduleManager
 logger = logging.getLogger("main")
 
 
-def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager, schedule_mgr: ScheduleManager=None):
+def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager, schedule_mgr: ScheduleManager = None):
     for v_name in vehicle_mgr.vehicles:
         vehicle: Vehicle = vehicle_mgr.get_vehicle(v_name)
 
@@ -32,7 +31,7 @@ def vehicle_process(n_time: datetime, vehicle_mgr: VehicleManager, schedule_mgr:
         elif vehicle.status == Vehicle.LOADING:
             loading(n_time, vehicle, task)
         elif vehicle.status == Vehicle.LOAD_END:
-            load_end(n_time, vehicle, task, schedule_list)
+            load_end(n_time, vehicle, task)
         elif vehicle.status == Vehicle.MOVE_TO_UNLOAD:
             move_to_unload(n_time, vehicle, task)
         elif vehicle.status == Vehicle.UNLOAD_START:
@@ -64,7 +63,7 @@ def move_origin(vehicle: Vehicle, path: Path = None):
     arrive = path.arrive_loc
 
     unit_distance = (math.sqrt((arrive.x - depart.x) ** 2 +
-                     (arrive.y - depart.y) ** 2)) / path.weight
+                               (arrive.y - depart.y) ** 2)) / path.weight
     length = math.sqrt((arrive.x - vehicle.loc.x) ** 2 +
                        (arrive.y - vehicle.loc.y) ** 2)
 
@@ -81,7 +80,6 @@ def move_origin(vehicle: Vehicle, path: Path = None):
 
 
 def move(vehicle: Vehicle, final_destination: Location, path: Path = None):
-
     left_time = 60.0
     # depart: Location = vehicle.loc
     # arrive: Location = vehicle.loc
@@ -172,9 +170,9 @@ def move(vehicle: Vehicle, final_destination: Location, path: Path = None):
 
         # move under 1path each
         vehicle.loc.x += (arrive.x - vehicle.loc.x) / \
-            length * unit_distance * left_time
+                         length * unit_distance * left_time
         vehicle.loc.y += (arrive.y - vehicle.loc.y) / \
-            length * unit_distance * left_time
+                         length * unit_distance * left_time
         left_time = 0
 
 
@@ -209,13 +207,9 @@ def loading(n_time: datetime, vehicle: Vehicle, task: Task):
         task.load_end_time = n_time
 
 
-def load_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: ScheduleList):
+def load_end(n_time: datetime, vehicle: Vehicle, task: Task):
     vehicle.status = Vehicle.MOVE_TO_UNLOAD
     task.status = Task.MOVE_TO_UNLOAD
-
-    if schedule_list is not None:
-        schedule_list.pop_schedule()
-        schedule_list.update_schedule(n_time)
 
 
 def move_to_unload(n_time: datetime, vehicle: Vehicle, task: Task):
@@ -242,16 +236,17 @@ def unloading(n_time: datetime, vehicle: Vehicle, task: Task):
         task.unload_end_time = n_time
 
 
-
 def unload_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: ScheduleList):
-
     if vehicle.running:
         vehicle.status = Vehicle.WAIT
     else:
         vehicle.status = Vehicle.CLOSE
 
     if schedule_list is not None:
-        schedule_list.pop_schedule()
+        schedule = schedule_list.pop_schedule()
+        schedule.load_time = task.load_start_time
+        schedule.unload_time = n_time
+
         schedule_list.update_schedule(n_time)
 
     vehicle.route = []
