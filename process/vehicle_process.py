@@ -244,7 +244,7 @@ def unload_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: Sc
 
     if schedule_list is not None:
         schedule = schedule_list.pop_schedule()
-        schedule.load_time = task.load_start_time
+        schedule.load_time = task.load_end_time
         schedule.unload_time = n_time
 
         schedule_list.update_schedule(n_time)
