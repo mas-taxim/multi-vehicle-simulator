@@ -19,30 +19,25 @@ def add_schedule(n_time: datetime, graph_name: str, vehicle: Vehicle, task: Task
         start_time: datetime = n_time
     else:
         last_schedule = schedule_list.get_last_schedule()
-        start_loc: Location = Location(last_schedule.end_loc.x, last_schedule.end_loc.y)
-        start_time: datetime = last_schedule.end_time
+        start_loc: Location = Location(last_schedule.unload_loc.x, last_schedule.unload_loc.y)
+        start_time: datetime = last_schedule.unload_time
 
-    end_loc: Location = Location(task.loc_load.x, task.loc_load.y)
+    load_loc: Location = Location(task.loc_load.x, task.loc_load.y)
 
     move_load_time: int = nx.shortest_path_length(graph, node_idx[(start_loc.x, start_loc.y)], node_idx[(
-        end_loc.x, end_loc.y)], weight='weight')
+        load_loc.x, load_loc.y)], weight='weight')
 
-    end_time: datetime = start_time + timedelta(minutes=move_load_time)
-
-    schedule_list.add_schedule(Schedule(-1, start_time, start_loc, end_time, end_loc))
+    load_time: datetime = start_time + timedelta(minutes=move_load_time + task.elapsed_time + 3)
 
     # unload 지점까지 움직이는 schedule
-    start_loc = Location(end_loc.x, end_loc.y)
-    start_time = end_time
+    unload_loc = Location(task.loc_unload.x, task.loc_unload.y)
 
-    end_loc = Location(task.loc_unload.x, task.loc_unload.y)
+    move_unload_time: int = nx.shortest_path_length(graph, node_idx[(load_loc.x, load_loc.y)], node_idx[(
+        unload_loc.x, unload_loc.y)], weight='weight')
 
-    move_unload_time: int = nx.shortest_path_length(graph, node_idx[(start_loc.x, start_loc.y)], node_idx[(
-        end_loc.x, end_loc.y)], weight='weight')
+    unload_time: datetime = load_time + timedelta(minutes=move_unload_time + task.elapsed_time + 3)
 
-    end_time: datetime = start_time + timedelta(minutes=move_unload_time)
-
-    schedule_list.add_schedule(Schedule(task.idx, start_time, start_loc, end_time, end_loc))
+    schedule_list.add_schedule(Schedule(task.idx, start_time, start_loc, load_time, load_loc, unload_time, unload_loc))
 
 
 def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, schedule_mgr: ScheduleManager,
@@ -65,14 +60,14 @@ def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: Vehicle
             last_loc = vehicle.loc
         else:
             last_schedule = schedule_list.get_last_schedule()
-            last_sched_time = last_schedule.end_time
-            last_loc = last_schedule.end_loc
+            last_sched_time = last_schedule.unload_time
+            last_loc = last_schedule.unload_loc
 
         if vehicle.running and vehicle.close_time > last_sched_time:
             move_load_time = nx.shortest_path_length(graph, node_idx[(last_loc.x, last_loc.y)], node_idx[(
                 task.loc_load.x, task.loc_load.y)], weight='weight')
-            sched_load_time = last_sched_time + timedelta(minutes=move_load_time)
-            sched_unload_time = sched_load_time + timedelta(minutes=move_unload_time)
+            sched_load_time = last_sched_time + timedelta(minutes=move_load_time + task.elapsed_time + 3)
+            sched_unload_time = sched_load_time + timedelta(minutes=move_unload_time + task.elapsed_time + 3)
 
             if vehicle.close_time > sched_unload_time:
                 if min_sched_load_time > sched_load_time:
@@ -103,4 +98,3 @@ def schedule_process(
         return sched_vehicle.name, task.idx
 
     return [None, None]
-

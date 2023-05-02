@@ -29,14 +29,16 @@ def run():
 
     random.seed(0)
 
-    graph_name = 'seoul'
+    graph_name = 'seoul_default_0_1_link'
     nodes, node_idx, graph = get_map(graph_name)
 
     df_task = pd.read_csv('data/reqeust_200108.csv')
-    df_task = df_task.sample(200, random_state=0)
+    df_task = df_task.sample(100, random_state=0)
+    df_task['move_time'] = pd.to_datetime(df_task['end_time']) - pd.to_datetime(df_task['start_time'])
     df_task = df_task.sort_values('req_time')
-    df_task = df_task[['req_time', 'start_node', 'end_node']]
-    print(df_task)
+    df_task.reset_index(drop=True, inplace=True)
+    df_task = df_task[['req_time', 'start_node', 'end_node', 'move_time']]
+    # print(df_task)
 
     tasks = []
     for i, row in df_task.iterrows():
@@ -45,7 +47,7 @@ def run():
     vehicle_mgr: VehicleManager = VehicleManager()
 
     vehicles_run_time = []
-    vehicles_run_time.extend([0, 26] for _ in range(15))
+    vehicles_run_time.extend([0, 26] for _ in range(10))
 
     schedule_mgr: ScheduleManager = ScheduleManager()
 
@@ -57,8 +59,9 @@ def run():
     task_mgr: TaskManager = TaskManager()
 
     logs = []
+    schedule_logs = []
     n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
-    for h in range(0, 30):
+    for h in range(0, 15):
         print(h)
         update_weight(graph_name, h % 24 + 1)
 
@@ -70,12 +73,18 @@ def run():
 
         for m in range(60):
             n_time += timedelta(minutes=1)
-            # logs.append(main_process_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr, tasks))
-            logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr, tasks))
+
+            log, schedule_log = main_process_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr, tasks)
+            logs.append(log)
+            if len(schedule_log) > 0:
+                schedule_logs.append(schedule_log)
+
+            # logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr, tasks))
 
     print("left task in wait queue")
     print(task_mgr.wait_queue)
-    json_obj = {'logs': logs}
+    json_obj = {'logs': logs,
+                'schedules': schedule_logs}
 
     log_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     with open(f'log/{log_time}.json', 'w') as outfile:

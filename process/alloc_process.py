@@ -3,7 +3,7 @@ import datetime
 
 import networkx as nx
 
-from entity import Task, Vehicle
+from entity import Task, Vehicle, Schedule
 from manager import TaskManager, VehicleManager, ScheduleManager
 
 from allocator.vehicle_allocator import allocate
@@ -50,12 +50,11 @@ def alloc_by_schedule(n_time: datetime, graph_name: str, vehicle_mgr: VehicleMan
         schedule_list = schedule_mgr.get_schedule_list(v_name)
 
         if vehicle.status == Vehicle.WAIT and len(schedule_list) > 0:
-            load_schedule = schedule_list.get_schedule(0)
-            unload_schedule = schedule_list.get_schedule(1)
+            schedule = schedule_list.get_schedule(0)
+            schedule.set_status(Schedule.RUNNING)
+            allocate(n_time, graph_name, vehicle_mgr, task_mgr, v_name, schedule.task_id)
 
-            allocate(n_time, graph_name, vehicle_mgr, task_mgr, v_name, unload_schedule.task_id)
-
-            print(f"[alloc_process] : {unload_schedule.task_id} is allocated to {v_name}")
+            print(f"[alloc_process] : {schedule.task_id} is allocated to {v_name}")
 
 
 def alloc_process_nearest(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, task_mgr: TaskManager):

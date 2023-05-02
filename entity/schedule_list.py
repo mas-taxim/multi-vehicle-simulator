@@ -5,6 +5,7 @@ from entity import Schedule
 
 class ScheduleList:
     def __init__(self):
+        self.terminated_list: list[Schedule] = []
         self.schedule_list: list[Schedule] = []
 
     def __len__(self):
@@ -20,7 +21,18 @@ class ScheduleList:
         return self.schedule_list[-1]
 
     def pop_schedule(self):
-        return self.schedule_list.pop(0)
+        schedule = self.schedule_list.pop(0)
+        schedule.set_status(Schedule.TERMINATED)
+        self.terminated_list.append(schedule)
+
+        return schedule
+
+    def get_schedule_list_all(self):
+        schedule_list_all = []
+        schedule_list_all.extend(self.terminated_list)
+        schedule_list_all.extend(self.schedule_list)
+
+        return schedule_list_all
 
     def get_schedule_list(self):
         return self.schedule_list
@@ -31,4 +43,5 @@ class ScheduleList:
 
             for schedule in self.schedule_list:
                 schedule.start_time = schedule.start_time + delta
-                schedule.end_time = schedule.end_time + delta
+                schedule.load_time = schedule.load_time + delta
+                schedule.unload_time = schedule.unload_time + delta

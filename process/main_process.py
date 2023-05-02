@@ -66,4 +66,9 @@ def main_process_schedule(
     log['vehicles'] = vehicle_mgr.get_log()
     log['tasks'] = task_mgr.get_log()
 
-    return log
+    schedule_log = dict()
+    if n_time.minute % 30 == 0:
+        schedule_log['time'] = int(n_time.timestamp() * 1000)
+        schedule_log['logs'] = schedule_mgr.get_logs()
+
+    return log, schedule_log
