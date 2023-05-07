@@ -62,9 +62,9 @@ def main_process_schedule(
         if v_name is None:
             break
 
-    if schedule_type == "reschedule" and (n_time.minute % 5) == 0:
+    if schedule_type == "reschedule" and (n_time.minute % 20) == 0:
         print(f"[schedule_process] : reschedule time : {n_time.strftime('%Y-%m-%d %H:%M:%S')}")
-        reschedule_process()
+        reschedule_process(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
 
     alloc_by_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
 

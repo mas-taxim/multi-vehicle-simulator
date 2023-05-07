@@ -45,3 +45,24 @@ class ScheduleList:
                 schedule.start_time = schedule.start_time + delta
                 schedule.load_time = schedule.load_time + delta
                 schedule.unload_time = schedule.unload_time + delta
+
+    def clear_schedule_list(self) -> list:
+        if len(self.schedule_list) == 0:
+            return
+
+        cleared_task_list = []
+        # cleared_task_list = dict()
+        running_schedule = None
+        if self.schedule_list[0].status == Schedule.RUNNING:
+            running_schedule = self.schedule_list.pop(0)
+
+        for schedule in self.schedule_list:
+            cleared_task_list.append(schedule.task_id)
+            # cleared_task_list[schedule.task_id] = False
+
+        # if running schedule exist, keep this schedule
+        self.schedule_list: list[Schedule] = []
+        if running_schedule is not None:
+            self.schedule_list.append(running_schedule)
+
+        return cleared_task_list

@@ -15,7 +15,7 @@ graph_name = 'seoul_default_0_1_link'
 request_name = 'reqeust_200108.csv'
 
 # Mode Setting
-#schedule_type = "dispatch"
+# schedule_type = "dispatch"
 schedule_type = "reschedule"
 
 
