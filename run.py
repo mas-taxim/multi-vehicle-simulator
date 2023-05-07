@@ -10,6 +10,10 @@ from manager import TaskManager, VehicleManager, ScheduleManager
 from graph.route import get_map, update_weight
 from process.main_process import main_process, main_process_schedule
 
+# file Name Setting
+graph_name = 'seoul_default_0_1_link'
+request_name = 'reqeust_200108.csv'
+
 
 def init_log():
     log_time = datetime.now().strftime("%Y%m%d_%H%M%S") + ".log"
@@ -25,15 +29,16 @@ def init_log():
 
 
 def run():
+    # init setting
     init_log()
-
     random.seed(0)
 
-    graph_name = 'seoul_default_0_1_link'
+    # Graph Setting
     nodes, node_idx, graph = get_map(graph_name)
 
-    df_task = pd.read_csv('data/reqeust_200108.csv')
-    df_task = df_task.sample(100, random_state=0)
+    # Task Setting
+    df_task = pd.read_csv(f'data/{request_name}')
+    df_task = df_task.sample(100, random_state=0) # random sampling for test
     df_task['move_time'] = pd.to_datetime(df_task['end_time']) - pd.to_datetime(df_task['start_time'])
     df_task = df_task.sort_values('req_time')
     df_task.reset_index(drop=True, inplace=True)
@@ -44,11 +49,13 @@ def run():
     for i, row in df_task.iterrows():
         tasks.append((row['req_time'], row['start_node'], row['end_node']))
 
+    # Vehicle Setting
     vehicle_mgr: VehicleManager = VehicleManager()
 
     vehicles_run_time = []
     vehicles_run_time.extend([0, 26] for _ in range(10))
 
+    # Schedule Setting
     schedule_mgr: ScheduleManager = ScheduleManager()
 
     for i in range(len(vehicles_run_time)):
@@ -62,7 +69,7 @@ def run():
     schedule_logs = []
     n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
     for h in range(0, 15):
-        print(h)
+        print(f"Simulation Time : {h} hour processing..")
         update_weight(graph_name, h % 24 + 1)
 
         for i, run_time in enumerate(vehicles_run_time):
