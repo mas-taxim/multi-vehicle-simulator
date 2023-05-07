@@ -51,7 +51,7 @@ def main_process_schedule(
     ''' processing each time, return value is result log '''
     generate_process(n_time, graph_name, task_mgr, tasks)
 
-    for i in range(100):
+    while task_mgr.get_wait_task_num() > 0:
         v_name, t_idx = schedule_process(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
         if v_name is None:
             break
