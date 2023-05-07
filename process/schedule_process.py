@@ -98,3 +98,7 @@ def schedule_process(
         return sched_vehicle.name, task.idx
 
     return [None, None]
+
+
+def reschedule_process():
+    return None

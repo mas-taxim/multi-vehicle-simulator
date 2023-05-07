@@ -14,6 +14,10 @@ from process.main_process import main_process, main_process_schedule
 graph_name = 'seoul_default_0_1_link'
 request_name = 'reqeust_200108.csv'
 
+# Mode Setting
+#schedule_type = "dispatch"
+schedule_type = "reschedule"
+
 
 def init_log():
     log_time = datetime.now().strftime("%Y%m%d_%H%M%S") + ".log"
@@ -38,7 +42,7 @@ def run():
 
     # Task Setting
     df_task = pd.read_csv(f'data/{request_name}')
-    df_task = df_task.sample(100, random_state=0) # random sampling for test
+    df_task = df_task.sample(100, random_state=0)  # random sampling for test
     df_task['move_time'] = pd.to_datetime(df_task['end_time']) - pd.to_datetime(df_task['start_time'])
     df_task = df_task.sort_values('req_time')
     df_task.reset_index(drop=True, inplace=True)
@@ -69,7 +73,7 @@ def run():
     schedule_logs = []
     n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
     for h in range(0, 15):
-        print(f"Simulation Time : {h} hour processing..")
+        print(f"============ Simulation Time : {h} hour processing.. ============")
         update_weight(graph_name, h % 24 + 1)
 
         for i, run_time in enumerate(vehicles_run_time):
@@ -81,7 +85,7 @@ def run():
         for m in range(60):
             n_time += timedelta(minutes=1)
 
-            log, schedule_log = main_process_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr, tasks)
+            log, schedule_log = main_process_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr, tasks, schedule_type)
             logs.append(log)
             if len(schedule_log) > 0:
                 schedule_logs.append(schedule_log)
