@@ -23,6 +23,6 @@ def generate_task(n_time: datetime, node: dict, task_mgr: TaskManager, task: tup
 def generate_process(n_time: datetime, graph_name: str, task_mgr: TaskManager, tasks: list):
     node, node_idx, graph = get_map(graph_name)
 
-    while len(tasks) > 0 and tasks[0][0][0:5] == n_time.strftime('%H:%M'):
+    while len(tasks) > 0 and tasks[0][0][0:5] <= n_time.strftime('%H:%M'):
         generate_task(n_time, node, task_mgr, tasks[0])
         tasks.pop(0)
