@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import logging
 import random
 import json
+import time
 import pandas as pd
 from tqdm import tqdm
 
@@ -9,6 +10,18 @@ from manager import TaskManager, VehicleManager, ScheduleManager
 
 from graph.route import get_map, update_weight
 from process.main_process import main_process, main_process_schedule
+
+# file Name Setting
+graph_name = '20230426_seoul_default_0_7_st_link'
+request_name = 'reqeust_2020-08-29_20230426_seoul_default_0_5_link.csv'
+
+# Mode Setting
+schedule_type = "dispatch"
+# schedule_type = "reschedule"
+simulation_time = 24
+simulation_vehicle_num = 30
+simulation_task_num = 450
+simulation_reschedule_time = 15
 
 
 def init_log():
@@ -25,32 +38,44 @@ def init_log():
 
 
 def run():
-    init_log()
 
+    print("============ Simulation Start ============")
+    start_time = time.time()
+
+    # init setting
+    init_log()
     random.seed(0)
 
-    graph_name = 'seoul_default_0_1_link'
+    # Graph Setting
     nodes, node_idx, graph = get_map(graph_name)
 
-    df_task = pd.read_csv('data/reqeust_200108.csv')
-    df_task = df_task.sample(100, random_state=0)
+    # Task Setting
+    df_task = pd.read_csv(f'data/{request_name}')
+    print(f"Total Task Data Num : {len(df_task)}")
+    df_task = df_task.sample(simulation_task_num, random_state=0)  # random sampling for test
+    print(f"Sample Task Data Num : {len(df_task)}")
+
     df_task['move_time'] = pd.to_datetime(df_task['end_time']) - pd.to_datetime(df_task['start_time'])
     df_task = df_task.sort_values('req_time')
     df_task.reset_index(drop=True, inplace=True)
     df_task = df_task[['req_time', 'start_node', 'end_node', 'move_time']]
-    # print(df_task)
 
+    task_count = dict([(i, 0) for i in range(0, 24)])
     tasks = []
     for i, row in df_task.iterrows():
+        task_count[int(row['req_time'][0:2])] += 1
         tasks.append((row['req_time'], row['start_node'], row['end_node']))
 
+    # Vehicle Setting
     vehicle_mgr: VehicleManager = VehicleManager()
 
     vehicles_run_time = []
-    vehicles_run_time.extend([0, 26] for _ in range(10))
+    vehicles_run_time.extend([0, 26] for _ in range(simulation_vehicle_num))
 
+    # Schedule Setting
     schedule_mgr: ScheduleManager = ScheduleManager()
 
+    print(f"Vehicle Num : {len(vehicles_run_time)}")
     for i in range(len(vehicles_run_time)):
         v_name = "V" + str(i)
         vehicle_mgr.add_vehicle(v_name, nodes[3878][0], nodes[3878][1])
@@ -61,8 +86,8 @@ def run():
     logs = []
     schedule_logs = []
     n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
-    for h in range(0, 15):
-        print(h)
+    for h in range(0, simulation_time):
+        print(f"============ Simulation Time : {h} hour processing.. task count : {task_count[h]}============")
         update_weight(graph_name, h % 24 + 1)
 
         for i, run_time in enumerate(vehicles_run_time):
@@ -74,15 +99,16 @@ def run():
         for m in range(60):
             n_time += timedelta(minutes=1)
 
-            log, schedule_log = main_process_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr, tasks)
+            log, schedule_log = main_process_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr, tasks, schedule_type, simulation_reschedule_time)
             logs.append(log)
             if len(schedule_log) > 0:
                 schedule_logs.append(schedule_log)
 
             # logs.append(main_process(n_time, graph_name, vehicle_mgr, task_mgr, tasks))
 
-    print("left task in wait queue")
-    print(task_mgr.wait_queue)
+    print("============ Simulation End ============")
+    print(f"Processing Time : {round(time.time() - start_time)}")
+
     json_obj = {'logs': logs,
                 'schedules': schedule_logs}
 

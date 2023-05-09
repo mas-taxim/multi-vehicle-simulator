@@ -40,8 +40,12 @@ def add_schedule(n_time: datetime, graph_name: str, vehicle: Vehicle, task: Task
     schedule_list.add_schedule(Schedule(task.idx, start_time, start_loc, load_time, load_loc, unload_time, unload_loc))
 
 
-def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: VehicleManager, schedule_mgr: ScheduleManager,
-                         task: Task) -> Vehicle:
+def get_earliest_vehicle(
+        n_time: datetime,
+        graph_name: str,
+        vehicle_mgr: VehicleManager,
+        schedule_mgr: ScheduleManager,
+        task: Task):
     node, node_idx, graph = get_map(graph_name)
 
     min_sched_load_time: datetime = n_time + timedelta(hours=240)
@@ -74,7 +78,7 @@ def get_earliest_vehicle(n_time: datetime, graph_name: str, vehicle_mgr: Vehicle
                     min_sched_load_time = sched_load_time
                     min_vehicle = vehicle
 
-    return min_vehicle
+    return min_vehicle, min_sched_load_time
 
 
 def schedule_process(
@@ -89,7 +93,7 @@ def schedule_process(
 
     task: Task = task_mgr.peek_wait_task()
 
-    sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task)
+    sched_vehicle, min_sched_load_time = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task)
 
     if sched_vehicle is not None:
         task_mgr.poll_wait_task()
@@ -98,3 +102,54 @@ def schedule_process(
         return sched_vehicle.name, task.idx
 
     return [None, None]
+
+
+def reschedule_process(
+        n_time: datetime,
+        graph_name: str,
+        vehicle_mgr: VehicleManager,
+        task_mgr: TaskManager,
+        schedule_mgr: ScheduleManager):
+
+    # getting target task list : sched task is True, and deleted
+    target_task_list = dict()
+    target_tasks = schedule_mgr.clear_schedule_lists()
+    if len(target_tasks) == 0:
+        return
+    for tid in target_tasks:
+        target_task_list[tid] = True
+
+    # looping untill all task scheduled
+    batch = 1
+    while len(target_task_list) > 0:
+        print(f"[reschedule_process] {batch} time reschedule")
+        batch += 1
+
+        # 1. task - vehicle 쌍의 wait time 구하기
+        task_vehicle_wait_time_list = []
+        unsched_vehicle_list = dict()
+        for task_id in target_task_list:
+            task = task_mgr.get_task(task_id)
+            sched_vehicle, min_sched_load_time = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task)
+            wait_time = (min_sched_load_time - task_mgr.get_task(task_id).create_time).seconds
+            task_vehicle_wait_time_list.append([task_id, sched_vehicle, wait_time])
+            unsched_vehicle_list[sched_vehicle.name] = True
+
+        # 2. task별 Max Wait Time을 위한 정렬
+        #task_vehicle_wait_time_list = sorted(task_vehicle_wait_time_list.items(), reverse=True)
+        task_vehicle_wait_time_list.sort(key=lambda x: -x[2])
+
+        # 3. max wait time task - vehicle schedule
+        for row in task_vehicle_wait_time_list:
+            # row[0] : task id, row[1] : sched_vehicle, row[2] : wait_time
+            task_id, sched_vehicle = row[0], row[1]
+            if row[0] not in target_task_list or sched_vehicle.name not in unsched_vehicle_list:
+                continue
+
+            task = task_mgr.get_task(task_id)
+            add_schedule(n_time, graph_name, sched_vehicle, task, schedule_mgr)
+            print(f"[reschedule_process] : {task_id} is sched to {sched_vehicle.name}")
+            del target_task_list[task_id]
+            del unsched_vehicle_list[sched_vehicle.name]
+
+    return None

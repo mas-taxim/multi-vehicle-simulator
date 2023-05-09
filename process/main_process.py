@@ -3,7 +3,7 @@ import datetime
 from manager import TaskManager, VehicleManager, ScheduleManager
 
 from process.generate_process import generate_process
-from process.schedule_process import schedule_process
+from process.schedule_process import schedule_process, reschedule_process
 from process.alloc_process import alloc_process, alloc_process_nearest, alloc_by_schedule
 from process.vehicle_process import vehicle_process
 
@@ -47,14 +47,25 @@ def main_process_schedule(
         vehicle_mgr: VehicleManager,
         task_mgr: TaskManager,
         schedule_mgr: ScheduleManager,
-        tasks) -> dict:
-    ''' processing each time, return value is result log '''
+        tasks,
+        schedule_type: str,
+        reschedule_time: int) -> dict:
+    '''
+    processing each time, return value is result log, schedule log
+    schedule_type :
+        dispatch - basic
+        reschedule - every 5 min, reschedule all task and vehicle
+    '''
     generate_process(n_time, graph_name, task_mgr, tasks)
 
-    for i in range(100):
+    while task_mgr.get_wait_task_num() > 0:
         v_name, t_idx = schedule_process(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
         if v_name is None:
             break
+
+    if schedule_type == "reschedule" and (n_time.minute % reschedule_time) == 0:
+        print(f"[schedule_process] : reschedule time : {n_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        reschedule_process(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
 
     alloc_by_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
 
