@@ -14,6 +14,7 @@ subgraph = None
 def generate_task(n_time: datetime, node: dict, task_mgr: TaskManager, task: tuple):
     req_time, load_idx, unload_idx = task
 
+    print(f"[generate_process] : generate task id : {len(task_mgr.tasks)}, time : {req_time[0:5]}")
     task_mgr.add_task(len(task_mgr.tasks),
                       Location(node[load_idx][0], node[load_idx][1]),
                       Location(node[unload_idx][0], node[unload_idx][1]),

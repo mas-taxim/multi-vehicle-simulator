@@ -48,7 +48,8 @@ def main_process_schedule(
         task_mgr: TaskManager,
         schedule_mgr: ScheduleManager,
         tasks,
-        schedule_type: str) -> dict:
+        schedule_type: str,
+        reschedule_time: int) -> dict:
     '''
     processing each time, return value is result log, schedule log
     schedule_type :
@@ -62,7 +63,7 @@ def main_process_schedule(
         if v_name is None:
             break
 
-    if schedule_type == "reschedule" and (n_time.minute % 20) == 0:
+    if schedule_type == "reschedule" and (n_time.minute % reschedule_time) == 0:
         print(f"[schedule_process] : reschedule time : {n_time.strftime('%Y-%m-%d %H:%M:%S')}")
         reschedule_process(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
 
