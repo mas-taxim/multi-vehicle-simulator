@@ -1,12 +1,15 @@
-import sys, os
-import json
-import logging
+import sys
+import os
+add_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, add_path)
+
 from datetime import datetime
-
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+import logging
+import json
 from entity import Task as t, Vehicle as v
-
 import generate_graph as gg
+
+sys.path.remove(add_path)
 
 """
 log struct that this file using
@@ -76,7 +79,7 @@ def get_latest_log(files_path: str) -> str:
             continue
         written_time = os.path.getctime(f"{files_path}/{f_name}")
         f_list.append((f_name, written_time))
-    
+
     # file list sort & get latest log file name
     if len(f_list) == 0:
         return None
@@ -108,7 +111,7 @@ def add_task(tid: int, init_status: int, add_time: int) -> None:
         add_time (int): task added time
     """
     task_list[tid] = {'status': init_status, 'wait_alloc_time': 0, 'wait_vehicle_time': 0,
-                       'moving_time': 0, 'last_update_time': add_time, 'create_time': add_time}
+                      'moving_time': 0, 'last_update_time': add_time, 'create_time': add_time}
 
 
 def task_processing(tid: int, status: int, cur_time: int):
@@ -119,15 +122,15 @@ def task_processing(tid: int, status: int, cur_time: int):
         status (int): task status
         cur_time (int): logging time
     """
-    
+
     if tid not in task_list:
         add_task(tid, status, cur_time)
-    
+
     # Case 1 : STATUS WAIT -> ALLOC
     if status == t.MOVE_TO_LOAD and task_list[tid]['status'] < t.MOVE_TO_LOAD:
         task_list[tid]['wait_alloc_time'] = (cur_time - task_list[tid]['last_update_time']) / 60000
         task_list[tid]['last_update_time'] = cur_time
-    
+
     # Case 2 : STATUS ALLOC -> LOAD_START
     elif status == t.LOAD_START and task_list[tid]['status'] < t.LOAD_START:
         task_list[tid]['wait_vehicle_time'] = (cur_time - task_list[tid]['last_update_time']) / 60000
@@ -137,7 +140,7 @@ def task_processing(tid: int, status: int, cur_time: int):
     elif status == t.UNLOAD_START and task_list[tid]['status'] < t.UNLOAD_START:
         task_list[tid]['moving_time'] = (cur_time - task_list[tid]['last_update_time']) / 60000
         task_list[tid]['last_update_time'] = cur_time
-    
+
     task_list[tid]['status'] = status
 
 
@@ -149,14 +152,14 @@ def vehicle_processing(vname: str, status: int, cur_time: int):
         status (int): vehicle status
         cur_time (int): logging time
     """
-    
+
     # Case 1 : STATUS WAIT -> ALLOC -> MOVE_TO_LOAD
     if status == v.MOVE_TO_LOAD and vehicle_list[vname]['status'] < v.MOVE_TO_LOAD:
         vehicle_list[vname]['wait_alloc_time'] += (cur_time - vehicle_list[vname]['last_update_time']) / 60000
         sys_logger.info(f"[{vname}][{cur_time}] : WAIT -> ALLOC, sub1 += {cur_time - vehicle_list[vname]['last_update_time']}")
         vehicle_list[vname]['empty_event'].append([vehicle_list[vname]['last_update_time'], cur_time - vehicle_list[vname]['last_update_time']])
         vehicle_list[vname]['last_update_time'] = cur_time
-    
+
     # Case 2 : STATUS ALLOC -> LOAD_START
     elif status == v.LOAD_START and vehicle_list[vname]['status'] < v.LOAD_START:
         vehicle_list[vname]['moving_to_load_time'] += (cur_time - vehicle_list[vname]['last_update_time']) / 60000
@@ -168,7 +171,7 @@ def vehicle_processing(vname: str, status: int, cur_time: int):
         vehicle_list[vname]['moving_time'] += (cur_time - vehicle_list[vname]['last_update_time']) / 60000
         sys_logger.info(f"[{vname}][{cur_time}] : ALLOC -> LOAD_START, sub2 += {cur_time - vehicle_list[vname]['last_update_time']}")
         vehicle_list[vname]['last_update_time'] = cur_time
-    
+
     vehicle_list[vname]['status'] = status
 
 
@@ -180,7 +183,7 @@ def generate_result(logs: dict) -> dict:
     # 2. looping in timestamp
     for log in logs:
         cur_time = log['time']
-         
+
         # 2.1 task checking
         for task in log['tasks']:
             task_processing(task['id'], task['status'], cur_time)
@@ -188,21 +191,22 @@ def generate_result(logs: dict) -> dict:
         # 2.2 vehicle Checking
         for vehicle in log['vehicles']:
             vehicle_processing(vehicle['name'], vehicle['status'], cur_time)
-            
+
     # 3. write result
     result = {'task': task_list, 'vehicle': vehicle_list}
 
     return result
 
+
 if __name__ == "__main__":
 
-    f_name = '20230416_002223.json'
+    f_name = '20230509_reschedule.json'
     logs = read_log(f'../log/{f_name}')
-    
+
     if logs == None:
         sys_logger.error("log is not exist.")
         exit()
-    
+
     logData = generate_result(logs)
 
     with open(f'log/{f_name}', 'w') as outfile:

@@ -247,7 +247,7 @@ def unload_end(n_time: datetime, vehicle: Vehicle, task: Task, schedule_list: Sc
         schedule.load_time = task.load_end_time
         schedule.unload_time = n_time
 
-        schedule_list.update_schedule(n_time)
+        schedule_list.update_schedules(n_time)
 
     vehicle.route = []
 

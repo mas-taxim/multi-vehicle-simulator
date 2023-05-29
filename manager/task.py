@@ -58,6 +58,9 @@ class TaskManager:
             logger.error(
                 f"[alloc_vehicle] t_idx does not exist -> t_idx:{t_idx}")
 
+    def get_wait_task_num(self) -> int:
+        return len(self.wait_queue)
+
     def peek_wait_task(self) -> Task:
         if self.wait_queue:
             return self.tasks.get(self.wait_queue[0])

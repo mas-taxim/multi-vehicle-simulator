@@ -8,9 +8,10 @@ class Schedule:
     RUNNING: int = 1
     PLANNED: int = 2
 
-    def __init__(self, task_id: int, start_time: datetime, start_loc: Location, load_time: datetime,
+    def __init__(self, task_id: int, task_elapsed_time: int, start_time: datetime, start_loc: Location, load_time: datetime,
                  load_loc: Location, unload_time: datetime, unload_loc: Location):
         self.task_id: int = task_id
+        self.task_elapsed_time: int = task_elapsed_time
         self.status: int = Schedule.PLANNED
         self.start_time: datetime = start_time
         self.start_loc: Location = start_loc

@@ -4,6 +4,20 @@ from entity import Location, Path
 from .map import make_graph
 
 graph_dict = dict()
+distances = []
+
+
+def get_distance(graph_name, source, target):
+    if len(distances) == 0:
+        f = open(f'graph/data/dist_{graph_name}.csv', 'r')
+
+        lines = f.readlines()
+        for line in lines:
+            distances.append(line)
+
+        f.close()
+
+    return float(distances[source].split(",")[target])
 
 
 def update_weight(graph_name, hour):

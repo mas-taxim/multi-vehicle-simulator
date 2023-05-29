@@ -56,7 +56,7 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskMa
     task_mgr.add_task(len(task_mgr.tasks), Location(
         node[2][0], node[2][1]), Location(node[3][0], node[3][1]), n_time, 1)
 
-    sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task_mgr.get_task(0))
+    sched_vehicle, min_sched_load_time = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task_mgr.get_task(0))
     assert sched_vehicle.name == "V1"
 
     add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(0), schedule_mgr)
@@ -76,7 +76,7 @@ def test_script1(n_time: datetime, vehicle_mgr: VehicleManager, task_mgr: TaskMa
     assert schedule_list_v1.get_schedule(0).unload_loc.x == 0
     assert schedule_list_v1.get_schedule(0).unload_loc.y == 0
 
-    sched_vehicle = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task_mgr.get_task(1))
+    sched_vehicle, min_sched_load_time = get_earliest_vehicle(n_time, graph_name, vehicle_mgr, schedule_mgr, task_mgr.get_task(1))
     assert sched_vehicle.name == "V1"
 
     add_schedule(n_time, graph_name, sched_vehicle, task_mgr.get_task(1), schedule_mgr)
