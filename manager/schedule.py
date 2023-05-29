@@ -34,6 +34,17 @@ class ScheduleManager:
 
         return cleared_task_list
 
+    def swap(self, graph_name, v_name1, idx1, v_name2, idx2):
+        schedule_list1 = self.schedule_lists[v_name1].get_schedule_list()
+        schedule_list2 = self.schedule_lists[v_name2].get_schedule_list()
+
+        temp_schedule = schedule_list1[idx1]
+        schedule_list1[idx1] = schedule_list2[idx2]
+        schedule_list2[idx2] = temp_schedule
+
+        self.schedule_lists[v_name1].update_schedule_from_start(graph_name)
+        self.schedule_lists[v_name2].update_schedule_from_start(graph_name)
+
     def get_logs(self):
         schedule_logs = []
 

@@ -16,12 +16,13 @@ graph_name = '20230426_seoul_default_0_7_st_link'
 request_name = 'reqeust_2020-08-29_20230426_seoul_default_0_5_link.csv'
 
 # Mode Setting
-schedule_type = "dispatch"
-# schedule_type = "reschedule"
+# schedule_type = "dispatch"
+schedule_type = "reschedule"
+# schedule_type = "swap"
 simulation_time = 24
 simulation_vehicle_num = 30
-simulation_task_num = 450
-simulation_reschedule_time = 15
+simulation_task_num = 400
+simulation_reschedule_time = 5
 
 
 def init_log():

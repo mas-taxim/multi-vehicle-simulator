@@ -3,7 +3,7 @@ import datetime
 from manager import TaskManager, VehicleManager, ScheduleManager
 
 from process.generate_process import generate_process
-from process.schedule_process import schedule_process, reschedule_process
+from process.schedule_process import schedule_process, reschedule_process, swap_process
 from process.alloc_process import alloc_process, alloc_process_nearest, alloc_by_schedule
 from process.vehicle_process import vehicle_process
 
@@ -66,6 +66,10 @@ def main_process_schedule(
     if schedule_type == "reschedule" and (n_time.minute % reschedule_time) == 0:
         print(f"[schedule_process] : reschedule time : {n_time.strftime('%Y-%m-%d %H:%M:%S')}")
         reschedule_process(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
+
+    if schedule_type == "swap" and (n_time.minute % reschedule_time) == 0:
+        print(f"[schedule_process] : swap time : {n_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        swap_process(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
 
     alloc_by_schedule(n_time, graph_name, vehicle_mgr, task_mgr, schedule_mgr)
 
