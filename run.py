@@ -17,12 +17,12 @@ request_date = '20200829'
 request_name = 'reqeust_2020-08-29_20230426_seoul_default_0_5_link.csv'
 
 # Mode Setting
-schedule_type = "dispatch"
-# schedule_type = "reschedule"
+# schedule_type = "dispatch"
+schedule_type = "reschedule"
 # schedule_type = "swap"
 simulation_time = 24
 simulation_vehicle_num = 2
-simulation_task_num = 20
+simulation_task_num = 30
 simulation_reschedule_time = 10
 
 
@@ -87,11 +87,11 @@ def run():
 
     logs = []
     schedule_logs = []
-    n_time: datetime = datetime.strptime("2023-02-02", '%Y-%m-%d')
+    n_time: datetime = datetime.strptime("2020-08-29", '%Y-%m-%d')
     for h in range(0, simulation_time):
         print(f"============ Simulation Time : {h} hour processing.. task count : {task_count[h]}============")
         # update_weight(graph_name, h % 24 + 1)
-        update_weight(graph_name, 1)
+        update_weight(graph_name, 3)
 
         for i, run_time in enumerate(vehicles_run_time):
             if run_time[0] == h:

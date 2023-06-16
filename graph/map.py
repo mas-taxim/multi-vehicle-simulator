@@ -5,6 +5,7 @@ import os
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
+now_hour = 1
 graph_dict = {}
 random.seed(0)
 
@@ -38,6 +39,14 @@ def update_weight(graph_name, hour):
     nodes, node_idx, graph = make_graph(graph_name, hour)
     graph_dict[graph_name] = (nodes, node_idx, graph)
 
+    global now_hour
+    now_hour = hour
+
+
+def get_hour():
+    global now_hour
+    return now_hour
+
 
 def get_map(graph_name) -> (dict, dict, nx.DiGraph):
     if graph_dict.__contains__(graph_name):
@@ -45,4 +54,7 @@ def get_map(graph_name) -> (dict, dict, nx.DiGraph):
 
     nodes, node_idx, graph = make_graph(graph_name, 1)
     graph_dict[graph_name] = (nodes, node_idx, graph)
+
+    global now_hour
+    now_hour = 1
     return graph_dict[graph_name]

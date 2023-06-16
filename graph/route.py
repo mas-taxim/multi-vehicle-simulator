@@ -1,7 +1,7 @@
 import networkx as nx
 
 from entity import Location, Path
-from .map import get_map, make_graph
+from .map import get_map, get_hour
 
 graph_dict = dict()
 distances = []
@@ -9,7 +9,7 @@ distances = []
 
 def get_distance(graph_name, source, target):
     if len(distances) == 0:
-        f = open(f'graph/data/dist_{graph_name}.csv', 'r')
+        f = open(f'graph/data/dist_{graph_name}_{get_hour()}.csv', 'r')
 
         lines = f.readlines()
         for line in lines:
