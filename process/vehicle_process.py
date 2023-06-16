@@ -2,9 +2,9 @@ import logging
 import math
 from datetime import datetime, timedelta
 
-from entity import Path, Task, Vehicle, Location, ScheduleList
-from entity.location import is_same_location
-from manager import VehicleManager, ScheduleManager
+from ..entity import Path, Task, Vehicle, Location, ScheduleList
+from ..entity.location import is_same_location
+from ..manager import VehicleManager, ScheduleManager
 
 logger = logging.getLogger("main")
 

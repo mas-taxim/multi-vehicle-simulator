@@ -1,4 +1,4 @@
-from entity import ScheduleList
+from ..entity import ScheduleList
 
 
 class ScheduleManager:

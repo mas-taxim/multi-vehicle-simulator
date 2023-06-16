@@ -2,7 +2,7 @@ import logging
 
 from datetime import datetime
 
-from entity import Location, Task, Vehicle
+from ..entity import Location, Task, Vehicle
 
 logger = logging.getLogger("main")
 

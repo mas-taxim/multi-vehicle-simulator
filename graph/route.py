@@ -1,6 +1,6 @@
 import networkx as nx
 
-from entity import Location, Path
+from ..entity import Location, Path
 from .map import get_map, get_hour
 
 graph_dict = dict()

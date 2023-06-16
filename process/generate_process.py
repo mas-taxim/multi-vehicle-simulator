@@ -2,10 +2,10 @@ import logging
 import datetime
 import random
 
-from entity import Location
-from manager import TaskManager
+from ..entity import Location
+from ..manager import TaskManager
 
-from graph.map import get_map
+from ..graph.map import get_map
 
 logger = logging.getLogger("main")
 subgraph = None

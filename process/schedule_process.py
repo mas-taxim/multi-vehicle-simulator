@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
-from entity import Task, Vehicle, Location, Schedule
-from graph.route import get_distance
-from graph.map import get_map
-from manager import VehicleManager, TaskManager, ScheduleManager
+from ..entity import Task, Vehicle, Location, Schedule
+from ..graph.route import get_distance
+from ..graph.map import get_map
+from ..manager import VehicleManager, TaskManager, ScheduleManager
 
 
 def add_schedule(n_time: datetime, graph_name: str, vehicle: Vehicle, task: Task, schedule_mgr: ScheduleManager):

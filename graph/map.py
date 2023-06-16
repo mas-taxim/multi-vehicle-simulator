@@ -9,6 +9,7 @@ now_hour = 1
 graph_dict = {}
 random.seed(0)
 
+
 def make_node_idx(node):
     node_idx = {}
     for key, value in node.items():
@@ -25,9 +26,11 @@ def make_graph(graph_name, hour):
     graph = nx.DiGraph()
     nodes = {}
 
+    print(f"make graph node, hour:{hour}")
     for node in graph_json['nodes']:
         nodes[node['id']] = (node['lat'], node['lng'])
 
+    print(f"make graph edge, hour:{hour}")
     for edge in graph_json['edges']:
         graph.add_edge(edge['from'], edge['to'], weight=edge['info']['weight'][str(hour)])
 

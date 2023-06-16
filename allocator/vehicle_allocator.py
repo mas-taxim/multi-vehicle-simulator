@@ -1,8 +1,8 @@
 import datetime
 
-from entity import Task, Vehicle
-from manager import TaskManager, VehicleManager
-from graph.route import find_graph_route
+from ..entity import Task, Vehicle
+from ..manager import TaskManager, VehicleManager
+from ..graph.route import find_graph_route
 
 
 def allocate(

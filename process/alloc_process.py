@@ -3,12 +3,12 @@ import datetime
 
 import networkx as nx
 
-from entity import Task, Vehicle, Schedule
-from manager import TaskManager, VehicleManager, ScheduleManager
+from ..entity import Task, Vehicle, Schedule
+from ..manager import TaskManager, VehicleManager, ScheduleManager
 
-from allocator.vehicle_allocator import allocate
+from ..allocator.vehicle_allocator import allocate
 
-from graph.map import get_map
+from ..graph.map import get_map
 
 logger = logging.getLogger("main")
 

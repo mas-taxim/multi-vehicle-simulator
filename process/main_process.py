@@ -1,11 +1,11 @@
 import datetime
 
-from manager import TaskManager, VehicleManager, ScheduleManager
+from ..manager import TaskManager, VehicleManager, ScheduleManager
 
-from process.generate_process import generate_process
-from process.schedule_process import schedule_process, reschedule_process, swap_process
-from process.alloc_process import alloc_process, alloc_process_nearest, alloc_by_schedule
-from process.vehicle_process import vehicle_process
+from .generate_process import generate_process
+from .schedule_process import schedule_process, reschedule_process, swap_process
+from .alloc_process import alloc_process, alloc_process_nearest, alloc_by_schedule
+from .vehicle_process import vehicle_process
 
 epsilon = 0.05
 
