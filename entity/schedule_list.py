@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
 from entity import Schedule
-from graph.route import get_map, get_distance
+from graph.map import get_map
+from graph.route import get_distance
 
 
 class ScheduleList:

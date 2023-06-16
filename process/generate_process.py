@@ -5,7 +5,7 @@ import random
 from entity import Location
 from manager import TaskManager
 
-from graph.route import get_map
+from graph.map import get_map
 
 logger = logging.getLogger("main")
 subgraph = None

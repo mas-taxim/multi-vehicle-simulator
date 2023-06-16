@@ -1,7 +1,7 @@
 import networkx as nx
 
 from entity import Location, Path
-from .map import make_graph
+from .map import get_map, make_graph
 
 graph_dict = dict()
 distances = []
@@ -18,20 +18,6 @@ def get_distance(graph_name, source, target):
         f.close()
 
     return float(distances[source].split(",")[target])
-
-
-def update_weight(graph_name, hour):
-    nodes, node_idx, graph = make_graph(graph_name, hour)
-    graph_dict[graph_name] = (nodes, node_idx, graph)
-
-
-def get_map(graph_name) -> (dict, dict, nx.DiGraph):
-    if graph_dict.__contains__(graph_name):
-        return graph_dict[graph_name]
-
-    nodes, node_idx, graph = make_graph(graph_name, 1)
-    graph_dict[graph_name] = (nodes, node_idx, graph)
-    return graph_dict[graph_name]
 
 
 def get_nearest_idx(node_idx: dict, loc: Location):

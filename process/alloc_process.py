@@ -8,7 +8,7 @@ from manager import TaskManager, VehicleManager, ScheduleManager
 
 from allocator.vehicle_allocator import allocate
 
-from graph.route import get_map
+from graph.map import get_map
 
 logger = logging.getLogger("main")
 

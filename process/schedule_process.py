@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
 from entity import Task, Vehicle, Location, Schedule
-from graph.route import get_map, get_distance
+from graph.route import get_distance
+from graph.map import get_map
 from manager import VehicleManager, TaskManager, ScheduleManager
 
 
